@@ -1,26 +1,21 @@
-# Referencias E Anexos
+# Referências e Anexos
 
-## Anexos Do Projeto
-
-- [Backlog do produto em PDF](backlog-do-produto.pdf)
-- [User stories em PDF](user-stories.pdf)
-
-## Documentos Academicos Base
+## Documentos Acadêmicos Base
 
 Os arquivos abaixo permanecem na pasta `2dsm ABP/arquivos/` porque fazem parte da base documental utilizada pelo projeto:
 
-- `Calendario Academico 2026.pdf`
-- `DSM - Horario 2026-1.pdf`
+- `Calendário Acadêmico 2026.pdf`
+- `DSM - Horário 2026-1.pdf`
 - `DSM - PPC.pdf`
-- `Geo - Horario 2026-1.pdf`
+- `Geo - Horário 2026-1.pdf`
 - `Geo - PPC.pdf`
-- `MARH - Horario 2026-1.pdf`
+- `MARH - Horário 2026-1.pdf`
 - `MARH - PPC.pdf`
-- `Manual de orientacoes de Estagio Supervisionado.pdf`
+- `Manual de orientações de Estágio Supervisionado.pdf`
 - `Regulamento Geral dos Cursos.pdf`
 
-## Documentacao Tecnica Complementar
+## Documentação Técnica Complementar
 
-- [README da aplicacao](../../2dsm%20ABP/app%20-%20aluno/README.md)
+- [README da aplicação](../../2dsm%20ABP/app%20-%20aluno/README.md)
 - [README do banco](../../2dsm%20ABP/app%20-%20aluno/database/README.md)
 - [README dos scripts SQL](../../2dsm%20ABP/app%20-%20aluno/database/init/README.md)

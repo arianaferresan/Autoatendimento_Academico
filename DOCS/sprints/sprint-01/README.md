@@ -6,25 +6,25 @@ Em andamento
 
 ## Contexto Atual
 
-A equipe decidiu adiantar atividades estruturais do projeto para acelerar a organizacao inicial e preparar uma base mais solida para o desenvolvimento.
+A equipe decidiu adiantar atividades estruturais do projeto para acelerar a organização inicial e preparar uma base mais sólida para o desenvolvimento.
 
-Essa iniciativa foi tomada para permitir maior alinhamento interno, melhor distribuicao das responsabilidades e mais clareza sobre os proximos passos do projeto.
+Essa iniciativa foi tomada para permitir maior alinhamento interno, melhor distribuição das responsabilidades e mais clareza sobre os próximos passos do projeto.
 
-## Direcionamento Definido Pela Equipe
+## Direcionamento Definido pela Equipe
 
-Neste momento, a equipe optou por concentrar esforcos em frentes consideradas essenciais para a evolucao inicial do sistema:
+Neste momento, a equipe optou por concentrar esforços em frentes consideradas essenciais para a evolução inicial do sistema:
 
-- definicao visual da interface do chatbot, com construcao de um prototipo simples no Figma para alinhamento interno
-- organizacao da documentacao do repositorio e estruturacao dos documentos principais do projeto
-- elaboracao dos casos de uso e desenvolvimento inicial da modelagem UML
-- modelagem do banco de dados, com definicao inicial das entidades, atributos e relacionamentos
-- analise dos campos necessarios para persistencia e consulta de dados, incluindo a definicao preliminar dos tipos de informacao a serem armazenados
-- levantamento das informacoes que precisarao ser recuperadas do banco para sustentar a navegacao, as respostas e os registros operacionais do sistema
+- Definição visual da interface do chatbot, com construção de um protótipo simples no Figma para alinhamento interno;
+- Organização da documentação do repositório e estruturação dos documentos principais do projeto;
+- Elaboração dos casos de uso e desenvolvimento inicial da modelagem UML;
+- Modelagem do banco de dados, com definição inicial das entidades, atributos e relacionamentos;
+- Análise dos campos necessários para persistência e consulta de dados, incluindo a definição preliminar dos tipos de informação a serem armazenados;
+- Levantamento das informações que precisarão ser recuperadas do banco para sustentar a navegação, as respostas e os registros operacionais do sistema.
 
-## Objetivo Deste Adiantamento
+## Objetivo deste Adiantamento
 
-O foco desta antecipacao e estabelecer uma base tecnica, documental e estrutural solida para o projeto, facilitando o avanco das proximas etapas de implementacao.
+O foco desta antecipação é estabelecer uma base técnica, documental e estrutural sólida para o projeto, facilitando o avanço das próximas etapas de implementação.
 
 ## Acompanhamento Atual
 
-As atividades listadas acima estao em andamento e serao revisadas pela equipe na reuniao de acompanhamento para alinhamento do progresso e definicao dos proximos passos.
+As atividades listadas acima estão em andamento e serão revisadas pela equipe na reunião de acompanhamento para alinhamento do progresso e definição dos próximos passos.

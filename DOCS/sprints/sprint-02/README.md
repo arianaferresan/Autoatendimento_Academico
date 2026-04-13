@@ -4,7 +4,7 @@
 
 Planejamento
 
-## Periodo
+## Período
 
 Preencher.
 
@@ -14,24 +14,24 @@ Preencher o objetivo principal da sprint.
 
 ## Escopo Comprometido
 
-- Preencher historias, tarefas ou entregas previstas.
+- Preencher histórias, tarefas ou entregas previstas.
 
 ## Entregas
 
 - Preencher o que foi entregue na sprint.
 
-## Evidencias
+## Evidências
 
-- Adicionar links para imagens, PRs, commits, videos ou documentos.
+- Adicionar links para imagens, PRs, commits, vídeos ou documentos.
 
 ## Tasks
 
-- Registrar as tarefas executadas e os responsaveis.
+- Registrar as tarefas executadas e os responsáveis.
 
-## Riscos E Impedimentos
+## Riscos e Impedimentos
 
 - Registrar pontos que bloquearam ou impactaram a sprint.
 
-## Observacoes
+## Observações
 
-- Adicionar aprendizados e ajustes para a proxima sprint.
+- Adicionar aprendizados e ajustes para a próxima sprint.
