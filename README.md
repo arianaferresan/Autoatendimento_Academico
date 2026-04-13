@@ -1,65 +1,84 @@
 # FAQtec
 
 <p align="center">
-  <strong>Plataforma web de autoatendimento academico para a Secretaria Academica da Fatec Jacarei.</strong>
+  <strong>Plataforma web de autoatendimento acadêmico para a Secretaria Acadêmica da Fatec Jacareí.</strong>
 </p>
 
 <p align="center">
-  <a href="DOCS/README.md">Documentacao</a> •
+  <a href="DOCS/README.md">Documentação</a> •
   <a href="DOCS/produto/backlog-do-produto.md">Backlog</a> •
   <a href="DOCS/sprints/README.md">Sprints</a> •
-  <a href="2dsm%20ABP/app%20-%20aluno/README.md">Aplicacao</a>
+  <a href="2dsm%20ABP/app%20-%20aluno/README.md">Aplicação</a>
 </p>
 
 ---
 
-## Visao Geral
+## Visão Geral
 
-O **FAQtec** foi criado para centralizar duvidas frequentes da Secretaria Academica em uma unica plataforma, reduzindo a sobrecarga do atendimento manual e melhorando o acesso a informacoes institucionais por alunos e publico externo.
+O **FAQtec** foi criado para centralizar dúvidas frequentes da Secretaria Acadêmica em uma única plataforma, reduzindo a sobrecarga do atendimento manual e melhorando o acesso a informações institucionais por alunos e público externo.
 
-A aplicacao organiza o atendimento em fluxos guiados, consultas objetivas e respostas baseadas em documentos oficiais, tornando o processo mais claro, rapido e rastreavel.
+A aplicação organiza o atendimento em fluxos guiados, consultas objetivas e respostas baseadas em documentos oficiais, tornando o processo mais claro, rápido e rastreável.
 
 ## Problema
 
-Atualmente, grande parte das orientacoes academicas depende de atendimento humano para esclarecer temas recorrentes, como:
+Atualmente, grande parte das orientações acadêmicas depende de atendimento humano para esclarecer temas recorrentes, como:
 
-- matricula e rematricula
-- calendario academico
-- horarios de aula
-- estagio supervisionado
-- estrutura curricular dos cursos
-- documentos e procedimentos institucionais
+- Matrícula e rematrícula
+- Calendário acadêmico
+- Horários de aula
+- Estágio supervisionado
+- Estrutura curricular dos cursos
+- Documentos e procedimentos institucionais
 
-Esse modelo aumenta o tempo de resposta, gera retrabalho e dificulta a padronizacao das informacoes repassadas.
+Esse modelo aumenta o tempo de resposta, gera retrabalho e dificulta a padronização das informações repassadas.
 
-## Solucao Proposta
+## Solução Proposta
 
-O FAQtec propoe uma aplicacao web de autoatendimento capaz de:
+O FAQtec propõe uma aplicação web de autoatendimento capaz de:
 
-- conduzir o usuario por menus e submenus guiados
-- permitir consultas sobre temas academicos recorrentes
-- apresentar respostas objetivas e padronizadas
-- exibir evidencias documentais vinculadas as respostas
-- encaminhar duvidas nao resolvidas para a Secretaria Academica
+- Conduzir o usuário por menus e submenus guiados;
+- Permitir consultas sobre temas acadêmicos recorrentes;
+- Apresentar respostas objetivas e padronizadas;
+- Exibir evidências documentais vinculadas às respostas;
+- Encaminhar dúvidas não resolvidas para a Secretaria Acadêmica.
 
-## Documentacao
+## Documentação
 
-Toda a documentacao do projeto esta centralizada na pasta [DOCS](DOCS/README.md).
+Toda a documentação do projeto está centralizada na pasta [DOCS](DOCS/README.md).
 
-### Links Rapidos
+<p align="center">
+  <a href="DOCS/README.md">
+    <img alt="Documentação" src="https://img.shields.io/badge/Documenta%C3%A7%C3%A3o-DOCS-1F4B99?style=for-the-badge" />
+  </a>
+  <a href="DOCS/produto/backlog-do-produto.md">
+    <img alt="Backlog do Produto" src="https://img.shields.io/badge/Backlog-Produto-0F766E?style=for-the-badge" />
+  </a>
+  <a href="DOCS/produto/backlog-detalhado.md">
+    <img alt="Backlog Detalhado" src="https://img.shields.io/badge/Backlog-Detalhado-7C3AED?style=for-the-badge" />
+  </a>
+  <a href="DOCS/sprints/README.md">
+    <img alt="Sprints" src="https://img.shields.io/badge/Sprints-Acompanhamento-C2410C?style=for-the-badge" />
+  </a>
+  <a href="2dsm%20ABP/app%20-%20aluno/README.md">
+    <img alt="Aplicação" src="https://img.shields.io/badge/Aplica%C3%A7%C3%A3o-README-334155?style=for-the-badge" />
+  </a>
+</p>
+
+### Links Rápidos
 
 | Categoria | Acesso |
 | --- | --- |
-| Indice geral | [DOCS/README.md](DOCS/README.md) |
+| Índice geral | [DOCS/README.md](DOCS/README.md) |
 | Requisitos | [DOCS/produto/requisitos.md](DOCS/produto/requisitos.md) |
 | Backlog do produto | [DOCS/produto/backlog-do-produto.md](DOCS/produto/backlog-do-produto.md) |
+| Backlog detalhado | [DOCS/produto/backlog-detalhado.md](DOCS/produto/backlog-detalhado.md) |
 | User stories | [DOCS/produto/user-stories.md](DOCS/produto/user-stories.md) |
 | Definition of Ready | [DOCS/processo/definition-of-ready.md](DOCS/processo/definition-of-ready.md) |
 | Definition of Done | [DOCS/processo/definition-of-done.md](DOCS/processo/definition-of-done.md) |
 | Sprints | [DOCS/sprints/README.md](DOCS/sprints/README.md) |
-| Referencias e anexos | [DOCS/referencias/README.md](DOCS/referencias/README.md) |
+| Referências e anexos | [DOCS/referencias/README.md](DOCS/referencias/README.md) |
 
-## Estrutura Do Repositorio
+## Estrutura do Repositório
 
 ```text
 .
@@ -67,49 +86,70 @@ Toda a documentacao do projeto esta centralizada na pasta [DOCS](DOCS/README.md)
 │   ├── produto/
 │   ├── processo/
 │   ├── sprints/
-│   └── referencias/
+│   └── referências/
 ├── 2dsm ABP/
 │   ├── app - aluno/
 │   └── arquivos/
 └── README.md
 ```
 
-### Organizacao Das Pastas
+### Organização das Pastas
 
-- `DOCS/`: documentacao funcional, processual e acompanhamento das sprints
-- `2dsm ABP/app - aluno/`: aplicacao principal com frontend, backend e banco
-- `2dsm ABP/arquivos/`: documentos academicos utilizados como base de conhecimento
+- `DOCS/`: documentação funcional, processual e acompanhamento das sprints.
+- `2dsm ABP/app - aluno/`: aplicação principal com frontend, backend e banco.
+- `2dsm ABP/arquivos/`: documentos acadêmicos utilizados como base de conhecimento.
 
-## Aplicacao
+## Aplicação
 
-A documentacao tecnica da aplicacao permanece no modulo principal:
+A documentação técnica da aplicação permanece no módulo principal:
 
-- [README da aplicacao](2dsm%20ABP/app%20-%20aluno/README.md)
+- [README da aplicação](2dsm%20ABP/app%20-%20aluno/README.md)
 - [README do banco](2dsm%20ABP/app%20-%20aluno/database/README.md)
 - [README dos scripts SQL](2dsm%20ABP/app%20-%20aluno/database/init/README.md)
 
 ## Tecnologias Utilizadas
 
-| Camada | Tecnologias |
-| --- | --- |
-| Frontend | React, TypeScript, Vite |
-| Backend | Node.js, TypeScript, Express |
-| Banco de dados | PostgreSQL |
-| Autenticacao | JWT |
-| Infraestrutura | Docker Compose |
+<p align="center">
+  <img alt="React" src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" />
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" />
+  <img alt="Vite" src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" />
+</p>
 
-## Execucao
+<p align="center">
+  <img alt="Node.js" src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" />
+  <img alt="Express" src="https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white" />
+  <img alt="JWT" src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white" />
+</p>
 
-Para configurar e subir o ambiente local, utilize as instrucoes disponiveis em:
+<p align="center">
+  <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white" />
+  <img alt="Docker" src="https://img.shields.io/badge/Docker%20Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white" />
+</p>
 
-- [2dsm ABP/app - aluno/README.md](2dsm%20ABP/app%20-%20aluno/README.md)
+## Status do Projeto
 
-## Status Do Projeto
+<p align="center">
+  <img alt="Status" src="https://img.shields.io/badge/Status-Em%20organiza%C3%A7%C3%A3o%20e%20desenvolvimento-2563EB?style=for-the-badge" />
+</p>
 
-Projeto academico em desenvolvimento, com foco na construcao de uma plataforma de autoatendimento confiavel, organizada e sustentada por documentacao centralizada.
+Projeto acadêmico em desenvolvimento, com foco na construção de uma plataforma de autoatendimento confiável, organizada e sustentada por documentação centralizada.
+
+## Equipe
+
+A equipe do projeto é formada por alunos do curso de Desenvolvimento de Software Multiplataforma.
+
+| Função | Nome | Contatos |
+| --- | --- | :---: |
+| Project Owner | Luiza Gonçalves Manchini | [![GitHub](https://img.shields.io/badge/GitHub-Perfil-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/luiza-manchini) [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/luiza-manchini-b51a7b336/) |
+| Scrum Master | Felipe Faria Machado | [![GitHub](https://img.shields.io/badge/GitHub-Perfil-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/felipefmac) [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/felipefariamachado) |
+| Dev Team | Ariana Ferreira dos Santos | [![GitHub](https://img.shields.io/badge/GitHub-Perfil-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/arianaferresan) [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://br.linkedin.com/in/arianaferreira) |
+| Dev Team | Eloah Sousa da Silva | [![GitHub](https://img.shields.io/badge/GitHub-Perfil-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/eloahsousaa) [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/eloah-sousa-650038349/) |
+| Dev Team | Lucas Monteiro Correia | [![GitHub](https://img.shields.io/badge/GitHub-Perfil-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/lucasmonteiro14) [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/lucasmonteirocorreia) |
+| Dev Team | Pedro Gonçalves Sampaio | [![GitHub](https://img.shields.io/badge/GitHub-Perfil-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/PedroSmp) [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/pedro-sampaio-463a77375) |
+| Dev Team | William Max dos Santos Silva | [![GitHub](https://img.shields.io/badge/GitHub-Perfil-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/WilliamM4x) [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/william-max-7b8036140/) |
 
 ---
 
 <p align="center">
-  Desenvolvido para o ABP 2026-1 • Fatec Jacarei
+  Desenvolvido para o ABP 2026-1 • Fatec Jacareí
 </p>

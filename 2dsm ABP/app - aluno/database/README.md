@@ -1,4 +1,4 @@
-# Database
+# Banco de Dados
 
 Scripts SQL de inicialização do PostgreSQL.
 
