@@ -2,7 +2,6 @@
 
 > Projeto: Aplicação Web para Autoatendimento da Secretaria Acadêmica da Fatec Jacareí.
 
-> Documento gerado em 29/03/2026.
 
 ## Objetivo
 
@@ -200,8 +199,3 @@ Itens de sustentação técnica e acadêmica que garantem aderência às restri�
 - **DoR:** Cenários críticos de consulta definidos, pontos de medição escolhidos e massa de dados mínima disponível para testes.
 - **DoD:** Executar validação de desempenho nos fluxos principais e registrar que o tempo de resposta ficou adequado ao uso interativo do sistema.
 
-## Observações
-
-- Os itens com prioridade Alta devem ser atacados primeiro para sustentar o MVP exigido no desafio.
-- Os anexos de DoR e DoD consolidam os mesmos itens deste backlog em formato resumido para consulta rápida.
-- As prioridades passaram a usar o padrão Alta, Media e Baixa, conforme solicitado.
