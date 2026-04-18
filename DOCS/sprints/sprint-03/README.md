@@ -2,11 +2,13 @@
 
 ## Status
 
-Planejamento.
+![Status](https://img.shields.io/badge/Status-Planejamento-3B82F6)
 
 ## Período
 
-Preencher.
+| Marco | Data |
+| --- | --- |
+| Entrega prevista | 22/06/2026 |
 
 ## Objetivo
 
@@ -14,17 +16,29 @@ Concluir a implementação integrada do sistema, fechando a área interna, a inf
 
 ## Escopo Comprometido
 
+### Administração e Operação
+
 | ID | Item | Prioridade | Recorte da Sprint |
 | --- | --- | --- | --- |
-| US07 | Gestão de menus e respostas pelo administrador | Alta | Permitir manutenção administrativa do conteúdo do chatbot. |
-| US08 | Gestão de documentos, chunks e metadados | Alta | Permitir manutenção das evidências e da base documental pelo administrador. |
-| US09 | Gestão de usuários da secretaria | Média | Permitir cadastro, edição e controle dos usuários internos da secretaria. |
-| US11 | Acompanhamento e atualização das dúvidas recebidas | Alta | Permitir listagem e mudança de status das perguntas encaminhadas. |
-| US12 | Avaliação de satisfação do atendimento | Baixa | Registrar o feedback do usuário ao final do atendimento. |
-| US13 | Registro e consulta de logs administrativos | Alta | Registrar as interações e permitir consulta administrativa dos logs. |
-| BT04 | Ambiente completo com Docker Compose | Alta | Consolidar a infraestrutura completa, incluindo o pgAdmin. |
-| BT05 | Documentação e diagramas UML | Média | Produzir o diagrama de sequência nesta sprint. |
-| BT07 | Validação básica de desempenho | Média | Validar o comportamento do sistema nos fluxos principais de uso. |
+| US07 | Gestão de menus e respostas pelo administrador | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red) | Permitir manutenção administrativa do conteúdo do chatbot. |
+| US08 | Gestão de documentos, chunks e metadados | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red) | Permitir manutenção das evidências e da base documental pelo administrador. |
+| US09 | Gestão de usuários da secretaria | ![Prioridade Media](https://img.shields.io/badge/Prioridade-Media-yellow) | Permitir cadastro, edição e controle dos usuários internos da secretaria. |
+| US11 | Acompanhamento e atualização das dúvidas recebidas | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red) | Permitir listagem e mudança de status das perguntas encaminhadas. |
+| US12 | Avaliação de satisfação do atendimento | ![Prioridade Baixa](https://img.shields.io/badge/Prioridade-Baixa-green) | Registrar o feedback do usuário ao final do atendimento. |
+| US13 | Registro e consulta de logs administrativos | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red) | Registrar as interações e permitir consulta administrativa dos logs. |
+
+### Infraestrutura e Implementação
+
+| ID | Item | Prioridade | Recorte da Sprint |
+| --- | --- | --- | --- |
+| BT04 | Ambiente completo com Docker Compose | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red) | Consolidar a infraestrutura completa, incluindo o pgAdmin. |
+| BT07 | Validação básica de desempenho | ![Prioridade Media](https://img.shields.io/badge/Prioridade-Media-yellow) | Validar o comportamento do sistema nos fluxos principais de uso. |
+
+### Documentação
+
+| ID | Item | Prioridade | Recorte da Sprint |
+| --- | --- | --- | --- |
+| BT05 | Documentação e diagramas UML | ![Prioridade Media](https://img.shields.io/badge/Prioridade-Media-yellow) | Produzir o diagrama de sequência nesta sprint. |
 
 ## Entregas
 

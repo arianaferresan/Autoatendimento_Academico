@@ -75,6 +75,14 @@ Toda a documentação do projeto está centralizada na pasta [DOCS](DOCS/README.
 | Definition of Done | [DOCS/processo/definition-of-done.md](DOCS/processo/definition-of-done.md) |
 | Referências e anexos | [DOCS/referencias/README.md](DOCS/referencias/README.md) |
 
+## Cronograma das Sprints 📅
+
+| Sprint | Status | Entrega prevista | Documento |
+| --- | --- | --- | --- |
+| Sprint 01 | ![Status](https://img.shields.io/badge/Status-Em%20andamento-FACC15) | 04/05/2026 | [Abrir](DOCS/sprints/sprint-01/README.md) |
+| Sprint 02 | ![Status](https://img.shields.io/badge/Status-Planejamento-3B82F6) | 25/04/2026 | [Abrir](DOCS/sprints/sprint-02/README.md) |
+| Sprint 03 | ![Status](https://img.shields.io/badge/Status-Planejamento-3B82F6) | 22/06/2026 | [Abrir](DOCS/sprints/sprint-03/README.md) |
+
 ## Estrutura do Repositório 📂
 
 ```text

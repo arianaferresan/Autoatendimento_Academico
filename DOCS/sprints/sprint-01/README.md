@@ -2,11 +2,13 @@
 
 ## Status
 
-Em andamento.
+![Status](https://img.shields.io/badge/Status-Em%20andamento-FACC15)
 
 ## Período
 
-Entrega Srint 1 em 04/05/2026
+| Marco | Data |
+| --- | --- |
+| Entrega prevista | 04/05/2026 |
 
 ## Objetivo
 
@@ -14,13 +16,20 @@ Entregar um MVP apresentável do fluxo público do FAQtec, validando a navegaç�
 
 ## Escopo Comprometido
 
+### Frontend
+
 | ID | Item | Prioridade | Recorte da Sprint |
 | --- | --- | --- | --- |
-| US01 | Escolha inicial de curso ou perfil | Alta | Implementar a tela inicial com as opções `DSM`, `Geoprocessamento`, `MARH` e `Não sou aluno`. |
-| US02 | Navegação por menus e submenus | Alta | Implementar a navegação local com base no mockup (figma), cobrindo pelo menos 2 fluxos completos de demonstração. |
-| US04 | Respostas resumidas e padronizadas | Alta | Exibir uma resposta final padronizada ao final de cada fluxo implementado nesta sprint. |
-| BT02 | Frontend em React com TypeScript | Alta | Estruturar a base do frontend e entregar as primeiras telas navegáveis do chatbot. |
-| BT05 | Documentação e diagramas UML | Média | Produzir apenas o diagrama de casos de uso nesta sprint. |
+| US01 | Escolha inicial de curso ou perfil | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red) | Implementar a tela inicial com as opções `DSM`, `Geoprocessamento`, `MARH` e `Não sou aluno`. |
+| US02 | Navegação por menus e submenus | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red) | Implementar a navegação local com base no mockup (Figma) e dados mockados, cobrindo pelo menos 2 fluxos completos de demonstração. |
+| US04 | Respostas resumidas e padronizadas | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red) | Exibir uma resposta final padronizada ao final de cada fluxo implementado nesta sprint. |
+| BT02 | Frontend em React com TypeScript | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red) | Estruturar a base do frontend e entregar as primeiras telas navegáveis do chatbot. |
+
+### Documentação
+
+| ID | Item | Prioridade | Recorte da Sprint |
+| --- | --- | --- | --- |
+| BT05 | Documentação e diagramas UML | ![Prioridade Media](https://img.shields.io/badge/Prioridade-Media-yellow) | Produzir apenas o diagrama de casos de uso nesta sprint. |
 
 ## Entregas
 
