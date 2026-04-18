@@ -5,10 +5,10 @@
 </p>
 
 <p align="center">
-  <a href="DOCS/README.md">Documentação</a> •
-  <a href="DOCS/produto/backlog-do-produto.md">Backlog</a> •
-  <a href="DOCS/sprints/README.md">Sprints</a> •
-  <a href="2dsm%20ABP/app%20-%20aluno/README.md">Aplicação</a>
+  <a href="#documentacao">Documentação</a> •
+  <a href="#backlog">Backlog</a> •
+  <a href="#sprints">Sprints</a> •
+  <a href="#aplicacao">Aplicação</a>
 </p>
 
 ---
@@ -41,6 +41,8 @@ O FAQtec propõe uma aplicação web de autoatendimento capaz de:
 - Apresentar respostas objetivas e padronizadas;
 - Exibir evidências documentais vinculadas às respostas;
 - Encaminhar dúvidas não resolvidas para a Secretaria Acadêmica.
+
+<a id="documentacao"></a>
 
 ## Documentação 📁
 
@@ -75,6 +77,21 @@ Toda a documentação do projeto está centralizada na pasta [DOCS](DOCS/README.
 | Definition of Done | [DOCS/processo/definition-of-done.md](DOCS/processo/definition-of-done.md) |
 | Referências e anexos | [DOCS/referencias/README.md](DOCS/referencias/README.md) |
 
+<a id="backlog"></a>
+
+## Backlog 🧾
+
+O backlog do projeto está organizado em documentos complementares para facilitar a visão geral, o refinamento e o acompanhamento das entregas.
+
+| Categoria | Acesso |
+| --- | --- |
+| Backlog do Produto | [DOCS/produto/backlog-do-produto.md](DOCS/produto/backlog-do-produto.md) |
+| Backlog Detalhado | [DOCS/produto/backlog-detalhado.md](DOCS/produto/backlog-detalhado.md) |
+| User stories | [DOCS/produto/user-stories.md](DOCS/produto/user-stories.md) |
+| Requisitos | [DOCS/produto/requisitos.md](DOCS/produto/requisitos.md) |
+
+<a id="sprints"></a>
+
 ## Cronograma das Sprints 📅
 
 | Sprint | Status | Entrega prevista | Documento |
@@ -88,21 +105,32 @@ Toda a documentação do projeto está centralizada na pasta [DOCS](DOCS/README.
 ```text
 .
 ├── DOCS/
-│   ├── produto/
 │   ├── processo/
+│   ├── produto/
+│   ├── referencias/
 │   ├── sprints/
-│   └── referências/
+│   └── README.md
 ├── 2dsm ABP/
 │   ├── app - aluno/
+│   │   ├── .gitignore
+│   │   ├── backend/
+│   │   ├── database/
+│   │   ├── docker-compose.yml
+│   │   ├── frontend/
+│   │   └── README.md
 │   └── arquivos/
+├── teste.html
+├── teste_teste.html
 └── README.md
 ```
 
 ### Organização das Pastas 📋
 
 - `DOCS/`: documentação funcional, processual e acompanhamento das sprints.
-- `2dsm ABP/app - aluno/`: aplicação principal com frontend, backend e banco.
+- `2dsm ABP/app - aluno/`: aplicação principal com frontend, backend, banco e orquestração local.
 - `2dsm ABP/arquivos/`: documentos acadêmicos utilizados como base de conhecimento.
+
+<a id="aplicacao"></a>
 
 ## Aplicação
 
