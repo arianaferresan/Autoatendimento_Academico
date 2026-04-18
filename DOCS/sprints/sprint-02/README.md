@@ -2,11 +2,13 @@
 
 ## Status
 
-Planejamento.
+![Status](https://img.shields.io/badge/Status-Planejamento-3B82F6)
 
 ## Período
 
-Preencher.
+| Marco | Data |
+| --- | --- |
+| Entrega prevista | 25/04/2026 |
 
 ## Objetivo
 
@@ -14,18 +16,35 @@ Finalizar o núcleo funcional do sistema, consolidando frontend e backend e prep
 
 ## Escopo Comprometido
 
+### Frontend
+
 | ID | Item | Prioridade | Recorte da Sprint |
 | --- | --- | --- | --- |
-| US03 | Consultas diretas no autoatendimento | Média | Implementar a consulta direta como complemento à navegação guiada. |
-| US05 | Evidências documentais vinculadas | Alta | Exibir a referência documental vinculada à resposta apresentada ao usuário. |
-| US06 | Perfis de acesso do sistema | Alta | Estruturar o acesso público e os perfis internos previstos no sistema. |
-| US10 | Encaminhamento de perguntas para a secretaria | Alta | Permitir o envio da dúvida ao final do atendimento. |
-| US14 | Login, JWT e autorização por papel | Alta | Implementar a autenticação inicial de usuários internos e o controle de acesso por papel. |
-| BT01 | Modelagem e carga inicial do banco PostgreSQL | Alta | Revisar a modelagem existente, validar a estrutura e preparar a base para integração. |
-| BT02 | Frontend em React com TypeScript | Alta | Finalizar o frontend do fluxo principal e da integração com os serviços desta etapa. |
-| BT03 | API em Node.js com TypeScript | Alta | Implementar a API necessária para sustentar a navegação, autenticação e encaminhamento de perguntas. |
-| BT05 | Documentação e diagramas UML | Média | Produzir o diagrama de classes e o diagrama de componentes nesta sprint. |
-| BT06 | Segurança com hash e JWT | Alta | Aplicar hash de senha, JWT e proteções básicas de segurança do backend. |
+| US03 | Consultas diretas no autoatendimento | ![Prioridade Media](https://img.shields.io/badge/Prioridade-Media-yellow) | Implementar a consulta direta como complemento à navegação guiada. |
+| US05 | Evidências documentais vinculadas | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red) | Exibir a referência documental vinculada à resposta apresentada ao usuário. |
+| BT02 | Frontend em React com TypeScript | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red) | Finalizar o frontend do fluxo principal e da integração com os serviços desta etapa. |
+
+### Backend e Dados
+
+| ID | Item | Prioridade | Recorte da Sprint |
+| --- | --- | --- | --- |
+| US10 | Encaminhamento de perguntas para a secretaria | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red) | Permitir o envio da dúvida ao final do atendimento. |
+| BT01 | Modelagem e carga inicial do banco PostgreSQL | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red) | Revisar a modelagem existente, validar a estrutura e preparar a base para integração. |
+| BT03 | API em Node.js com TypeScript | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red) | Implementar a API necessária para sustentar a navegação, autenticação e encaminhamento de perguntas. |
+
+### Autenticação e Acesso
+
+| ID | Item | Prioridade | Recorte da Sprint |
+| --- | --- | --- | --- |
+| US06 | Perfis de acesso do sistema | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red) | Estruturar o acesso público e os perfis internos previstos no sistema. |
+| US14 | Login, JWT e autorização por papel | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red) | Implementar a autenticação inicial de usuários internos e o controle de acesso por papel. |
+| BT06 | Segurança com hash e JWT | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red) | Aplicar hash de senha, JWT e proteções básicas de segurança do backend. |
+
+### Documentação
+
+| ID | Item | Prioridade | Recorte da Sprint |
+| --- | --- | --- | --- |
+| BT05 | Documentação e diagramas UML | ![Prioridade Media](https://img.shields.io/badge/Prioridade-Media-yellow) | Produzir o diagrama de classes e o diagrama de componentes nesta sprint. |
 
 ## Entregas
 
