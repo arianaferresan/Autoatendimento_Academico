@@ -76,7 +76,6 @@ Use esta tabela para acompanhar todas as tasks do projeto. Marque ⬜ para pende
 ## Observações
 
 - Fluxos comprometidos: `DSM` e `Não sou aluno`.
-- Stretch goal: expandir a navegação para `Geoprocessamento` e `MARH`.
 - Nesta sprint não há compromisso com conexão real ao banco de dados.
 - A equipe vai realizar uma revisão do banco já modelado como atividade de apoio ao planejamento da integração, sem alterar o backlog comprometido da sprint.
-- O backlog desta sprint está restrito ao fluxo público apresentável; autenticação, backend funcional, CRUD administrativo, consulta direta, envio de dúvidas, logs e satisfação ficam para as próximas sprints.
+
