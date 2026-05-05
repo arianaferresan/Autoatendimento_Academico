@@ -34,7 +34,7 @@ Entregar um MVP apresentável do fluxo público do FAQtec, validando a navegaç�
 
 ## Evidências
 
-(Adicionar links da demo navegável, imagens das telas e material visual desta sprint)
+FIGMA: https://www.figma.com/design/nxX4kUKGSKeNLARNj0iMDf/ChatBoot--Fatec?node-id=0-1&t=9pcagDnITzTyB96i-0
 
 (Adicionar o link do diagrama de casos de uso quando estiver finalizado.)
 
