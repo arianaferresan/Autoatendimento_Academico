@@ -34,9 +34,9 @@ Entregar um MVP apresentável do fluxo público do FAQtec, validando a navegaç�
 
 ## Evidências
 
-(Adicionar links da demo navegável, imagens das telas e material visual desta sprint)
+FIGMA: https://www.figma.com/design/nxX4kUKGSKeNLARNj0iMDf/ChatBoot--Fatec?node-id=0-1&t=9pcagDnITzTyB96i-0
 
-(Adicionar o link do diagrama de casos de uso quando estiver finalizado.)
+DIAGRAMA UML (USE CASE) : https://github.com/404NotFound-ABP/Autoatendimento_Academico/blob/docs/DOCS/diagrama/UseCase%20Diagram.png
 
 ## Tasks
 
@@ -76,7 +76,6 @@ Use esta tabela para acompanhar todas as tasks do projeto. Marque ⬜ para pende
 ## Observações
 
 - Fluxos comprometidos: `DSM` e `Não sou aluno`.
-- Stretch goal: expandir a navegação para `Geoprocessamento` e `MARH`.
 - Nesta sprint não há compromisso com conexão real ao banco de dados.
 - A equipe vai realizar uma revisão do banco já modelado como atividade de apoio ao planejamento da integração, sem alterar o backlog comprometido da sprint.
-- O backlog desta sprint está restrito ao fluxo público apresentável; autenticação, backend funcional, CRUD administrativo, consulta direta, envio de dúvidas, logs e satisfação ficam para as próximas sprints.
+
