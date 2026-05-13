@@ -71,7 +71,7 @@ Use esta tabela para acompanhar todas as tasks do projeto. Marque ⬜ para pende
 
 ## Burndown
 
-<img width="1595" height="659" alt="burndown sprint 01" src="DOCS/sprints/sprint-01/burndown.png" />
+<img width="1595" height="659" alt="burndown sprint 01" src="burndown.png" />
 
 ## Observações
 

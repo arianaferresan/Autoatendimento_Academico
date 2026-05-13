@@ -95,7 +95,7 @@ O backlog do projeto está organizado em documentos complementares para facilita
 | Sprint | Status | Entrega prevista | Documento |
 | --- | --- | --- | --- |
 | Sprint 01 | ![Status](https://img.shields.io/badge/Status-Concluido-success) | 05/05/2026 | [Abrir](DOCS/sprints/sprint-01/README.md) |
-| Sprint 02 | ![Status](https://img.shields.io/badge/Status-Planejamento-3B82F6) | 25/05/2026 | [Abrir](DOCS/sprints/sprint-02/README.md) |
+| Sprint 02 | ![Status](https://img.shields.io/badge/Status-Em%20andamento-FACC15) | 25/05/2026 | [Abrir](DOCS/sprints/sprint-02/README.md) |
 | Sprint 03 | ![Status](https://img.shields.io/badge/Status-Planejamento-3B82F6) | 22/06/2026 | [Abrir](DOCS/sprints/sprint-03/README.md) |
 
 ## Estrutura do Repositório 📂
@@ -132,7 +132,7 @@ O backlog do projeto está organizado em documentos complementares para facilita
 - `2dsm ABP/init`: DDL e seed do banco de dados.
 
 ### End-Points Back-End [PORT: 3666] 🚪
-- `Rota SWAGGER`: http://localhost:3666/api-https://github.com/404NotFound-ABP/Autoatendimento_Academico/blob/docs/DOCS/
+- `Rota SWAGGER`: http://localhost:3666/api/
 - `Rota BackEnd publico`: http://localhost:3666/api/  
 - `Rota BackEnd ADMIN`: http://localhost:3666/admin/  
 
@@ -143,9 +143,7 @@ O backlog do projeto está organizado em documentos complementares para facilita
 
 A documentação técnica da aplicação permanece no módulo principal:
 
-- [README da aplicação](2dsm%20ABP/app%20-%20aluno/README.md)
-- [README do banco](2dsm%20ABP/app%20-%20aluno/database/README.md)
-- [README dos scripts SQL](2dsm%20ABP/app%20-%20aluno/database/init/README.md)
+- [README da aplicação](DOCS/README.md)
 
 ## Tecnologias Utilizadas 💻
 
