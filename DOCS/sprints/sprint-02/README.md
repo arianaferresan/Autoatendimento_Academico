@@ -2,13 +2,13 @@
 
 ## Status
 
-![Status](https://img.shields.io/badge/Status-Planejamento-3B82F6)
+![Status](https://img.shields.io/badge/Status-Em%20andamento-FACC15)
 
 ## Período
 
 | Marco | Data |
 | --- | --- |
-| Entrega prevista | 25/04/2026 |
+| Entrega prevista | 25/05/2026 |
 
 ## Objetivo
 

@@ -41,6 +41,11 @@ CREATE TABLE IF NOT EXISTS navigation_nodes (
     is_active BOOLEAN NOT NULL DEFAULT TRUE 
 );
 
+CREATE INDEX idx_navigation_parent_id ON navigation_nodes(parent_id);
+
+CREATE INDEX idx_navigation_is_active ON navigation_nodes(is_active);
+
+
 -- Tabela de logs e satisfação 
 CREATE TABLE IF NOT EXISTS fulfillment_logs (
   id BIGSERIAL PRIMARY KEY,
