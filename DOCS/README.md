@@ -47,6 +47,4 @@ Esta pasta concentra a documentação principal do repositório. O `README.md` d
 | `DOCS/diagrama` | Diagramas UML e seus índices |
 | `DOCS/referencias` | Documento oficial do desafio e referências usadas pela equipe |
 
-## Observação
 
-Este índice foi atualizado para refletir a estrutura real do repositório. Referências antigas a caminhos que não existem mais deixaram de ser usadas para evitar incoerência entre documentação e implementação.
