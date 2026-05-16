@@ -2,7 +2,7 @@
 
 ## Responsabilidade da pasta
 
-Esta pasta concentra a API HTTP do FAQtec, responsavel por expor rotas publicas e administrativas, integrar o sistema ao PostgreSQL e sustentar autenticacao, persistencia e regras de negocio.
+Esta pasta concentra a API HTTP do FAQtec, responsável por expor rotas públicas e administrativas, integrar o sistema ao PostgreSQL e sustentar autenticação, persistência e regras de negócio.
 
 ## Tecnologias
 
@@ -14,14 +14,14 @@ Esta pasta concentra a API HTTP do FAQtec, responsavel por expor rotas publicas 
 - Multer
 - dotenv
 
-## Organizacao interna atual
+## Organização interna atual
 
 | Caminho | Papel |
 | --- | --- |
-| `src/server.ts` | Inicializacao do servidor Express |
-| `src/routes/` | Agrupamento das rotas publicas e administrativas |
+| `src/server.ts` | Inicialização do servidor Express |
+| `src/routes/` | Agrupamento das rotas públicas e administrativas |
 | `src/controllers/` | Controllers atuais da API |
-| `src/server/config/` | Configuracoes de banco, Swagger e upload |
+| `src/server/config/` | Configurações de banco, Swagger e upload |
 
 ## Scripts principais
 
@@ -33,9 +33,9 @@ npm run dev
 npm run build
 ```
 
-## Variaveis de ambiente
+## Variáveis de ambiente
 
-O backend depende, no minimo, de:
+O backend depende, no mínimo, de:
 
 - `PORT`
 - `DB_HOST`
@@ -44,10 +44,10 @@ O backend depende, no minimo, de:
 - `DB_USER`
 - `DB_PASSWORD`
 
-Para execucao local, configure essas variaveis em `2dsm_ABP/backend/.env` ou exporte-as no ambiente de execucao.
+Para execução local, configure essas variáveis em `2dsm_ABP/backend/.env` ou exporte-as no ambiente de execução.
 
-## Situacao atual
+## Situação atual
 
-- O backend ja expoe rotas HTTP e documentacao Swagger em `/api-docs`.
-- A estrutura ainda esta em consolidacao para atender a separacao esperada entre routes, controllers, services, repositories e middlewares.
-- A Sprint 2 prioriza essa reorganizacao, alem de autenticacao com JWT, protecao de rotas e persistencia real do fluxo publico.
+- O backend já expõe rotas HTTP e documentação Swagger em `/api-docs`.
+- A estrutura ainda está em consolidação para atender à separação esperada entre routes, controllers, services, repositories e middlewares.
+- A Sprint 2 prioriza essa reorganização, além de autenticação com JWT, proteção de rotas e persistência real do fluxo público.

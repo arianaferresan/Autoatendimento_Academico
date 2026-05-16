@@ -4,19 +4,19 @@
 
 Esta pasta concentra os scripts SQL usados para inicializar a base PostgreSQL do projeto.
 
-## Organizacao interna
+## Organização interna
 
 | Arquivo | Papel |
 | --- | --- |
 | `01_schema.sql` | Cria tipos, tabelas e relacionamentos iniciais do sistema |
 | `02_seed.sql` | Insere a carga inicial de dados para o chatbot |
 
-## Como esta pasta e usada
+## Como esta pasta é usada
 
-- no fluxo com Docker Compose, os arquivos em `init/` sao montados no container do PostgreSQL para inicializacao automatica;
-- em revisoes locais, os scripts tambem podem ser executados manualmente para validar schema e seed;
-- a Sprint 2 prioriza ampliar a modelagem e a carga inicial para sustentar navegacao, perguntas, logs, documentos e evidencias.
+- No fluxo com Docker Compose, os arquivos em `init/` são montados no container do PostgreSQL para inicialização automática.
+- Em revisões locais, os scripts também podem ser executados manualmente para validar schema e seed.
+- A Sprint 2 prioriza ampliar a modelagem e a carga inicial para sustentar navegação, perguntas, logs, documentos e evidências.
 
-## Observacao
+## Observação
 
-Embora esta pasta represente a camada de banco do projeto, a documentacao geral do dominio de dados tambem deve ser mantida em `DOCS/diagrama/` e nos artefatos de backlog quando a modelagem evoluir.
+Embora esta pasta represente a camada de banco do projeto, a documentação geral do domínio de dados também deve ser mantida em `DOCS/diagrama/` e nos artefatos de backlog quando a modelagem evoluir.

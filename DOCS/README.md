@@ -1,6 +1,6 @@
-# Documentacao do Projeto
+# Documentação do Projeto
 
-Esta pasta concentra a documentacao principal do repositorio. O `README.md` da raiz funciona como ponto de entrada e aqui ficam os anexos de produto, processo, sprint, referencia e diagramas.
+Esta pasta concentra a documentação principal do repositório. O `README.md` da raiz funciona como ponto de entrada e, aqui, ficam os anexos de produto, processo, sprint, referência e diagramas.
 
 ## Navegacao
 
@@ -27,26 +27,26 @@ Esta pasta concentra a documentacao principal do repositorio. O `README.md` da r
 
 - [Indice dos diagramas](diagrama/README.md)
 
-### Referencias
+### Referências
 
 - [Anexos e documentos base](referencias/README.md)
 
-### Modulos da aplicacao
+### Módulos da aplicação
 
 - [README do frontend](../2dsm_ABP/frontend/README.md)
 - [README do backend](../2dsm_ABP/backend/README.md)
 - [README do banco e scripts SQL](../2dsm_ABP/init/README.md)
 
-## Organizacao desta pasta
+## Organização desta pasta
 
 | Pasta | Papel |
 | --- | --- |
 | `DOCS/produto` | Requisitos, backlog e user stories do produto |
-| `DOCS/processo` | Definicoes de pronto/concluido, plano de acao e alinhamentos de processo |
+| `DOCS/processo` | Definições de pronto/concluído, plano de ação e alinhamentos de processo |
 | `DOCS/sprints` | Planejamento e acompanhamento de cada sprint |
-| `DOCS/diagrama` | Diagramas UML e seus indices |
-| `DOCS/referencias` | Documento oficial do desafio e referencias usadas pela equipe |
+| `DOCS/diagrama` | Diagramas UML e seus índices |
+| `DOCS/referencias` | Documento oficial do desafio e referências usadas pela equipe |
 
-## Observacao
+## Observação
 
-Este indice foi atualizado para refletir a estrutura real do repositorio. Referencias antigas a caminhos que nao existem mais deixaram de ser usadas para evitar incoerencia entre documentacao e implementacao.
+Este índice foi atualizado para refletir a estrutura real do repositório. Referências antigas a caminhos que não existem mais deixaram de ser usadas para evitar incoerência entre documentação e implementação.
