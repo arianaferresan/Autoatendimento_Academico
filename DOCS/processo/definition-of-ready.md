@@ -1,9 +1,8 @@
 # Definition of Ready (DoR)
 
-
 ## Como usar este anexo
 
-Este anexo consolida, em formato de consulta rápida, o que deve estar pronto antes de cada item do backlog entrar na sprint. Os mesmos textos também aparecem no backlog principal ao lado de cada RF e US.
+Este anexo consolida, em formato de consulta rápida, o que deve estar pronto antes de cada item do backlog entrar na sprint. Os mesmos textos também aparecem no backlog principal, ao lado de cada RF e US.
 
 ## Itens Funcionais
 
@@ -30,6 +29,7 @@ Este anexo consolida, em formato de consulta rápida, o que deve estar pronto an
 | --- | --- | --- |
 | BD03 | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red) | Modelo de dados aprovado, entidades identificadas e scripts iniciais de banco planejados. |
 | DW07 | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red) | Fluxos principais definidos, navegação de telas planejada e padrão visual escolhido para o projeto. |
+| DW008 | ![Prioridade Media](https://img.shields.io/badge/Prioridade-Media-yellow) | Fluxos prioritários da área administrativa definidos, perfis internos mapeados e escopo visual mínimo validado com o Product Owner. |
 | TP07 | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red) | Contrato das rotas definido, regras de negócio priorizadas e estrutura do projeto backend preparada. |
 | TP08 | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red) | Imagens e dependências de cada serviço definidas, variáveis de ambiente mapeadas e estratégia de orquestração acordada. |
 | ES01 | ![Prioridade Media](https://img.shields.io/badge/Prioridade-Media-yellow) | Escopo consolidado, arquitetura definida e padrão de documentação escolhido para o grupo. |

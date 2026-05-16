@@ -1,4 +1,4 @@
-# Referencias e Anexos
+# Referências e Anexos
 
 ## Documento base do desafio
 
@@ -6,22 +6,22 @@
 
 ## Como esta pasta deve ser usada
 
-- manter aqui os documentos oficiais recebidos do cliente ou do desafio;
-- centralizar anexos que servem de referencia funcional para o chatbot;
-- evitar apontar para caminhos antigos ou pastas removidas da aplicacao.
+- Manter aqui os documentos oficiais recebidos do cliente ou do desafio.
+- Centralizar anexos que servem de referência funcional para o chatbot.
+- Evitar apontar para caminhos antigos ou pastas removidas da aplicação.
 
-## Referencias utilizadas pelo produto
+## Referências utilizadas pelo produto
 
 O desafio oficial menciona como fontes do repositório de conhecimento documentos como:
 
-- calendario academico;
-- horarios dos cursos;
+- calendário acadêmico;
+- horários dos cursos;
 - PPCs;
 - regulamento geral dos cursos superiores das Fatecs;
-- manual de estagio.
+- manual de estágio.
 
-Conforme esses materiais forem incorporados ao repositorio, esta pasta deve registrar quais arquivos estao versionados e como se relacionam com as evidencias exibidas no chatbot.
+Conforme esses materiais forem incorporados ao repositório, esta pasta deve registrar quais arquivos estão versionados e como se relacionam com as evidências exibidas no chatbot.
 
-## Materiais de avaliacao
+## Materiais de avaliação
 
-O grupo tambem utiliza relatorios e rubricas recebidos durante as avaliacoes como insumo de replanejamento. Esses materiais orientam as correcoes registradas no backlog e no plano de acao da Sprint 2, mas nao substituem o documento oficial do desafio.
+O grupo também utiliza relatórios e rubricas recebidos durante as avaliações como insumo de replanejamento. Esses materiais orientam as correções registradas no backlog e no plano de ação da Sprint 2, mas não substituem o documento oficial do desafio.

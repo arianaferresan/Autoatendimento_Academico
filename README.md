@@ -1,7 +1,7 @@
 # FAQtec
 
 <p align="center">
-  <strong>Aplicacao web de autoatendimento academico para a Secretaria Academica da Fatec Jacarei.</strong>
+  <strong>Aplicação web de autoatendimento acadêmico para a Secretaria Acadêmica da Fatec Jacareí.</strong>
 </p>
 
 <p align="center">
@@ -15,37 +15,37 @@
 
 ## Contexto do desafio
 
-O FAQtec nasce do desafio academico proposto para o ABP 2026-1 da Fatec Jacarei: reduzir a sobrecarga da Secretaria Academica em duvidas recorrentes de alunos e interessados externos, especialmente sobre horarios, calendario academico, dispensa de disciplinas, estagio supervisionado e estrutura curricular.
+O FAQtec nasce do desafio acadêmico proposto para o ABP 2026-1 da Fatec Jacareí: reduzir a sobrecarga da Secretaria Acadêmica em dúvidas recorrentes de alunos e interessados externos, especialmente sobre horários, calendário acadêmico, dispensa de disciplinas, estágio supervisionado e estrutura curricular.
 
-O desafio oficial solicitado pelo cliente interno esta registrado em `DOCS/referencias/Desafio.pdf`.
+O desafio oficial solicitado pelo cliente interno está registrado em `DOCS/referencias/Desafio.pdf`.
 
 ## Objetivo do sistema
 
 O sistema deve funcionar como um chatbot conversacional capaz de:
 
-- conduzir o usuario por uma arvore de navegacao com menus e submenus;
-- permitir consultas sobre temas academicos recorrentes;
+- conduzir o usuário por uma árvore de navegação com menus e submenus;
+- permitir consultas sobre temas acadêmicos recorrentes;
 - apresentar respostas objetivas e padronizadas;
-- exibir evidencias documentais quando houver vinculo com a resposta;
-- encaminhar duvidas nao resolvidas para a Secretaria Academica.
+- exibir evidências documentais quando houver vínculo com a resposta;
+- encaminhar dúvidas não resolvidas para a Secretaria Acadêmica.
 
-## Estado atual do repositorio
+## Estado atual do repositório
 
-- O frontend atual ja possui um fluxo publico navegavel, mas ainda depende fortemente de dados mockados.
-- O backend em TypeScript ja expoe rotas HTTP e documentacao Swagger, mas a separacao completa em camadas e a protecao das rotas administrativas fazem parte do trabalho da Sprint 2.
-- O banco PostgreSQL ja possui schema e seed iniciais, mas a modelagem ainda esta em revisao para sustentar documentos, chunks, evidencias e logs de forma mais completa.
-- O replanejamento das correcoes apontadas pelo professor foi incorporado ao backlog do produto, aos READMEs das sprints e a documentacao principal do repositorio.
+- O frontend atual já possui um fluxo público navegável, mas ainda depende fortemente de dados mockados.
+- O backend em TypeScript já expõe rotas HTTP e documentação Swagger, mas a separação completa em camadas e a proteção das rotas administrativas fazem parte do trabalho da Sprint 2.
+- O banco PostgreSQL já possui schema e seed iniciais, mas a modelagem ainda está em revisão para sustentar documentos, chunks, evidências e logs de forma mais completa.
+- O replanejamento das correções apontadas pelo professor foi incorporado ao backlog do produto, aos READMEs das sprints e à documentação principal do repositório.
 
 ## Arquitetura geral
 
-| Camada | Papel no projeto | Situacao atual |
+| Camada | Papel no projeto | Situação atual |
 | --- | --- | --- |
-| Frontend | Interface do chatbot e futuros paineis internos | Implementado em React + TypeScript, com fluxo publico inicial |
-| Backend | API HTTP, regras de negocio, autenticacao e integracao com banco | Implementado em Node.js + Express + TypeScript |
-| Banco de dados | Persistencia dos nos de navegacao, usuarios, perguntas, logs e evidencias | Implementado em PostgreSQL com schema e seed iniciais |
-| Documentacao | Requisitos, backlog, sprints, processo e diagramas | Mantida na pasta `DOCS/` |
+| Frontend | Interface do chatbot e futuros painéis internos | Implementado em React + TypeScript, com fluxo público inicial |
+| Backend | API HTTP, regras de negócio, autenticação e integração com banco | Implementado em Node.js + Express + TypeScript |
+| Banco de dados | Persistência dos nós de navegação, usuários, perguntas, logs e evidências | Implementado em PostgreSQL, com schema e seed iniciais |
+| Documentação | Requisitos, backlog, sprints, processo e diagramas | Mantida na pasta `DOCS/` |
 
-## Estrutura do repositorio
+## Estrutura do repositório
 
 ```text
 .
@@ -106,39 +106,39 @@ O sistema deve funcionar como um chatbot conversacional capaz de:
 - Docker Compose
 - Scripts SQL de schema e seed
 
-## Variaveis de ambiente
+## Variáveis de ambiente
 
-Atualmente o projeto utiliza variaveis de ambiente para conexao com o banco e configuracao do backend.
+Atualmente, o projeto utiliza variáveis de ambiente para conexão com o banco e configuração do backend.
 
-| Variavel | Uso |
+| Variável | Uso |
 | --- | --- |
 | `PORT` | Porta do backend |
 | `DB_HOST` | Host do PostgreSQL |
 | `DB_PORT` | Porta do PostgreSQL |
 | `DB_NAME` | Nome do banco |
-| `DB_USER` | Usuario do banco |
+| `DB_USER` | Usuário do banco |
 | `DB_PASSWORD` | Senha do banco |
 
 ### Onde configurar
 
 - Para `docker compose`, crie um arquivo `.env` em `2dsm_ABP/`.
-- Para executar o backend localmente fora do Docker, replique as mesmas variaveis em `2dsm_ABP/backend/.env` ou exporte-as no ambiente de execucao.
+- Para executar o backend localmente fora do Docker, replique as mesmas variáveis em `2dsm_ABP/backend/.env` ou exporte-as no ambiente de execução.
 
 ## Como executar
 
-### Pre-requisitos
+### Pré-requisitos
 
 - Node.js 20 ou superior
 - npm
 - Docker e Docker Compose
 
-### Modo atual do repositorio
+### Modo atual do repositório
 
-No estado atual do codigo, o `docker-compose.yml` sobe banco e backend. O frontend ainda deve ser executado separadamente via Vite.
+No estado atual do código, o `docker-compose.yml` sobe banco e backend. O frontend ainda deve ser executado separadamente via Vite.
 
 #### 1. Subir banco e backend com Docker Compose
 
-Crie `2dsm_ABP/.env` com as variaveis listadas acima e execute:
+Crie `2dsm_ABP/.env` com as variáveis listadas acima e execute:
 
 ```bash
 docker compose up --build
@@ -181,14 +181,14 @@ npm run build
 ## Endpoints principais
 
 - Swagger: `http://localhost:3666/api-docs`
-- API publica: `http://localhost:3666/api`
+- API pública: `http://localhost:3666/api`
 - Rotas administrativas atuais: `http://localhost:3666/admin`
 
-> Observacao: a protecao completa das rotas administrativas com JWT e RBAC faz parte do escopo priorizado da Sprint 2.
+> Observação: a proteção completa das rotas administrativas com JWT e RBAC faz parte do escopo priorizado da Sprint 2.
 
-## Documentacao
+## Documentação
 
-- [Indice geral da documentacao](DOCS/README.md)
+- [Índice geral da documentação](DOCS/README.md)
 - [README do frontend](2dsm_ABP/frontend/README.md)
 - [README do backend](2dsm_ABP/backend/README.md)
 - [README do banco e scripts SQL](2dsm_ABP/init/README.md)
@@ -201,7 +201,7 @@ npm run build
 
 ## Status do projeto
 
-Projeto academico em desenvolvimento. O replanejamento atual prioriza a conversao do fluxo mockado da Sprint 1 em um MVP publico real, integrado e reproduzivel na Sprint 2.
+Projeto acadêmico em desenvolvimento. O replanejamento atual prioriza a conversão do fluxo mockado da Sprint 1 em um MVP público real, integrado e reproduzível na Sprint 2.
 
 ## Equipe
 
@@ -218,5 +218,5 @@ Projeto academico em desenvolvimento. O replanejamento atual prioriza a conversa
 ---
 
 <p align="center">
-  Desenvolvido para o ABP 2026-1 • Fatec Jacarei
+  Desenvolvido para o ABP 2026-1 • Fatec Jacareí
 </p>
