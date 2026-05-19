@@ -35,7 +35,7 @@ Este documento resume o backlog principal do FAQtec, relacionando cada item aos 
 | TP04 | Encaminhamento de perguntas para a secretaria | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red) | RF05 | TP07, BD03 |
 | TP05 | Acompanhamento e atualização das dúvidas recebidas | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red) | RF06 | TP04, TP06, TP07 |
 | TP06 | Login, JWT e autorização por papel | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red) | RF09, RF10, RF11 | TP07, TP09 |
-| BD01 | Gestão de documentos, chunks e metadados | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red) | RF02, RF04 | BD03, TP07 |
+| BD01 | Gestão de documentos e metadados | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red) | RF02, RF04 | BD03, TP07 |
 | BD02 | Registro e consulta de logs administrativos | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red) | RF04, RF08 | TP07, BD03 |
 
 ## Itens técnicos e de entrega
