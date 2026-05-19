@@ -141,7 +141,7 @@ Organizadas por área do produto, seguindo a estrutura Como / Quero / Para.
 3. O sistema deve impedir acesso dessa funcionalidade a perfis que não sejam administrador.
 4. Ao excluir um nó com dependências, o sistema deve tratar a integridade dos dados antes de concluir a operação.
 
-### BD01 • O sistema deve permitir ao administrador gerenciar documentos oficiais, chunks e metadados.
+### BD01 • O sistema deve permitir ao administrador gerenciar documentos oficiais e metadados.
 
 - **Prioridade:** ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red)
 - **Requisitos relacionados:** RF02, RF04
@@ -152,7 +152,7 @@ Organizadas por área do produto, seguindo a estrutura Como / Quero / Para.
 **Critérios de aceitação**
 
 1. O administrador deve conseguir cadastrar documentos oficiais com seus metadados relevantes.
-2. O administrador deve conseguir associar trechos ou chunks às respostas cadastradas no sistema.
+2. O administrador deve conseguir associar trechos às respostas cadastradas no sistema.
 3. Deve ser possível editar ou remover documentos e evidências desatualizadas.
 4. A relação entre resposta, documento e metadados deve ser preservada para consulta posterior.
 
