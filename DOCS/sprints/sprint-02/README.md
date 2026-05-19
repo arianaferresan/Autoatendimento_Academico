@@ -18,12 +18,12 @@ Transformar o MVP mockado da Sprint 1 em um fluxo público real, integrado e rep
 
 | ID | Frente | Item | Prioridade | Recorte da Sprint |
 | --- | --- | --- | --- | --- |
-| DW01 | Frontend | Escolha inicial de curso ou perfil | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red) | Revisar a tela inicial e garantir que a escolha de curso ou perfil alimente corretamente o fluxo real do chatbot na Sprint 2. |
-| DW02 | Frontend | Navegação por menus e submenus | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red) | Migrar o fluxo principal do chatbot para navegação baseada em dados persistidos no banco por meio da API. |
-| DW05 | Frontend | Evidências documentais vinculadas | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red) | Exibir evidência documental vinculada às respostas, com referência rastreável no fluxo público. |
-| DW07 | Frontend | Frontend em React com TypeScript | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red) | Reorganizar o frontend para integração com serviços, separação entre lógica e interface e tipagem mais robusta. |
+| DW01 | Frontend | Escolha inicial de curso ou perfil | ![Prioridade Media](https://img.shields.io/badge/Prioridade-Media-yellow) | Revisar a tela inicial e garantir que a escolha de curso ou perfil alimente corretamente o fluxo real do chatbot na Sprint 2. |
+| DW02 | Frontend | Navegação por menus e submenus | ![Prioridade Media](https://img.shields.io/badge/Prioridade-Media-yellow) | Migrar o fluxo principal do chatbot para navegação baseada em dados persistidos no banco por meio da API. |
+| DW05 | Frontend | Evidências documentais vinculadas | ![Prioridade Media](https://img.shields.io/badge/Prioridade-Media-yellow)  | Exibir evidência documental vinculada às respostas, com referência rastreável no fluxo público. |
+| DW07 | Frontend | Frontend em React com TypeScript | ![Prioridade Media](https://img.shields.io/badge/Prioridade-Media-yellow)  | Reorganizar o frontend para integração com serviços, separação entre lógica e interface e tipagem mais robusta. |
 | DW08 | Frontend | Tela de e-mail para envio de dúvidas | ![Prioridade Media](https://img.shields.io/badge/Prioridade-Media-yellow) | Implementar a interface da tela de e-mail no app, com campos de contato e dúvida, validação visual e encaixe no encerramento do fluxo. |
-| TP01 | Autenticação e Acesso | Perfis de acesso do sistema | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red) | Formalizar os perfis Aluno, Secretaria Acadêmica e Administrador com matriz de acesso coerente entre frontend, backend e documentação. |
+| TP01 | Autenticação e Acesso | Perfis de acesso do sistema | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red)  | Formalizar os perfis Aluno, Secretaria Acadêmica e Administrador com matriz de acesso coerente entre frontend, backend e documentação. |
 | TP04 | Backend e Dados | Encaminhamento de perguntas para a secretaria | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red) | Permitir o envio real de dúvidas ao final do atendimento, com persistência no banco. |
 | TP06 | Autenticação e Acesso | Login, JWT e autorização por papel | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red) | Implementar autenticação mínima no backend, emissão de JWT, Bearer Token e proteção das rotas administrativas já existentes. |
 | TP07 | Backend e Dados | API em Node.js com TypeScript | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red) | Refatorar a API com separação em camadas, padronização de rotas e documentação coerente dos endpoints. |
@@ -31,7 +31,7 @@ Transformar o MVP mockado da Sprint 1 em um fluxo público real, integrado e rep
 | TP09 | Autenticação e Acesso | Segurança com hash e JWT | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red) | Aplicar hash seguro para senhas, expiração de token e uso correto de variáveis de ambiente para informações sensíveis. |
 | BD01 | Backend e Dados | Gestão de documentos, chunks e metadados | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red) | Implementar a estrutura mínima de dados e o vínculo com respostas para sustentar evidências documentais no fluxo público; a gestão administrativa completa fica para a Sprint 3. |
 | BD03 | Backend e Dados | Modelagem e carga inicial do banco PostgreSQL | ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red) | Revisar a modelagem para sustentar navegação, respostas, perguntas, documentos e evidências, com seed suficiente para o MVP. |
-| ES01 | Documentação | Documentação do repositório e diagramas UML | ![Prioridade Media](https://img.shields.io/badge/Prioridade-Media-yellow) | Corrigir README principal, READMEs das pastas principais e entregar diagramas de Casos de Uso, Classes, Sequência e Componentes coerentes com a implementação. |
+| ES01 | Documentação | Documentação do repositório e diagramas UML | ![Prioridade Baixa](https://img.shields.io/badge/Prioridade-Baixa-green) | Corrigir README principal, READMEs das pastas principais e entregar diagramas de Casos de Uso, Classes, Sequência e Componentes coerentes com a implementação. |
 
 ## Entregas esperadas
 
