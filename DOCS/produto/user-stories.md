@@ -209,13 +209,13 @@ Organizadas por sigla e descritas na estrutura Como / Quero / Para que, com seus
 - **Prioridade:** ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red)
 - **Requisitos relacionados:** RF02, RF04
 - **Como:** Administrador.
-- **Quero:** Cadastrar e manter documentos oficiais e seus trechos indexados.
+- **Quero:** Cadastrar e manter documentos oficiais.
 - **Para que:** Garantir que as evidências do autoatendimento permaneçam atualizadas e rastreáveis.
 
 **Critérios de aceitação**
 
 1. O administrador deve conseguir cadastrar documentos oficiais com seus metadados relevantes.
-2. O administrador deve conseguir associar trechos ou chunks às respostas cadastradas no sistema.
+2. O administrador deve conseguir associar trechos às respostas cadastradas no sistema.
 3. Deve ser possível editar ou remover documentos e evidências desatualizadas.
 4. A relação entre resposta, documento e metadados deve ser preservada para consulta posterior.
 
