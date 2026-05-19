@@ -46,33 +46,15 @@ Transformar o MVP mockado da Sprint 1 em um fluxo público real, integrado e rep
 
 ## Evidências
 
-- Links dos PRs e commits relacionados às entregas da sprint.
-- Capturas ou gravação da execução integrada do fluxo público.
-- Evidência da execução do ambiente com Docker Compose.
-- Links para Swagger ou documentação atualizada dos endpoints.
-- Links dos diagramas UML e do modelo de dados revisado.
+
 
 ## Tasks
 
-- O detalhamento das tasks, dos responsáveis e do status será registrado pelo Scrum Master antes do fechamento da sprint.
-- Esta seção permanece em aberto apenas para não antecipar a quebra em tarefas neste momento do planejamento.
-- Antes da avaliação final, a sprint deve conter tasks rastreáveis para atender integralmente à rubrica.
+
 
 ## Burndown
 
-- O burndown da sprint será consolidado pelo Scrum Master e anexado antes do encerramento da sprint.
 
-## Riscos e impedimentos
 
-- Mudanças no modelo de dados podem impactar a API e a integração do frontend.
-- A implementação de autenticação e proteção de rotas pode exigir refatoração de endpoints já existentes.
-- A ausência de seed suficiente ou de vínculo correto com evidências pode comprometer a demonstração do MVP real.
-- O atraso na documentação ou nos diagramas pode prejudicar a avaliação, mesmo com avanço técnico.
 
-## Observações
 
-- `DW01` retorna da Sprint 1 para alinhar a escolha inicial de curso ou perfil ao fluxo real do sistema.
-- `BD01` e `TP08` foram priorizados na Sprint 2 por sustentarem a demonstração integrada do MVP e reduzirem retrabalho na Sprint 3.
-- `BD02` foi replanejado integralmente para a Sprint 3.
-- Consulta direta mais avançada (`DW03`) e painéis internos completos (`TP02`, `TP03`, `TP05`) permanecem priorizados para a Sprint 3.
-- Um item só deve ser considerado concluído quando estiver coerente com o DoD do produto, mesmo que tenha sido iniciado em sprint anterior.
