@@ -52,21 +52,6 @@ Entregar um MVP apresentável do fluxo público do FAQtec, validando a navegaç�
 - O conteúdo-base do desafio foi organizado em textos e menus que podem servir de insumo para seed e integração futura.
 - A documentação de produto e de sprint ganhou uma primeira estrutura rastreável.
 
-### O que não atendeu integralmente ao DoD do produto
-
-- `DW01`: a tela inicial foi entregue como protótipo, mas ainda sem integração com o fluxo real sustentado por API e banco.
-- `DW02`: a navegação foi entregue com dados mockados, sem leitura a partir do banco de dados.
-- `DW04`: as respostas foram demonstradas no frontend, mas sem integração com a base oficial do produto.
-- `ES01`: o README principal, os READMEs por pasta e a coerência estrutural do repositório não ficaram completos.
-
-### Carry-over para a Sprint 2
-
-| Item | Motivo do carry-over | Encaminhamento |
-| --- | --- | --- |
-| DW01 | Tela inicial ainda sem vínculo com o fluxo real do sistema | Revisar a escolha inicial e integrá-la ao fluxo público da Sprint 2 |
-| DW02 | Fluxo ainda local, sem API nem banco | Integrar a navegação real com backend e PostgreSQL |
-| DW04 | Respostas ainda dependentes do mock do frontend | Vincular respostas ao fluxo persistido e às evidências do domínio |
-| ES01 | Documentação e estrutura do repositório ainda incoerentes | Corrigir README, READMEs por pasta, diagramas e alinhamento entre documentação e implementação |
 
 ## Tasks
 
