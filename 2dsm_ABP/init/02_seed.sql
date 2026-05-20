@@ -1,3 +1,23 @@
+-- Seed: usuários iniciais para desenvolvimento
+-- Senhas geradas com bcrypt (salt rounds = 10)
+-- Para regenerar: npx ts-node src/utils/hashPassword.ts <senha>
+
+INSERT INTO users (username, password_hash, role, name) VALUES
+(
+  'admin',
+  '$2b$10$obhZ42jNZeqtoknHKxznd.Q34BlfTkstgWA.TldxC40cPc7jmOOOm',
+  'admin',
+  'Administrador'
+),
+(
+  'secretaria',
+  '$2b$10$9/VqMoYJkrug8kox6vNsYeZF0ByG/QCucky0DMQTMTysS/L/X35La',
+  'secretaria',
+  'Secretaria'
+)
+ON CONFLICT (username) DO NOTHING;
+
+
 INSERT INTO navigation_nodes (id, parent_id, title, content) VALUES
 (1, NULL, 'Desenvolvimento de Software Multiplataforma', 'Bem-vindo ao atendimento de DSM. Como posso ajudar?'),
 (2, NULL, 'Geoprocessamento', 'Bem-vindo ao atendimento de Geoprocessamento. O que você procura?'),
