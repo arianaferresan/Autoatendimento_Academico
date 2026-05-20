@@ -1,132 +1,233 @@
-import type { Request, Response } from 'express';
-import { pool } from '@/server/config/database.js';
+import type { Request, Response } from "express";
+import {
+  getAllNodesService,
+  getNodeByIdService,
+  deleteNodeByIdService,
+  updateNodeService,
+  createNodeService,
+  getSupportContactByIdService,
+  updateSupportContactByIdService,
+  deleteSupportContactByIdService,
+  getAllSupportContactsService,
+} from "@/services/adminService.js";
 
-export const getAllNodes = async (req: Request, res: Response) => {
-    try {
-        const query = 'SELECT id, parent_id, title, content, display_order, chunk_path, link, is_active, created_at, updated_at FROM navigation_nodes ORDER BY title ASC'
-        const result = await pool.query(query);
-        
-        res.json(result.rows);
-    } catch (error) {
-        console.error('Erro ao buscar todos os nós:', error);
-        res.status(500).json({ error: 'Erro ao buscar todos os nós' });
-    }
+interface NodesParams {
+  id: string;
+}
+
+export const getAllNodes = async (_req: Request, res: Response) => {
+  try {
+    const nodes = await getAllNodesService();
+    res.json(nodes);
+  } catch (error) {
+    console.error("Erro ao buscar todos os nós:", error);
+    res.status(500).json({ error: "Erro ao buscar todos os nós" });
+  }
 };
 
-export const filterNodes = async (req: Request, res: Response) => {
-    const { id } = req.params;
+export const filterNodes = async (req: Request<NodesParams>, res: Response) => {
+  const { id } = req.params;
 
-    try {
-        const query = `
-            WITH RECURSIVE tree_view AS (
-                -- Parte Inicial: O curso selecionado
-                SELECT id, parent_id, title, content, chunk_path, link, 1 AS nivel
-                FROM navigation_nodes
-                WHERE id = $1 AND parent_id IS NULL
-                
-                UNION ALL
-                
-                -- Parte Recursiva: Os filhos deste curso
-                SELECT n.id, n.parent_id, n.title, n.content, n.chunk_path, n.link, tv.nivel + 1
-                FROM navigation_nodes n
-                INNER JOIN tree_view tv ON n.parent_id = tv.id
-            )
-            SELECT * FROM tree_view ORDER BY nivel ASC, id ASC;
-        `;
+  try {
+    const idNum = parseInt(id, 10);
 
-        const result = await pool.query(query, [id]);
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({ message: "Classe principal não encontrada ou sem ramos." });
-        }
-        
-        // Retorna a lista plana, mas com a informação de "nivel" e "parent_id"
-        // para o frontend montar a árvore visualmente
-        res.json(result.rows);
-
-    } catch (error) {
-        console.error('Erro ao buscar árvore:', error);
-        res.status(500).json({ error: 'Erro ao processar estrutura da árvore' });
+    if (isNaN(idNum)) {
+      res.status(400).json({ error: "O ID deve ser um número válido." });
+      return;
     }
-}
 
-export const deleteNode = async (req: Request, res: Response) => {
-    const { id } = req.params;
-    try{
-        const result = await pool.query('DELETE FROM navigation_nodes WHERE id = $1', [id]);
-        res.json(result.rows);
-    }catch(error){
-        console.error('Erro ao deletar nó:', error);
-        res.status(500).json({ error: 'Erro ao deletar nó' });
+    // 5. Chamamos o Service (com o AWAIT!)
+    // Lembre-se: 'result' agora já é o array (nodes), não tem mais '.rows'
+    const result = await getNodeByIdService(idNum);
+
+    if (result.length === 0) {
+      res
+        .status(404)
+        .json({ message: "Classe principal não encontrada ou sem ramos." });
+      return;
     }
-}
 
-export const updateNode = async (req: Request, res: Response) => {
+    res.json(result);
+  } catch (error) {
+    console.error("Erro ao buscar árvore:", error);
+    res.status(500).json({ error: "Erro ao processar estrutura da árvore" });
+  }
+};
+
+export const deleteNode = async (req: Request<NodesParams>, res: Response) => {
+  const { id } = req.params;
+  try {
+    const idNum = parseInt(id, 10);
+    await deleteNodeByIdService(idNum);
+    res.status(204).send();
+  } catch (error) {
+    console.error("Erro ao deletar nó:", error);
+    res.status(500).json({ error: "Erro ao deletar nó" });
+  }
+};
+
+export const updateNode = async (req: Request<NodesParams>, res: Response) => {
+  try {
     const { id } = req.params;
-    const { parent_id, title, content, display_order, link, is_active } = req.body;
-    const chunk_path = req.file ? req.file.path : null;
+    const { parent_id, title, content, display_order, link, is_active } =
+      req.body;
+    const new_chunk_path = req.file ? req.file.path : null;
 
-    try{
-        const currentNode = await pool.query('SELECT chunk_path FROM navigation_nodes WHERE id = $1', [id]);
-        
-        if (currentNode.rows.length === 0) {
-            return res.status(404).json({ error: 'Nó não encontrado' });
-        }
-
-        // Se um novo arquivo foi enviado, usamos o novo path. 
-        // Caso contrário, mantemos o que já estava no banco.
-        const chunk_path = req.file ? req.file.path : currentNode.rows[0].chunk_path;
-        const query = `
-            UPDATE navigation_nodes 
-            SET parent_id = $1, title = $2, content = $3, display_order = $4, chunk_path = $5, link = $6, is_active = $7, updated_at = NOW()
-            WHERE id = $8
-            RETURNING *`;
-        
-        const values = [
-            parent_id, 
-            title, 
-            content || null, 
-            display_order || 0, 
-            chunk_path, 
-            (link && link.trim() !== '' && link !== 'null') ? link : null, 
-            is_active !== undefined ? is_active : true,
-            id 
-        ];
-
-        const result = await pool.query(query, values);
-        res.json(result.rows[0]);
-
-    }catch(error){
-        console.error('Erro ao atualizar nó:', error);
-        res.status(500).json({ error: 'Erro ao atualizar nó' });
+    const idNum = parseInt(id, 10);
+    if (isNaN(idNum)) {
+      res.status(400).json({ error: "O ID deve ser um número válido." });
+      return;
     }
-}
+
+    const parentIdNum =
+      parent_id && parent_id !== "null" ? parseInt(parent_id, 10) : null;
+    const displayOrderNum = display_order ? parseInt(display_order, 10) : 0;
+    const isActiveBool =
+      is_active !== undefined
+        ? String(is_active).toLowerCase() === "true"
+        : true;
+
+    const data = {
+      parent_id: parentIdNum,
+      title,
+      content: content || null,
+      display_order: displayOrderNum,
+      link: link && link.trim() !== "" && link !== "null" ? link : null,
+      is_active: isActiveBool,
+      new_chunk_path,
+    };
+
+    const updatedNode = await updateNodeService(idNum, data);
+
+    if (!updatedNode) {
+      res.status(404).json({ error: "Nó não encontrado" });
+      return;
+    }
+
+    res.json(updatedNode);
+  } catch (error) {
+    console.error("Erro ao atualizar nó:", error);
+    res.status(500).json({ error: "Erro ao atualizar nó" });
+  }
+};
 
 export const creatNode = async (req: Request, res: Response) => {
-    const { parent_id, title, content, display_order, link, is_active } = req.body;
+  try {
+    const { parent_id, title, content, display_order, link, is_active } =
+      req.body;
     const chunk_path = req.file ? req.file.path : null;
 
-    try{
-        const query = `
-            INSERT INTO navigation_nodes 
-            (parent_id, title, content, display_order, chunk_path, link, is_active)
-            VALUES ($1, $2, $3, $4, $5, $6, $7) 
-            RETURNING *`;
-        
-        const values = [
-            parent_id, 
-            title, 
-            content || null, 
-            display_order || 0, 
-            chunk_path, 
-            (link && link.trim() !== '' && link !== 'null') ? link : null, 
-            is_active !== undefined ? is_active : true
-        ];
-
-        const result = await pool.query(query, values);
-        res.status(201).json(result.rows[0]);
-    }catch(error){
-        console.error('Erro ao criar nó:', error);
-        res.status(500).json({ error: 'Erro ao criar nó' });
+    // Validação e conversão de tipos, assim como no update
+    if (!title) {
+      res.status(400).json({ error: "O título é obrigatório." });
+      return;
     }
-}
+
+    const parentIdNum =
+      parent_id && parent_id !== "null" ? parseInt(parent_id, 10) : null;
+    const displayOrderNum = display_order ? parseInt(display_order, 10) : 0;
+    const isActiveBool =
+      is_active !== undefined
+        ? String(is_active).toLowerCase() === "true"
+        : true;
+
+    const data = {
+      parent_id: parentIdNum,
+      title,
+      content: content || null,
+      display_order: displayOrderNum,
+      link: link && link.trim() !== "" && link !== "null" ? link : null,
+      is_active: isActiveBool,
+      chunk_path,
+    };
+
+    const newNode = await createNodeService(data);
+
+    res.status(201).json(newNode);
+  } catch (error) {
+    console.error("Erro ao criar nó:", error);
+    res.status(500).json({ error: "Erro ao criar nó" });
+  }
+};
+
+// ─── Support Contacts (Perguntas) ──────────────────────────────────────────────
+export const getSupportContactById = async (
+  req: Request<NodesParams>,
+  res: Response,
+) => {
+  const { id } = req.params;
+  try {
+    const contact = await getSupportContactByIdService(parseInt(id, 10));
+    if (!contact) {
+      res.status(404).json({ error: "Contato de suporte não encontrado." });
+      return;
+    }
+    res.json(contact);
+  } catch (error) {
+    console.error("Erro ao buscar contato de suporte:", error);
+    res.status(500).json({ error: "Erro ao buscar contato de suporte" });
+  }
+};
+
+export const getAllSupportContacts = async (_req: Request, res: Response) => {
+  try {
+    const contacts = await getAllSupportContactsService();
+    res.json(contacts);
+  } catch (error) {
+    console.error("Erro ao buscar contatos de suporte:", error);
+    res.status(500).json({ error: "Erro ao buscar contatos de suporte" });
+  }
+};
+
+export const updateSupportContactStatus = async (
+  req: Request<NodesParams>,
+  res: Response,
+) => {
+  try {
+    const { id } = req.params;
+    const { status, answered_by } = req.body;
+
+    if (!status) {
+      res.status(400).json({ error: "O campo 'status' é obrigatório." });
+      return;
+    }
+
+    const idNum = parseInt(id, 10);
+    if (isNaN(idNum)) {
+      res.status(400).json({ error: "O ID deve ser um número válido." });
+      return;
+    }
+
+    const updatedContact = await updateSupportContactByIdService(
+      idNum,
+      status,
+      answered_by || null,
+    );
+
+    if (!updatedContact) {
+      res.status(404).json({ error: "Contato de suporte não encontrado." });
+      return;
+    }
+
+    res.json(updatedContact);
+  } catch (error) {
+    console.error("Erro ao atualizar contato de suporte:", error);
+    res.status(500).json({ error: "Erro ao atualizar contato de suporte" });
+  }
+};
+
+export const deleteSupportContact = async (
+  req: Request<NodesParams>,
+  res: Response,
+) => {
+  const { id } = req.params;
+  try {
+    const idNum = parseInt(id, 10);
+    // O ideal seria verificar se o contato existe antes de deletar, mas por simplicidade...
+    await deleteSupportContactByIdService(idNum);
+    res.status(204).send(); // 204 No Content é mais apropriado para DELETE
+  } catch (error) {
+    console.error("Erro ao deletar contato de suporte:", error);
+    res.status(500).json({ error: "Erro ao deletar contato de suporte" });
+  }
+};
