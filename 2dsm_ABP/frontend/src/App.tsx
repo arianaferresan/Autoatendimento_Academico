@@ -1,10 +1,13 @@
 import { useState } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import WelcomeScreen from './components/WelcomeScreen';
 import ChatScreen from './components/ChatScreen';
+import Login from './pages/Login';
+import Admin from './pages/Admin';
 
 type Screen = 'welcome' | 'chat';
 
-export default function App() {
+function PublicArea() {
   const [screen, setScreen] = useState<Screen>('welcome');
   const [userType, setUserType] = useState<string>('');
 
@@ -23,5 +26,15 @@ export default function App() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<PublicArea />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/admin" element={<Admin />} />
+    </Routes>
   );
 }
