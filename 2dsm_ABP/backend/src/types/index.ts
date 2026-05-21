@@ -1,5 +1,6 @@
 export type UserRole = 'admin' | 'secretaria';
 
+
 export interface JwtPayload {
   id:       number;
   username: string;

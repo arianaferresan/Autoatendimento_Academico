@@ -5,10 +5,8 @@ import authRoutes from './authRoutes.js';
 
 const routes = Router();
 
-routes.use('/auth', authRoutes);
 routes.use('/admin', routerADMIN);
 routes.use('/api', routerPUBLIC);
-
+routes.use('/auth', authRoutes);
 
 export default routes;
-
