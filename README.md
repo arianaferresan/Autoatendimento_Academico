@@ -1,56 +1,212 @@
 # FAQtec
 
 <p align="center">
-  <strong>Plataforma web de autoatendimento acadêmico para a Secretaria Acadêmica da Fatec Jacareí.</strong>
+  <strong>Aplicação web de autoatendimento acadêmico para a Secretaria Acadêmica da Fatec Jacareí.</strong>
 </p>
 
 <p align="center">
-  <a href="#documentacao">Documentação</a> •
-  <a href="#backlog">Backlog</a> •
-  <a href="#sprints">Sprints</a> •
-  <a href="#aplicacao">Aplicação</a>
+  <a href="#contexto-do-desafio">Contexto</a> •
+  <a href="#arquitetura-geral">Arquitetura</a> •
+  <a href="#como-executar">Execução</a> •
+  <a href="#documentacao">Documentação</a>
 </p>
 
 ---
 
-## Visão Geral 📝
+<a id="contexto-do-desafio"></a>
 
-O **FAQtec** foi criado para centralizar dúvidas frequentes da Secretaria Acadêmica em uma única plataforma, reduzindo a sobrecarga do atendimento manual e melhorando o acesso a informações institucionais por alunos e público externo.
+## Contexto do desafio 📝
 
-A aplicação organiza o atendimento em fluxos guiados, consultas objetivas e respostas baseadas em documentos oficiais, tornando o processo mais claro, rápido e rastreável.
+O **FAQtec** nasce do desafio acadêmico proposto para o ABP 2026-1 da Fatec Jacareí: reduzir a sobrecarga da Secretaria Acadêmica em dúvidas recorrentes de alunos e interessados externos, especialmente sobre horários, calendário acadêmico, dispensa de disciplinas, estágio supervisionado e estrutura curricular.
 
-## Problema 🧩
+O desafio oficial solicitado pelo cliente interno está registrado em [DOCS/referencias/Desafio.pdf](DOCS/referencias/Desafio.pdf).
 
-Atualmente, grande parte das orientações acadêmicas depende de atendimento humano para esclarecer temas recorrentes, como:
+## Objetivo do sistema ✅
 
-- Matrícula e rematrícula
-- Calendário acadêmico
-- Horários de aula
-- Estágio supervisionado
-- Estrutura curricular dos cursos
-- Documentos e procedimentos institucionais
+O sistema deve funcionar como um chatbot conversacional capaz de:
 
-Esse modelo aumenta o tempo de resposta, gera retrabalho e dificulta a padronização das informações repassadas.
+- conduzir o usuário por uma árvore de navegação com menus e submenus;
+- permitir consultas sobre temas acadêmicos recorrentes;
+- apresentar respostas objetivas e padronizadas;
+- exibir evidências documentais quando houver vínculo com a resposta;
+- encaminhar dúvidas não resolvidas para a Secretaria Acadêmica.
 
-## Solução Proposta ✅
+## Estado atual do repositório 🔎
 
-O FAQtec propõe uma aplicação web de autoatendimento capaz de:
+- O frontend atual já possui um fluxo público navegável, mas ainda depende fortemente de dados mockados locais.
+- O backend em TypeScript já expõe rotas HTTP e documentação Swagger, mas a separação completa em camadas e a proteção das rotas administrativas fazem parte do trabalho da Sprint 2.
+- O banco PostgreSQL já possui schema e seed iniciais, mas a modelagem ainda está em revisão para sustentar documentos, chunks, evidências e logs de forma mais completa.
+- O replanejamento das correções apontadas pelo professor foi incorporado ao backlog do produto, aos READMEs das sprints e à documentação principal do repositório.
 
-- Conduzir o usuário por menus e submenus guiados;
-- Permitir consultas sobre temas acadêmicos recorrentes;
-- Apresentar respostas objetivas e padronizadas;
-- Exibir evidências documentais vinculadas às respostas;
-- Encaminhar dúvidas não resolvidas para a Secretaria Acadêmica.
+<a id="arquitetura-geral"></a>
+
+## Arquitetura geral 🧱
+
+| Camada | Papel no projeto | Situação atual |
+| --- | --- | --- |
+| Frontend | Interface do chatbot e futuros painéis internos | Implementado em React + TypeScript, com fluxo público inicial |
+| Backend | API HTTP, regras de negócio, autenticação e integração com banco | Implementado em Node.js + Express + TypeScript |
+| Banco de dados | Persistência dos nós de navegação, usuários internos, perguntas, logs e evidências | Implementado em PostgreSQL, com schema e seed iniciais |
+| Documentação | Requisitos, backlog, sprints, processo e diagramas | Mantida na pasta `DOCS/` |
+
+## Estrutura do repositório 📂
+
+```text
+.
+├── 2dsm_ABP/
+│   ├── backend/
+│   │   ├── src/
+│   │   │   ├── controllers/
+│   │   │   ├── routes/
+│   │   │   ├── server/
+│   │   │   └── server.ts
+│   │   ├── package.json
+│   │   └── tsconfig.json
+│   ├── frontend/
+│   │   ├── src/
+│   │   │   ├── components/
+│   │   │   ├── hooks/
+│   │   │   └── App.tsx
+│   │   ├── package.json
+│   │   └── vite.config.ts
+│   ├── init/
+│   │   ├── 01_schema.sql
+│   │   └── 02_seed.sql
+│   ├── docker-compose.yml
+│   └── .gitignore
+├── DOCS/
+│   ├── diagrama/
+│   ├── processo/
+│   ├── produto/
+│   ├── referencias/
+│   ├── sprints/
+│   └── README.md
+└── README.md
+```
+
+### Organização das pastas 📋
+
+- `2dsm_ABP/`: aplicação principal com frontend, backend, banco e orquestração local.
+- `2dsm_ABP/backend/src/`: controllers, rotas, servidor e regras de negócio.
+- `2dsm_ABP/frontend/src/`: componentes, hooks e interface principal do fluxo público.
+- `2dsm_ABP/init/`: scripts SQL de schema e seed do banco.
+- `DOCS/`: documentação funcional, técnica e de processo.
+
+## Tecnologias utilizadas 💻
+
+<p align="center">
+  <img alt="React" src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" />
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" />
+  <img alt="Vite" src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" />
+  <img alt="Tailwind CSS" src="https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" />
+  <img alt="ESLint" src="https://img.shields.io/badge/ESLint-4B32C3?style=for-the-badge&logo=eslint&logoColor=white" />
+</p>
+
+<p align="center">
+  <img alt="Node.js" src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" />
+  <img alt="Express" src="https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white" />
+  <img alt="Swagger UI" src="https://img.shields.io/badge/Swagger_UI-85EA2D?style=for-the-badge&logo=swagger&logoColor=black" />
+  <img alt="Multer" src="https://img.shields.io/badge/Multer-4B5563?style=for-the-badge" />
+  <img alt="dotenv" src="https://img.shields.io/badge/dotenv-ECD53F?style=for-the-badge" />
+</p>
+
+<p align="center">
+  <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white" />
+  <img alt="pg" src="https://img.shields.io/badge/pg-1F2937?style=for-the-badge" />
+  <img alt="Docker Compose" src="https://img.shields.io/badge/Docker_Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white" />
+</p>
+
+## Variáveis de ambiente 🔐
+
+Atualmente, o projeto utiliza variáveis de ambiente para conexão com o banco e configuração do backend.
+
+| Variável | Uso |
+| --- | --- |
+| `PORT` | Porta do backend |
+| `DB_HOST` | Host do PostgreSQL |
+| `DB_PORT` | Porta do PostgreSQL |
+| `DB_NAME` | Nome do banco |
+| `DB_USER` | Usuário do banco |
+| `DB_PASSWORD` | Senha do banco |
+
+### Onde configurar 📍
+
+- Para `docker compose`, crie um arquivo `.env` em `2dsm_ABP/`.
+- Para executar o backend localmente fora do Docker, replique as mesmas variáveis em `2dsm_ABP/backend/.env` ou exporte-as no ambiente de execução.
+
+<a id="como-executar"></a>
+
+## Como executar 🚀
+
+### Pré-requisitos
+
+- Node.js 20 ou superior
+- npm
+- Docker e Docker Compose
+
+### Modo atual do repositório
+
+No estado atual do código, o `docker-compose.yml` sobe banco e backend. O frontend ainda deve ser executado separadamente via Vite.
+
+#### 1. Subir banco e backend com Docker Compose
+
+Crie `2dsm_ABP/.env` com as variáveis listadas acima e execute:
+
+```bash
+docker compose up --build
+```
+
+Comando a partir de `2dsm_ABP/`.
+
+#### 2. Executar o frontend localmente
+
+Em `2dsm_ABP/frontend/`:
+
+```bash
+npm install
+npm run dev
+```
+
+#### 3. Executar o backend localmente
+
+Em `2dsm_ABP/backend/`:
+
+```bash
+npm install
+npm run dev
+```
+
+### Build
+
+Frontend, em `2dsm_ABP/frontend/`:
+
+```bash
+npm run build
+```
+
+Backend, em `2dsm_ABP/backend/`:
+
+```bash
+npm run build
+```
+
+## Endpoints principais 🌐
+
+- Swagger: `http://localhost:3666/api-docs`
+- API pública: `http://localhost:3666/api`
+- Rotas administrativas atuais: `http://localhost:3666/admin`
+
+> Observação: a proteção completa das rotas administrativas com JWT e RBAC faz parte do escopo priorizado da Sprint 2.
 
 <a id="documentacao"></a>
 
 ## Documentação 📁
 
-Toda a documentação do projeto está centralizada na pasta [DOCS](DOCS/README.md).
+Toda a documentação do projeto está centralizada em `DOCS/`.
 
 <p align="center">
   <a href="DOCS/README.md">
-    <img alt="Documentação" src="https://img.shields.io/badge/Documenta%C3%A7%C3%A3o-DOCS-1F4B99?style=for-the-badge" />
+    <img alt="Documentação" src="https://img.shields.io/badge/Documentacao-DOCS-1F4B99?style=for-the-badge" />
   </a>
   <a href="DOCS/produto/backlog-do-produto.md">
     <img alt="Backlog do Produto" src="https://img.shields.io/badge/Backlog-Produto-0F766E?style=for-the-badge" />
@@ -61,21 +217,20 @@ Toda a documentação do projeto está centralizada na pasta [DOCS](DOCS/README.
   <a href="DOCS/sprints/README.md">
     <img alt="Sprints" src="https://img.shields.io/badge/Sprints-Acompanhamento-C2410C?style=for-the-badge" />
   </a>
-  <a href="2dsm%20ABP/app%20-%20aluno/README.md">
-    <img alt="Aplicação" src="https://img.shields.io/badge/Aplica%C3%A7%C3%A3o-README-334155?style=for-the-badge" />
+  <a href="2dsm_ABP/frontend/README.md">
+    <img alt="Aplicação" src="https://img.shields.io/badge/Aplicacao-README-334155?style=for-the-badge" />
   </a>
 </p>
 
-### Links Rápidos 📎
+### Links rápidos 📎
 
 | Categoria | Acesso |
 | --- | --- |
 | Índice geral | [DOCS/README.md](DOCS/README.md) |
 | Definition of Ready | [DOCS/processo/definition-of-ready.md](DOCS/processo/definition-of-ready.md) |
 | Definition of Done | [DOCS/processo/definition-of-done.md](DOCS/processo/definition-of-done.md) |
+| Diagramas | [DOCS/diagrama/README.md](DOCS/diagrama/README.md) |
 | Referências e anexos | [DOCS/referencias/README.md](DOCS/referencias/README.md) |
-
-<a id="backlog"></a>
 
 ## Backlog 🧾
 
@@ -85,17 +240,18 @@ O backlog do projeto está organizado em documentos complementares para facilita
 | --- | --- |
 | Backlog do Produto | [DOCS/produto/backlog-do-produto.md](DOCS/produto/backlog-do-produto.md) |
 | Backlog Detalhado | [DOCS/produto/backlog-detalhado.md](DOCS/produto/backlog-detalhado.md) |
-| User stories | [DOCS/produto/user-stories.md](DOCS/produto/user-stories.md) |
+| Histórias de Usuário | [DOCS/produto/user-stories.md](DOCS/produto/user-stories.md) |
 | Requisitos | [DOCS/produto/requisitos.md](DOCS/produto/requisitos.md) |
 
-<a id="sprints"></a>
+## Cronograma das sprints 📅
 
+<<<<<<< HEAD
 ## Cronograma das Sprints 📅
 
 | Sprint | Status | Entrega prevista | Documento |
 | --- | --- | --- | --- |
 | Sprint 01 | ![Status](https://img.shields.io/badge/Status-Concluido-success) | 05/05/2026 | [Abrir](DOCS/sprints/sprint-01/README.md) |
-| Sprint 02 | ![Status](https://img.shields.io/badge/Status-Planejamento-3B82F6) | 25/04/2026 | [Abrir](DOCS/sprints/sprint-02/README.md) |
+| Sprint 02 | ![Status](https://img.shields.io/badge/Status-Em%20andamento-FACC15) | 25/05/2026 | [Abrir](DOCS/sprints/sprint-02/README.md) |
 | Sprint 03 | ![Status](https://img.shields.io/badge/Status-Planejamento-3B82F6) | 22/06/2026 | [Abrir](DOCS/sprints/sprint-03/README.md) |
 
 ## Estrutura do Repositório 📂
@@ -128,64 +284,55 @@ O backlog do projeto está organizado em documentos complementares para facilita
 ### Organização das Pastas 📋
 
 - `2dsm ABP/`: Aplicação principal com frontend, backend, banco e orquestração local.
-- `2dsm ABP/backend/src/uploads`: Pasta onde serão armazenados os chunks.
+- `2dsm ABP/backend/src/uploads`: Pasta oclearnde serão armazenados os chunks.
 - `2dsm ABP/init`: DDL e seed do banco de dados.
 
 ### End-Points Back-End [PORT: 3666] 🚪
-- `Rota SWAGGER`: http://localhost:3666/api-https://github.com/404NotFound-ABP/Autoatendimento_Academico/blob/docs/DOCS/
+<<<<<<< HEAD
+- `Rota SWAGGER`: http://localhost:3666/api-docs/
+=======
+- `Rota SWAGGER`: http://localhost:3666/api/
+>>>>>>> b70867e06ebade49ef6aeab7e356c5a84394ff2a
 - `Rota BackEnd publico`: http://localhost:3666/api/  
 - `Rota BackEnd ADMIN`: http://localhost:3666/admin/  
 
 
 <a id="aplicacao"></a>
+=======
+| Sprint | Status | Entrega prevista | Frentes principais | Documento |
+| --- | --- | --- | --- | --- |
+| Sprint 01 | ![Status](https://img.shields.io/badge/Status-Conclu%C3%ADdo-success) | 05/05/2026 | Protótipo do fluxo público e documentação inicial | [Abrir](DOCS/sprints/sprint-01/README.md) |
+| Sprint 02 | ![Status](https://img.shields.io/badge/Status-Em%20andamento-FACC15) | 25/05/2026 | Integração real, persistência, frontend público e documentação | [Abrir](DOCS/sprints/sprint-02/README.md) |
+| Sprint 03 | ![Status](https://img.shields.io/badge/Status-Planejamento-3B82F6) | 22/06/2026 | Área interna, operação administrativa e refinamentos finais | [Abrir](DOCS/sprints/sprint-03/README.md) |
+>>>>>>> 96f26486cb6a4e53227d28f7c6051dda6b653c94
 
 ## Aplicação
 
-A documentação técnica da aplicação permanece no módulo principal:
+A documentação técnica dos módulos permanece nos READMEs específicos:
 
-- [README da aplicação](2dsm%20ABP/app%20-%20aluno/README.md)
-- [README do banco](2dsm%20ABP/app%20-%20aluno/database/README.md)
-- [README dos scripts SQL](2dsm%20ABP/app%20-%20aluno/database/init/README.md)
+- [README principal do projeto interno](2dsm_ABP/)
+- [README do frontend](2dsm_ABP/frontend/README.md)
+- [README do backend](2dsm_ABP/backend/README.md)
+- [README do banco e scripts SQL](2dsm_ABP/init/README.md)
 
-## Tecnologias Utilizadas 💻
-
-<p align="center">
-  <img alt="React" src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" />
-  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" />
-  <img alt="Vite" src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" />
-</p>
+## Status do projeto 📌
 
 <p align="center">
-  <img alt="Node.js" src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" />
-  <img alt="Express" src="https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white" />
-  <img alt="JWT" src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white" />
+  <img alt="Status" src="https://img.shields.io/badge/Status-Em%20desenvolvimento%20e%20replanejamento-2563EB?style=for-the-badge" />
 </p>
 
-<p align="center">
-  <img alt="PostgreSQL" src="https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white" />
-  <img alt="Docker" src="https://img.shields.io/badge/Docker%20Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white" />
-</p>
-
-## Status do Projeto 📌
-
-<p align="center">
-  <img alt="Status" src="https://img.shields.io/badge/Status-Em%20organiza%C3%A7%C3%A3o%20e%20desenvolvimento-2563EB?style=for-the-badge" />
-</p>
-
-Projeto acadêmico em desenvolvimento, com foco na construção de uma plataforma de autoatendimento confiável, organizada e sustentada por documentação centralizada.
+Projeto acadêmico em desenvolvimento. O replanejamento atual prioriza a conversão do fluxo mockado da Sprint 1 em um MVP público real, integrado e reproduzível na Sprint 2.
 
 ## Equipe 💼
 
-A equipe do projeto é formada por alunos do curso de Desenvolvimento de Software Multiplataforma.
-
 | Função | Nome | Contatos |
 | --- | --- | :---: |
-| Project Owner | Luiza Gonçalves Manchini | [![GitHub](https://img.shields.io/badge/GitHub-Perfil-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/luiza-manchini) [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/luiza-manchini-b51a7b336/) |
+| Project Owner | Luiza Goncalves Manchini | [![GitHub](https://img.shields.io/badge/GitHub-Perfil-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/luiza-manchini) [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/luiza-manchini-b51a7b336/) |
 | Scrum Master | Felipe Faria Machado | [![GitHub](https://img.shields.io/badge/GitHub-Perfil-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/felipefmac) [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/felipefariamachado) |
 | Dev Team | Ariana Ferreira dos Santos | [![GitHub](https://img.shields.io/badge/GitHub-Perfil-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/arianaferresan) [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://br.linkedin.com/in/arianaferreira) |
 | Dev Team | Eloah Sousa da Silva | [![GitHub](https://img.shields.io/badge/GitHub-Perfil-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/eloahsousaa) [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/eloah-sousa-650038349/) |
 | Dev Team | Lucas Monteiro Correia | [![GitHub](https://img.shields.io/badge/GitHub-Perfil-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/lucasmonteiro14) [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/lucasmonteirocorreia) |
-| Dev Team | Pedro Gonçalves Sampaio | [![GitHub](https://img.shields.io/badge/GitHub-Perfil-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/PedroSmp) [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/pedro-sampaio-463a77375) |
+| Dev Team | Pedro Goncalves Sampaio | [![GitHub](https://img.shields.io/badge/GitHub-Perfil-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/PedroSmp) [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/pedro-sampaio-463a77375) |
 | Dev Team | William Max dos Santos Silva | [![GitHub](https://img.shields.io/badge/GitHub-Perfil-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/WilliamM4x) [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/william-max-7b8036140/) |
 
 ---

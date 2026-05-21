@@ -1,6 +1,6 @@
 # Documentação do Projeto
 
-Esta pasta concentra a documentação principal do repositório. O `README.md` da raiz ficou como ponto de entrada, e os detalhes foram separados por assunto.
+Esta pasta concentra a documentação principal do repositório. O `README.md` da raiz funciona como ponto de entrada e, aqui, ficam os anexos de produto, processo, sprints, referências e diagramas.
 
 ## Navegação
 
@@ -9,7 +9,7 @@ Esta pasta concentra a documentação principal do repositório. O `README.md` d
 - [Requisitos](produto/requisitos.md)
 - [Backlog do produto](produto/backlog-do-produto.md)
 - [Backlog detalhado](produto/backlog-detalhado.md)
-- [User stories](produto/user-stories.md)
+- [Histórias de usuário](produto/user-stories.md)
 
 ### Processo
 
@@ -23,10 +23,26 @@ Esta pasta concentra a documentação principal do repositório. O `README.md` d
 - [Sprint 02](sprints/sprint-02/README.md)
 - [Sprint 03](sprints/sprint-03/README.md)
 
+### Diagramas
+
+- [Índice dos diagramas](diagrama/README.md)
+
 ### Referências
 
-- [Anexos e PDFs](referencias/README.md)
+- [Anexos e documentos-base](referencias/README.md)
 
-## Observação
+### Módulos da aplicação
 
-Os documentos acadêmicos utilizados como base do chatbot permanecem em `2dsm ABP/arquivos/`, e os anexos gerais do projeto foram centralizados em `DOCS/referencias/`.
+- [README do frontend](../2dsm_ABP/frontend/README.md)
+- [README do backend](../2dsm_ABP/backend/README.md)
+- [README do banco e scripts SQL](../2dsm_ABP/init/README.md)
+
+## Organização desta pasta
+
+| Pasta | Papel |
+| --- | --- |
+| `DOCS/produto` | Requisitos, backlog e histórias de usuário do produto |
+| `DOCS/processo` | Definition of Ready, Definition of Done e critérios de processo |
+| `DOCS/sprints` | Planejamento e acompanhamento de cada sprint |
+| `DOCS/diagrama` | Diagramas UML e seus índices |
+| `DOCS/referencias` | Documento oficial do desafio e referências usadas pela equipe |
