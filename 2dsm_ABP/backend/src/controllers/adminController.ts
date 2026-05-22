@@ -15,10 +15,6 @@ import {
   getAllLogsService,
 } from "@/services/adminService.js";
 
-interface NodesParams {
-  id: string;
-}
-
 export const getAllNodes = async (_req: Request, res: Response) => {
   try {
     const nodes = await getAllNodesService();
@@ -29,8 +25,8 @@ export const getAllNodes = async (_req: Request, res: Response) => {
   }
 };
 
-export const filterNodes = async (req: Request<NodesParams>, res: Response) => {
-  const { id } = req.params;
+export const filterNodes = async (req: Request, res: Response) => {
+  const { id } = req.params as { id: string };
 
   try {
     const idNum = parseInt(id, 10);
@@ -58,8 +54,8 @@ export const filterNodes = async (req: Request<NodesParams>, res: Response) => {
   }
 };
 
-export const deleteNode = async (req: Request<NodesParams>, res: Response) => {
-  const { id } = req.params;
+export const deleteNode = async (req: Request, res: Response) => {
+  const { id } = req.params as { id: string };
   try {
     const idNum = parseInt(id, 10);
     await deleteNodeByIdService(idNum);
@@ -70,9 +66,9 @@ export const deleteNode = async (req: Request<NodesParams>, res: Response) => {
   }
 };
 
-export const updateNode = async (req: Request<NodesParams>, res: Response) => {
+export const updateNode = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const { id } = req.params as { id: string };
     const { parent_id, title, content, display_order, link, is_active } =
       req.body;
     const new_chunk_path = req.file ? req.file.path : null;
@@ -156,10 +152,10 @@ export const creatNode = async (req: Request, res: Response) => {
 
 // ─── Support Contacts (Perguntas) ──────────────────────────────────────────────
 export const getSupportContactById = async (
-  req: Request<NodesParams>,
+  req: Request,
   res: Response,
 ) => {
-  const { id } = req.params;
+  const { id } = req.params as { id: string };
   try {
     const contact = await getSupportContactByIdService(parseInt(id, 10));
     if (!contact) {
@@ -184,11 +180,11 @@ export const getAllSupportContacts = async (_req: Request, res: Response) => {
 };
 
 export const updateSupportContactStatus = async (
-  req: Request<NodesParams>,
+  req: Request,
   res: Response,
 ) => {
   try {
-    const { id } = req.params;
+    const { id } = req.params as { id: string };
     const { status, answered_by } = req.body;
 
     if (!status) {
@@ -221,10 +217,10 @@ export const updateSupportContactStatus = async (
 };
 
 export const deleteSupportContact = async (
-  req: Request<NodesParams>,
+  req: Request,
   res: Response,
 ) => {
-  const { id } = req.params;
+  const { id } = req.params as { id: string };
   try {
     const idNum = parseInt(id, 10);
     await deleteSupportContactByIdService(idNum);
@@ -265,8 +261,8 @@ export const createSecretariaUser = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteUser = async (req: Request<NodesParams>, res: Response) => {
-  const idNum = parseInt(req.params.id, 10);
+export const deleteUser = async (req: Request, res: Response) => {
+  const idNum = parseInt(String(req.params['id'] ?? ''), 10);
   if (isNaN(idNum)) {
     res.status(400).json({ error: "ID inválido." });
     return;
