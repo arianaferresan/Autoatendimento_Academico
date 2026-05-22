@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { upload } from "@/server/config/multer.js";
-import { authMiddleware, authorize } from "../middlewares/authMiddleware.js";
+import { authMiddleware, authorize } from "../middleware/authMiddleware.js";
 
 import {
   getAllNodes,
