@@ -27,6 +27,7 @@ uploads/
 .env.test
 .env.production
 .env.local
+!.env.exemple
 
 # ==========================================
 # LOGS E BANCO DE DADOS (DOCKER)
