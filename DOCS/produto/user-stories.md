@@ -147,7 +147,7 @@ Organizadas por sigla e descritas na estrutura Como / Quero / Para que, com seus
 - **Prioridade:** ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red)
 - **Requisitos relacionados:** RF02, RF04
 - **Como:** Administrador.
-- **Quero:** Cadastrar e manter documentos oficiais e seus trechos indexados.
+- **Quero:** Cadastrar e manter documentos oficiais.
 - **Para que:** Garantir que as evidências do autoatendimento permaneçam atualizadas e rastreáveis.
 
 **Critérios de aceitação**

@@ -129,7 +129,7 @@ Organizar o backlog em formato rastreável, mantendo relação clara entre requi
 - **Prioridade:** ![Prioridade Alta](https://img.shields.io/badge/Prioridade-Alta-red)
 - **História de usuário:** Como administrador, quero cadastrar e manter documentos oficiais e seus trechos indexados, para que as evidências do autoatendimento permaneçam atualizadas e rastreáveis.
 - **DoR:** Tipos de documento, metadados obrigatórios e vínculo entre resposta e trecho definidos para o painel administrativo.
-- **DoD:** Cadastrar, editar e remover documentos, chunks e metadados, preservando o vínculo entre evidência e resposta final.
+- **DoD:** Cadastrar, editar e remover documentos,metadados, preservando o vínculo entre evidência e resposta final.
 
 ### RF04, RF08 (BD02) - Registro e consulta de logs administrativos
 

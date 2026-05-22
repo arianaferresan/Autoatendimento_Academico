@@ -1,24 +1,78 @@
-import { Router } from 'express';
-import { upload } from '@/server/config/multer.js';
-import { getAllNodes, filterNodes, deleteNode, updateNode, creatNode } from '@/controllers/adminController.js';
+import { Router } from "express";
+import { upload } from "@/server/config/multer.js";
+import { authMiddleware, authorize } from "@/middleware/authMiddleware.js";
+
+import {
+  getAllNodes,
+  filterNodes,
+  deleteNode,
+  updateNode,
+  creatNode,
+  getSupportContactById,
+  updateSupportContactStatus,
+  deleteSupportContact,
+  getAllSupportContacts,
+} from "@/controllers/adminController.js";
 
 const routerADMIN = Router();
 
+// Aplica o middleware de autenticação em TODAS as rotas deste arquivo.
+// Nenhuma rota abaixo será acessível sem um token JWT válido.
+routerADMIN.use(authMiddleware);
+
 // GET all para o admin
-routerADMIN.get('/nodes/all', getAllNodes);
-    
+routerADMIN.get("/nodes/all", authorize("admin", "secretaria"), getAllNodes);
+
 //GET filter por ID das classes principais (1, 2 ,3 e 4)
-routerADMIN.get('/nodes/filter/:id', filterNodes);
+routerADMIN.get(
+  "/nodes/filter/:id",
+  authorize("admin", "secretaria"),
+  filterNodes,
+);
 
 //DELETE por ID para o admin
-routerADMIN.delete('/nodes/:id', deleteNode);
+routerADMIN.delete("/nodes/:id", authorize("admin"), deleteNode);
 
 //UPDATE por ID para o admin
-routerADMIN.put('/nodes/:id', upload.single('file'), updateNode);
-
+routerADMIN.put<{ id: string }>(
+  "/nodes/:id",
+  authorize("admin"),
+  upload.single("file"),
+  updateNode,
+);
 
 //CREATE para o admin AJUSTAR O UPLOAD VIA MULTER
-routerADMIN.post('/nodes/create', upload.single('file'), creatNode);
+routerADMIN.post(
+  "/nodes/create",
+  authorize("admin"),
+  upload.single("file"),
+  creatNode,
+);
 
+// ─── Perguntas (Support Contacts) ─────────────────────────────────────────────
+
+//GET all para o admin listar as perguntas
+routerADMIN.get(
+  "/perguntas",
+  authorize("admin", "secretaria"),
+  getAllSupportContacts,
+);
+
+//GET pergunta por ID
+routerADMIN.get(
+  "/perguntas/:id",
+  authorize("admin", "secretaria"),
+  getSupportContactById,
+);
+
+//PATCH para atualizar o status da pergunta
+routerADMIN.patch(
+  "/perguntas/:id",
+  authorize("admin", "secretaria"),
+  updateSupportContactStatus,
+);
+
+//DELETE pergunta por ID
+routerADMIN.delete("/perguntas/:id", authorize("admin"), deleteSupportContact);
 
 export default routerADMIN;

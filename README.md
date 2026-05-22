@@ -245,11 +245,66 @@ O backlog do projeto está organizado em documentos complementares para facilita
 
 ## Cronograma das sprints 📅
 
+<<<<<<< HEAD
+## Cronograma das Sprints 📅
+
+| Sprint | Status | Entrega prevista | Documento |
+| --- | --- | --- | --- |
+| Sprint 01 | ![Status](https://img.shields.io/badge/Status-Concluido-success) | 05/05/2026 | [Abrir](DOCS/sprints/sprint-01/README.md) |
+| Sprint 02 | ![Status](https://img.shields.io/badge/Status-Em%20andamento-FACC15) | 25/05/2026 | [Abrir](DOCS/sprints/sprint-02/README.md) |
+| Sprint 03 | ![Status](https://img.shields.io/badge/Status-Planejamento-3B82F6) | 22/06/2026 | [Abrir](DOCS/sprints/sprint-03/README.md) |
+
+## Estrutura do Repositório 📂
+
+```text
+.
+2dsm ABP
+|   ├── backend
+|   │   ├── data
+|   │   └── src
+|   │       ├── asset
+|   │       │   └── uploads
+|   │       ├── controllers
+|   │       ├── routes
+|   │       └── server
+|   │           └── config
+|   ├── frontend
+|   ├── .env
+|   ├── docker-compose
+|   └── init
+└── README.md
+├── DOCS
+│   ├── processo
+│   ├── produto
+│   ├── referencias
+│   ├── sprints
+│   └── README.md
+```
+
+### Organização das Pastas 📋
+
+- `2dsm ABP/`: Aplicação principal com frontend, backend, banco e orquestração local.
+- `2dsm ABP/backend/src/uploads`: Pasta oclearnde serão armazenados os chunks.
+- `2dsm ABP/init`: DDL e seed do banco de dados.
+
+### End-Points Back-End [PORT: 3666] 🚪
+<<<<<<< HEAD
+- `Rota SWAGGER`: http://localhost:3666/api-docs/
+=======
+- `Rota SWAGGER`: http://localhost:3666/api/
+>>>>>>> b70867e06ebade49ef6aeab7e356c5a84394ff2a
+- `Rota BackEnd publico`: http://localhost:3666/api/  
+- `Rota BackEnd ADMIN`: http://localhost:3666/admin/  
+
+
+<a id="aplicacao"></a>
+=======
 | Sprint | Status | Entrega prevista | Frentes principais | Documento |
 | --- | --- | --- | --- | --- |
 | Sprint 01 | ![Status](https://img.shields.io/badge/Status-Conclu%C3%ADdo-success) | 05/05/2026 | Protótipo do fluxo público e documentação inicial | [Abrir](DOCS/sprints/sprint-01/README.md) |
 | Sprint 02 | ![Status](https://img.shields.io/badge/Status-Em%20andamento-FACC15) | 25/05/2026 | Integração real, persistência, frontend público e documentação | [Abrir](DOCS/sprints/sprint-02/README.md) |
 | Sprint 03 | ![Status](https://img.shields.io/badge/Status-Planejamento-3B82F6) | 22/06/2026 | Área interna, operação administrativa e refinamentos finais | [Abrir](DOCS/sprints/sprint-03/README.md) |
+>>>>>>> 96f26486cb6a4e53227d28f7c6051dda6b653c94
 
 ## Aplicação
 
