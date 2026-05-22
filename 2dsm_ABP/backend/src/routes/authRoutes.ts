@@ -10,4 +10,5 @@ router.post('/login', login);
 // GET  /auth/me     →  retorna dados do usuário logado
 router.get('/me', authMiddleware, me);
 
+
 export default router;

@@ -2,7 +2,6 @@ import type { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import type { JwtPayload, UserRole } from '../types.js';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret_troque_em_producao';
 
 // Extende o tipo Request do Express para carregar o usuário autenticado
 declare global {
@@ -28,10 +27,11 @@ export function authMiddleware(
     return;
   }
 
-  const token = authHeader.split(' ')[1];
+  const token = authHeader.split(' ')[1] ?? '';
+  const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret_troque_em_producao';
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET as string) as unknown as JwtPayload;
+    const decoded = jwt.verify(token, JWT_SECRET) as unknown as JwtPayload;
     req.user = decoded;
     next();
   } catch (err) {

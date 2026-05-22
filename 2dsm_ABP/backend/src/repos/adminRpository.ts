@@ -177,6 +177,58 @@ async function deleteSupportContactById(id: number): Promise<void> {
   );
 }
 
+type UserRow = {
+  id: number;
+  username: string;
+  role: string;
+  name: string;
+  active: boolean;
+  created_at: Date;
+};
+
+type FulfillmentLog = {
+  id: number;
+  session_id: string;
+  navigation_flow: object[];
+  inquiry_ids: object[];
+  flag: 'ATENDEU' | 'NAO_ATENDEU' | null;
+  created_at: Date;
+};
+
+async function getAllSecretariaUsers(): Promise<UserRow[]> {
+  const result = await pool.query<UserRow>(
+    `SELECT id, username, role, name, active, created_at FROM users WHERE role = 'secretaria' ORDER BY name ASC`,
+  );
+  return result.rows;
+}
+
+async function createSecretariaUser(
+  username: string,
+  password_hash: string,
+  name: string,
+): Promise<UserRow> {
+  const result = await pool.query<UserRow>(
+    `INSERT INTO users (username, password_hash, role, name) VALUES ($1, $2, 'secretaria', $3) RETURNING id, username, role, name, active, created_at`,
+    [username, password_hash, name],
+  );
+  return result.rows[0];
+}
+
+async function deleteUserById(id: number): Promise<boolean> {
+  const result = await pool.query(
+    `DELETE FROM users WHERE id = $1 AND role = 'secretaria' RETURNING id`,
+    [id],
+  );
+  return (result.rowCount ?? 0) > 0;
+}
+
+async function getAllLogs(): Promise<FulfillmentLog[]> {
+  const result = await pool.query<FulfillmentLog>(
+    `SELECT id, session_id, navigation_flow, inquiry_ids, flag, created_at FROM fulfillment_logs ORDER BY created_at DESC`,
+  );
+  return result.rows;
+}
+
 export {
   searchAllNodes,
   searchNodeById,
@@ -188,4 +240,8 @@ export {
   updateSupportContactById,
   deleteSupportContactById,
   getSupportContactAll,
+  getAllSecretariaUsers,
+  createSecretariaUser,
+  deleteUserById,
+  getAllLogs,
 };
