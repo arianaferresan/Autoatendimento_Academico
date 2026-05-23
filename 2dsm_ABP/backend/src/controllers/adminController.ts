@@ -9,11 +9,11 @@ import {
   updateSupportContactByIdService,
   deleteSupportContactByIdService,
   getAllSupportContactsService,
+  getAllFulfillmentLogsService,
+  getSupportContactByStatusService,
 } from "@/services/adminService.js";
 
-interface NodesParams {
-  id: string;
-}
+import type { NodesParams} from "@/types/typesAdmin.js";
 
 export const getAllNodes = async (_req: Request, res: Response) => {
   try {
@@ -231,3 +231,43 @@ export const deleteSupportContact = async (
     res.status(500).json({ error: "Erro ao deletar contato de suporte" });
   }
 };
+
+export const getSupportContactsByStatus = async (req: Request, res: Response) => {
+  let { status } = req.params;
+  const { offset } = req.query;
+
+  status = String(status).toUpperCase().trim();
+  
+  if (!status || (status !== "ABERTA" && status !== "ATENDIMENTO" && status !== "RESPONDIDA")) {
+    res.status(400).json({ error: "O campo 'status' é obrigatório." });
+    return;
+  }
+  if (!offset || isNaN(Number(offset))) {
+    res.status(400).json({ error: "O campo 'offset' deve ser um número válido." });
+    return;
+  }
+  try {
+    const offsetNum = parseInt(String(offset), 10);
+    const contacts = await getSupportContactByStatusService(status, offsetNum);
+    res.json(contacts);
+  } catch (error) {
+    console.error("Erro ao buscar contatos de suporte por status:", error);
+    res.status(500).json({ error: "Erro ao buscar contatos de suporte por status" });
+  }
+};
+
+// ─── Logs (fulfillment_logs) ─────────────────────────────────────────────
+
+export const getAllFulfillmentLogs = async (
+  _req: Request, res: Response) => {
+  try{
+    const logs = await getAllFulfillmentLogsService();
+    res.json(logs);
+  }catch(error){
+    console.error("Erro ao buscar logs de fulfillment:", error);
+    res.status(500).json({ error: "Erro ao buscar logs de fulfillment" });
+  }
+};
+
+
+

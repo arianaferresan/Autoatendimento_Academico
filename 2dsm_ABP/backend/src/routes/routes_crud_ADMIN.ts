@@ -12,6 +12,8 @@ import {
   updateSupportContactStatus,
   deleteSupportContact,
   getAllSupportContacts,
+  getAllFulfillmentLogs,
+  getSupportContactsByStatus,
 } from "@/controllers/adminController.js";
 
 const routerADMIN = Router();
@@ -24,14 +26,18 @@ routerADMIN.use(authMiddleware);
 routerADMIN.get("/nodes/all", authorize("admin", "secretaria"), getAllNodes);
 
 //GET filter por ID das classes principais (1, 2 ,3 e 4)
-routerADMIN.get(
+routerADMIN.get<{ id: string }>(
   "/nodes/filter/:id",
   authorize("admin", "secretaria"),
   filterNodes,
 );
 
 //DELETE por ID para o admin
-routerADMIN.delete("/nodes/:id", authorize("admin"), deleteNode);
+routerADMIN.delete<{ id: string }>(
+  "/nodes/:id",
+  authorize("admin"),
+  deleteNode,
+);
 
 //UPDATE por ID para o admin
 routerADMIN.put<{ id: string }>(
@@ -59,20 +65,35 @@ routerADMIN.get(
 );
 
 //GET pergunta por ID
-routerADMIN.get(
+routerADMIN.get<{ id: string }>(
   "/perguntas/:id",
   authorize("admin", "secretaria"),
   getSupportContactById,
 );
 
+//GET perguntas por status
+routerADMIN.get(
+  "/perguntas/status/:status",
+  authorize("admin", "secretaria"),
+  getSupportContactsByStatus,
+);
+
 //PATCH para atualizar o status da pergunta
-routerADMIN.patch(
+routerADMIN.patch<{ id: string }>(
   "/perguntas/:id",
   authorize("admin", "secretaria"),
   updateSupportContactStatus,
 );
 
 //DELETE pergunta por ID
-routerADMIN.delete("/perguntas/:id", authorize("admin"), deleteSupportContact);
+routerADMIN.delete<{ id: string }>(
+  "/perguntas/:id",
+  authorize("admin"),
+  deleteSupportContact,
+);
+
+// ─── Logs (fulfillment_logs)─────────────────────────────────────────────
+
+routerADMIN.get("/logs", authorize("admin"), getAllFulfillmentLogs);
 
 export default routerADMIN;

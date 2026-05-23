@@ -275,6 +275,49 @@ export const swaggerDocument = {
         },
       },
     },
+    "/api/logs": {
+      post: {
+        tags: ["API Pública"],
+        summary: "Cria um novo log de atendimento",
+        description:
+          "Registra o fluxo de navegação do usuário, as respostas consultadas e a avaliação de satisfação.",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/CreateFulfillmentLog",
+              },
+            },
+          },
+        },
+        responses: {
+          "201": { description: "Log criado com sucesso." },
+          "400": { description: "Dados inválidos." },
+          "500": { description: "Erro interno no servidor." },
+        },
+      },
+    },
+    "/admin/logs": {
+      get: {
+        tags: ["Admin - Logs"],
+        summary: "Lista todos os logs de atendimento",
+        security: [{ bearerAuth: [] }],
+        description:
+          "Retorna um histórico de todas as interações dos usuários com o chatbot.",
+        responses: {
+          "200": {
+            description: "Lista de logs retornada com sucesso.",
+            content: {
+              "application/json": {
+                schema: { type: "array", items: { $ref: "#/components/schemas/FulfillmentLog" } },
+              },
+            },
+          },
+          "500": { description: "Erro ao buscar logs." },
+        },
+      },
+    },
     "/admin/perguntas": {
       get: {
         tags: ["Admin - Perguntas"],
@@ -300,6 +343,35 @@ export const swaggerDocument = {
               },
             },
           },
+          "500": { description: "Erro interno no servidor." },
+        },
+      },
+    },
+    "/admin/perguntas/status/:status": {
+      get: {
+        tags: ["Admin - Perguntas"],
+        summary: "Filtra perguntas por status",
+        security: [{ bearerAuth: [] }],
+        description: "Retorna uma lista de perguntas de suporte com base no status fornecido, com paginação.",
+        parameters: [
+          {
+            name: "status",
+            in: "path",
+            required: true,
+            description: "Status para filtrar as perguntas.",
+            schema: { type: "string", enum: ["ABERTA", "ATENDIMENTO", "RESPONDIDA"] },
+          },
+          {
+            name: "offset",
+            in: "query",
+            required: true,
+            description: "Número de registros a pular para paginação.",
+            schema: { type: "integer", default: 0 },
+          },
+        ],
+        responses: {
+          "200": { description: "Lista de perguntas retornada com sucesso." },
+          "400": { description: "Parâmetros 'status' ou 'offset' inválidos." },
           "500": { description: "Erro interno no servidor." },
         },
       },
@@ -493,6 +565,39 @@ export const swaggerDocument = {
       },
     },
     schemas: {
+      FulfillmentLog: {
+        type: "object",
+        properties: {
+          id: { type: "integer", description: "ID único do log." },
+          session_id: { type: "string", format: "uuid", description: "ID da sessão do usuário." },
+          navigation_flow: {
+            type: "array",
+            items: { type: "object" },
+            description: "Fluxo de navegação do usuário em formato JSON.",
+          },
+          inquiry_ids: {
+            type: "array",
+            items: { type: "integer" },
+            description: "IDs das perguntas consultadas.",
+          },
+          flag: {
+            type: "string",
+            enum: ["ATENDEU", "NAO_ATENDEU"],
+            nullable: true,
+            description: "Avaliação de satisfação do usuário.",
+          },
+          created_at: { type: "string", format: "date-time" },
+        },
+      },
+      CreateFulfillmentLog: {
+        type: "object",
+        required: ["navigation_flow", "inquiry_ids", "flag"],
+        properties: {
+          navigation_flow: { type: "array", items: { type: "object" } },
+          inquiry_ids: { type: "array", items: { type: "integer" } },
+          flag: { type: "string", enum: ["ATENDEU", "NAO_ATENDEU"] },
+        },
+      },
       SupportContact: {
         type: "object",
         properties: {

@@ -4,6 +4,7 @@ import {
   deleteAllNodesService,
   createSupportContactService,
 } from "@/services/publicService.js";
+import { createFulfillmentLogService } from "@/services/adminService.js";
 
 export const getPublicNodes = async (
   req: Request<{ id?: string }>,
@@ -65,5 +66,27 @@ export const createSupportContact = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Erro ao criar contato de suporte:", error);
     res.status(500).json({ error: "Erro ao criar contato de suporte" });
+  }
+};
+
+export const createFulfillmentLog = async (req: Request, res: Response) => {
+  const { navigation_flow, inquiry_ids, flag } = req.body;
+  try{
+    if (!navigation_flow || !inquiry_ids || !flag) {
+      res.status(400).json({ error: "Campos obrigatórios: navigation_flow, inquiry_ids, flag" });
+      return;
+    }
+    const logData = {
+      navigation_flow,
+      inquiry_ids,
+      flag,
+    };
+
+    await createFulfillmentLogService(logData);
+    res.status(201).json({ message: "Log de fulfillment criado com sucesso" });
+
+  }catch(error){
+    console.error("Erro ao criar log de fulfillment:", error);
+    res.status(500).json({ error: "Erro ao criar log de fulfillment" });
   }
 };

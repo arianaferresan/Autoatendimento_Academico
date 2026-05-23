@@ -8,38 +8,18 @@ import {
   updateSupportContactById,
   deleteSupportContactById,
   getSupportContactAll,
-  getSupportContactById
+  getSupportContactById,
+  getSupportContactByStatus,
+  getAllFulfillmentLogs,
+  createFulfillmentLog,
 } from "@/repos/adminRpository.js";
 
-interface UpdateNodeData {
-  parent_id: number | null;
-  title: string;
-  content: string | null;
-  display_order: number;
-  link: string | null;
-  is_active: boolean;
-  new_chunk_path: string | null;
-}
-
-interface CreateNodeData {
-  parent_id: number | null;
-  title: string;
-  content: string | null;
-  display_order: number;
-  link: string | null;
-  is_active: boolean;
-  chunk_path: string | null;
-}
-
-interface SupportContact {
-  id: number;
-  email: string;
-  message: string;
-  status: "ABERTA" | "ATENDIMENTO" | "RESPONDIDA";
-  created_at: Date;
-  closed_at: Date | null;
-  answered_by: string | null;
-}
+import type {
+  CreateNodeData,
+  FullfillmentLog,
+  SupportContact,
+  UpdateNodeData,
+} from "@/types/typesAdmin.js";
 
 export const getAllNodesService = async () => {
   // Aqui é onde colocaria regras de negócio se existissem.
@@ -109,6 +89,14 @@ export const getAllSupportContactsService = async (): Promise<
   return contacts;
 };
 
+export const getSupportContactByStatusService = async (
+  status: SupportContact["status"],
+  offset: number,
+): Promise<SupportContact[]> => {
+  const contacts = await getSupportContactByStatus(status, offset);
+  return contacts;
+};
+
 export const updateSupportContactByIdService = async (
   id: number,
   status: SupportContact["status"],
@@ -124,4 +112,15 @@ export const updateSupportContactByIdService = async (
 
 export const deleteSupportContactByIdService = async (id: number) => {
   await deleteSupportContactById(id);
+};
+
+export const createFulfillmentLogService = async (
+  data: Omit<FullfillmentLog, "session_id">,
+) => {
+  await createFulfillmentLog(data);
+};
+
+export const getAllFulfillmentLogsService = async () => {
+  const logs = await getAllFulfillmentLogs();
+  return logs;
 };
