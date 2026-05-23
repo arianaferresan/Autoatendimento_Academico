@@ -28,9 +28,10 @@ export function MessageBubble({ text, from }: MessageBubbleProps) {
     return (
       <div className="flex flex-col self-start animate-fadeUp gap-1.5">
         <BotAvatar />
-        <div className="bg-[#005c6d] text-white px-4 py-3 rounded-2xl text-[13px] leading-relaxed whitespace-pre-line max-w-[80%]">
-          {text}
-        </div>
+        <div
+          className="bg-[#005c6d] text-white px-4 py-3 rounded-2xl text-[13px] leading-relaxed whitespace-pre-line max-w-[80%]"
+          dangerouslySetInnerHTML={{ __html: text }}
+        />
       </div>
     );
   }
@@ -77,7 +78,8 @@ export function LinkCard({ url, label }: LinkCardProps) {
         <button
   onClick={() => {
     navigator.clipboard.writeText(url).catch(() => {});
-    window.open(url, '_blank');
+    const fullUrl = url.startsWith('http') || url.startsWith('/') ? url : `/${url}`;
+    window.open(fullUrl, '_blank');
   }}
   title="Clique para abrir o link"
   className="flex items-center gap-2 bg-[#004757] text-white text-[12px] px-3 py-2

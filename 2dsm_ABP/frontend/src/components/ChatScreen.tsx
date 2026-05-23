@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useChatFlow } from '../hooks/useChatFlow';
 import { useChatContext } from '../state/ChatContext';
+import { fetchRootNodes } from '../services/chatService';
 import type { ChatItem, UserType } from '../types/chat';
 import {
   MessageBubble, TypingIndicator, LinkCard,
@@ -12,17 +13,34 @@ interface ChatScreenProps {
   userType: UserType;
 }
 
-const COURSE_TABS: { label: string; full: string }[] = [
-  { label: 'DSM',  full: 'Desenvolvimento de software multiplataforma' },
-  { label: 'GEO',  full: 'Geoprocessamento' },
-  { label: 'MARH', full: 'Meio ambiente e recursos hídricos' },
-];
+interface CourseTab {
+  id:    number;
+  label: string;
+  full:  string;
+}
 
 export default function ChatScreen({ onBack, userType }: ChatScreenProps) {
   const { items, removeItem } = useChatContext();
   const { startChat, startCourse } = useChatFlow(userType);
   const bodyRef = useRef<HTMLDivElement>(null);
   const [activeCourse, setActiveCourse] = useState<string | null>(null);
+  const [courseTabs, setCourseTabs] = useState<CourseTab[]>([]);
+
+  // Busca os nós raiz da API e monta as abas de curso dinamicamente
+  useEffect(() => {
+    if (userType !== 'aluno') return;
+    fetchRootNodes().then((res) => {
+      if (res.type !== 'menu') return;
+      const tabs = res.options
+        .filter((o) => !o.title.toLowerCase().includes('não sou aluno'))
+        .map((o) => ({
+          id:    o.id,
+          label: o.title,
+          full:  o.title,
+        }));
+      setCourseTabs(tabs);
+    });
+  }, [userType]);
 
   useEffect(() => { startChat(userType); }, []);
 
@@ -31,13 +49,10 @@ export default function ChatScreen({ onBack, userType }: ChatScreenProps) {
       bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
   }, [items]);
 
-  const handleTabSelect = (full: string) => {
-    if (activeCourse === full) return;
-    setActiveCourse(full);
-    // Quando o backend estiver pronto, passe o id real do nó do curso.
-    // Por ora, usa o índice do array como placeholder.
-    const idx = COURSE_TABS.findIndex((t) => t.full === full);
-    startCourse(idx + 1, full);
+  const handleTabSelect = (tab: CourseTab) => {
+    if (activeCourse === tab.full) return;
+    setActiveCourse(tab.full);
+    startCourse(tab.id, tab.full);
   };
 
   const renderItem = (item: ChatItem) => {
@@ -124,14 +139,14 @@ export default function ChatScreen({ onBack, userType }: ChatScreenProps) {
           </div>
         </div>
 
-        {userType === 'aluno' && (
+        {userType === 'aluno' && courseTabs.length > 0 && (
           <div className="bg-[#C0392B] flex">
-            {COURSE_TABS.map((tab, i) => (
+            {courseTabs.map((tab, i) => (
               <button
-                key={tab.label}
-                onClick={() => handleTabSelect(tab.full)}
+                key={tab.id}
+                onClick={() => handleTabSelect(tab)}
                 className={`flex-1 text-center text-white text-[13px] font-bold py-2 border-0 cursor-pointer transition-colors
-                  ${i < COURSE_TABS.length - 1 ? 'border-r border-red-700' : ''}
+                  ${i < courseTabs.length - 1 ? 'border-r border-red-700' : ''}
                   ${activeCourse === tab.full ? 'bg-[#96281B]' : 'bg-transparent hover:bg-[#a93226]'}`}
               >
                 {tab.label}

@@ -15,16 +15,13 @@ VALUES (
     'Secretaria'
   ) ON CONFLICT (username) DO NOTHING;
 
--- CORREÇÃO AQUI: Mudamos de DO $$ para DO $seed$
 DO $seed$
 DECLARE 
-    -- Variáveis para guardar os IDs das Raízes (Cursos)
     v_dsm_id INT;
     v_geo_id INT;
     v_marh_id INT;
     v_nao_aluno_id INT;
 
-    -- Variáveis para os Submenus (Filhos que também são Pais)
     v_dsm_dispensa_id INT;
     v_dsm_estagio_id INT;
     v_dsm_horario_id INT;
@@ -35,11 +32,10 @@ DECLARE
     v_marh_estagio_id INT;
     v_marh_horario_id INT;
 BEGIN 
-    -- Limpar a tabela antes de inserir para evitar duplicatas 
     TRUNCATE TABLE navigation_nodes CASCADE;
 
     -- ==========================================
-    -- NÓS RAIZ (Categorias Principais)
+    -- NÓS RAIZ
     -- ==========================================
     INSERT INTO navigation_nodes (title, display_order) VALUES ('DSM', 1) RETURNING id INTO v_dsm_id;
     INSERT INTO navigation_nodes (title, display_order) VALUES ('Geoprocessamento', 2) RETURNING id INTO v_geo_id;
@@ -52,14 +48,14 @@ BEGIN
     INSERT INTO navigation_nodes (parent_id, title, content, display_order) VALUES 
     (v_dsm_id, 'Atividades Complementares (AACC)', $$O curso de Desenvolvimento de Software Multiplataforma não possui Atividades Acadêmico - Científico - Culturais (AACC) previstas em sua matriz curricular.$$, 1);
 
-    INSERT INTO navigation_nodes (parent_id, title, content, display_order) VALUES 
-    (v_dsm_id, 'Datas importantes do semestre', $$<ul><li>Inscrições para vagas remanescentes e transferências: 12 a 18/01/2026</li><li>Rematrícula de alunos veteranos: 12 a 18/01/2026</li><li>Início das aulas: 09/02/2026</li><li>Prazo para aproveitamento de estudos (Art.76 – via SIGA): 19/02/2026</li><li>Prazo para reconhecimento de competências (Art.80, §1º): 19/02/2026</li><li>Ajustes de matrícula (veteranos – Art.26, §4º): 19/02/2026</li><li>Exame de nivelamento com ajuste de horário (Art.87, §1º): 21/02/2026</li><li>Ajustes de matrícula (ingressantes – Art.25, §2º): 23/02/2026</li><li>Exame de nivelamento sem ajuste de horário: 27/02/2026</li><li>Cancelamento por ausência de rematrícula (Art.28): 02/03/2026</li><li>Prazo final para desistência de disciplina (Art.30): 25/03/2026</li><li>Prazo final para trancamento (exceto ingressantes – Art.31, §3º): 13/05/2026</li><li>Término das aulas: 27/06/2026</li><li>Período de exames finais (Art.34): 06 a 08/07/2026</li></ul><div>Acesse o calendário com todas as datas importantes para consultar prazos, eventos acadêmicos e períodos letivos completos. <a href='/assets/knowledge-base/pdf/Calendario_Academico_2026.pdf' target='_blank'>Abrir Calendário Acadêmico 2026</a>.</div>$$, 2);
+    INSERT INTO navigation_nodes (parent_id, title, content, link, display_order) VALUES 
+    (v_dsm_id, 'Datas importantes do semestre', $$<ul><li>Inscrições para vagas remanescentes e transferências: 12 a 18/01/2026</li><li>Rematrícula de alunos veteranos: 12 a 18/01/2026</li><li>Início das aulas: 09/02/2026</li><li>Prazo para aproveitamento de estudos (Art.76 – via SIGA): 19/02/2026</li><li>Prazo para reconhecimento de competências (Art.80, §1º): 19/02/2026</li><li>Ajustes de matrícula (veteranos – Art.26, §4º): 19/02/2026</li><li>Exame de nivelamento com ajuste de horário (Art.87, §1º): 21/02/2026</li><li>Ajustes de matrícula (ingressantes – Art.25, §2º): 23/02/2026</li><li>Exame de nivelamento sem ajuste de horário: 27/02/2026</li><li>Cancelamento por ausência de rematrícula (Art.28): 02/03/2026</li><li>Prazo final para desistência de disciplina (Art.30): 25/03/2026</li><li>Prazo final para trancamento (exceto ingressantes – Art.31, §3º): 13/05/2026</li><li>Término das aulas: 27/06/2026</li><li>Período de exames finais (Art.34): 06 a 08/07/2026</li></ul>Acesse o calendário completo no link abaixo:$$, '/assets/knowledge-base/pdf/Calendario_Academico_2026.pdf', 2);
 
-    INSERT INTO navigation_nodes (parent_id, title, content, display_order) VALUES 
-    (v_dsm_id, 'Disciplinas com atividades de extensão', $$No curso de DSM, as atividades de extensão estão vinculadas ao ABP e às seguintes disciplinas...(Consulte o PPC para lista completa). <a href='/assets/knowledge-base/pdf/DSM-PPC.pdf' target='_blank'>Abrir PPC do curso</a>.$$, 3);
+    INSERT INTO navigation_nodes (parent_id, title, content, link, display_order) VALUES 
+    (v_dsm_id, 'Disciplinas com atividades de extensão', $$No curso de DSM, as atividades de extensão estão vinculadas ao ABP e às seguintes disciplinas...(Consulte o PPC para lista completa).$$, '/assets/knowledge-base/pdf/DSM-PPC.pdf', 3);
 
-    INSERT INTO navigation_nodes (parent_id, title, content, display_order) VALUES 
-    (v_dsm_id, 'Disciplinas remotas', $$No 5º semestre: Inglês III e Fundamentos da Redação Técnica. No 6º semestre todas remotas. <a href='/assets/knowledge-base/pdf/DSM-PPC.pdf' target='_blank'>Abrir PPC do curso</a>.$$, 4);
+    INSERT INTO navigation_nodes (parent_id, title, content, link, display_order) VALUES 
+    (v_dsm_id, 'Disciplinas remotas', $$No 5º semestre: Inglês III e Fundamentos da Redação Técnica. No 6º semestre todas remotas.$$, '/assets/knowledge-base/pdf/DSM-PPC.pdf', 4);
 
     INSERT INTO navigation_nodes (parent_id, title, content, display_order) VALUES 
     (v_dsm_id, 'Portfólio', $$O curso não possui Trabalho de Graduação (TG). O TG é substituído pela construção do Portfólio Digital. Os projetos do 4º, 5º e 6º semestres compõem o portfólio. O portfólio deve ser hospedado em repositório privado. Para orientações, contate: marcelo.sudo@fatec.sp.gov.br$$, 8);
@@ -69,7 +65,7 @@ BEGIN
 
     -- Submenu: DSM > Dispensa
     INSERT INTO navigation_nodes (parent_id, title, content, display_order) VALUES 
-    (v_dsm_id, 'Dispensa de disciplinas', $$Atenção: Não é permitido solicitar aproveitamento em disciplinas que possuam atividades de extensão curricular. No DSM as disciplinas de extensão curricular são aquelas vinculadas ao ABP. Escolha a modalidade desejada :$$, 5)
+    (v_dsm_id, 'Dispensa de disciplinas', $$Atenção: Não é permitido solicitar aproveitamento em disciplinas que possuam atividades de extensão curricular. No DSM as disciplinas de extensão curricular são aquelas vinculadas ao ABP. Escolha a modalidade desejada:$$, 5)
     RETURNING id INTO v_dsm_dispensa_id;
 
     INSERT INTO navigation_nodes (parent_id, title, content, display_order) VALUES 
@@ -86,7 +82,7 @@ BEGIN
 
     -- Submenu: DSM > Estágio
     INSERT INTO navigation_nodes (parent_id, title, content, display_order) VALUES 
-    (v_dsm_id, 'Estágio', $$Escolha a opção :$$, 6)
+    (v_dsm_id, 'Estágio', $$Escolha a opção:$$, 6)
     RETURNING id INTO v_dsm_estagio_id;
 
     INSERT INTO navigation_nodes (parent_id, title, content, display_order) VALUES 
@@ -106,20 +102,24 @@ BEGIN
     (v_dsm_id, 'Horário das aulas', $$Qual semestre você deseja consultar?$$, 7)
     RETURNING id INTO v_dsm_horario_id;
 
-    INSERT INTO navigation_nodes (parent_id, title, content, chunk_path, display_order) VALUES 
-    (v_dsm_horario_id, '1º semestre', $$Horário de aulas do 1º semestre.$$, 'assets/knowledge-base/png/horario-aula-1dsm.png', 1),
-    (v_dsm_horario_id, '2º semestre', $$Horário de aulas do 2º semestre.$$, 'assets/knowledge-base/png/horario-aula-2dsm.png', 2),
-    (v_dsm_horario_id, '3º semestre', $$Horário de aulas do 3º semestre.$$, 'assets/knowledge-base/png/horario-aula-3dsm.png', 3),
-    (v_dsm_horario_id, '4º semestre', $$Horário de aulas do 4º semestre.$$, 'assets/knowledge-base/png/horario-aula-4dsm.png', 4),
-    (v_dsm_horario_id, '5º semestre', $$Horário de aulas do 5º semestre.$$, 'assets/knowledge-base/png/horario-aula-5dsm.png', 5),
-    (v_dsm_horario_id, '6º semestre', $$Horário de aulas do 6º semestre.$$, 'assets/knowledge-base/png/horario-aula-6dsm.png', 6);
+    INSERT INTO navigation_nodes (parent_id, title, content, link, display_order) VALUES 
+    (v_dsm_horario_id, '1º semestre', $$Horário de aulas do 1º semestre.$$, 'https://fatecjacarei.cps.sp.gov.br/o-lorem-ipsum-e-um-texto-modelo-da-industria-tipografica-e-de-impressao-4/', 1),
+    (v_dsm_horario_id, '2º semestre', $$Horário de aulas do 2º semestre.$$, 'https://fatecjacarei.cps.sp.gov.br/o-lorem-ipsum-e-um-texto-modelo-da-industria-tipografica-e-de-impressao-4/', 2),
+    (v_dsm_horario_id, '3º semestre', $$Horário de aulas do 3º semestre.$$, 'https://fatecjacarei.cps.sp.gov.br/o-lorem-ipsum-e-um-texto-modelo-da-industria-tipografica-e-de-impressao-4/', 3),
+    (v_dsm_horario_id, '4º semestre', $$Horário de aulas do 4º semestre.$$, 'https://fatecjacarei.cps.sp.gov.br/o-lorem-ipsum-e-um-texto-modelo-da-industria-tipografica-e-de-impressao-4/', 4),
+    (v_dsm_horario_id, '5º semestre', $$Horário de aulas do 5º semestre.$$, 'https://fatecjacarei.cps.sp.gov.br/o-lorem-ipsum-e-um-texto-modelo-da-industria-tipografica-e-de-impressao-4/', 5),
+    (v_dsm_horario_id, '6º semestre', $$Horário de aulas do 6º semestre.$$, 'https://fatecjacarei.cps.sp.gov.br/o-lorem-ipsum-e-um-texto-modelo-da-industria-tipografica-e-de-impressao-4/', 6);
 
     -- =========================================================================================
     -- MENU: GEOPROCESSAMENTO
     -- =========================================================================================
     INSERT INTO navigation_nodes (parent_id, title, content, display_order) VALUES 
-    (v_geo_id, 'Atividades Complementares (AACC)', $$É necessário cumprir 60 horas de AACC.$$, 1),
-    (v_geo_id, 'Datas importantes do semestre', $$Calendário Acadêmico padrão.$$, 2),
+    (v_geo_id, 'Atividades Complementares (AACC)', $$É necessário cumprir 60 horas de AACC.$$, 1);
+
+    INSERT INTO navigation_nodes (parent_id, title, content, link, display_order) VALUES 
+    (v_geo_id, 'Datas importantes do semestre', $$Calendário Acadêmico padrão. Acesse o calendário completo no link abaixo:$$, '/assets/knowledge-base/pdf/Calendario_Academico_2026.pdf', 2);
+
+    INSERT INTO navigation_nodes (parent_id, title, content, display_order) VALUES
     (v_geo_id, 'Disciplinas remotas', $$O curso não possui disciplinas remotas.$$, 3),
     (v_geo_id, 'Portfólio', $$Geoprocessamento não possui Portfólio; possui TG iniciado no 5º semestre.$$, 7),
     (v_geo_id, 'Trabalho de Graduação (TG/TCC)', $$O TG deve ser iniciado no 5º semestre...(formato artigo científico).$$, 8);
@@ -151,20 +151,24 @@ BEGIN
     (v_geo_id, 'Horário das aulas', $$Qual semestre você deseja consultar?$$, 6)
     RETURNING id INTO v_geo_horario_id;
 
-    INSERT INTO navigation_nodes (parent_id, title, content, chunk_path, display_order) VALUES 
-    (v_geo_horario_id, '1º semestre', NULL, 'assets/knowledge-base/png/horario-aula-1geo.png', 1),
-    (v_geo_horario_id, '2º semestre', NULL, 'assets/knowledge-base/png/horario-aula-2geo.png', 2),
-    (v_geo_horario_id, '3º semestre', NULL, 'assets/knowledge-base/png/horario-aula-3geo.png', 3),
+    INSERT INTO navigation_nodes (parent_id, title, content, link, display_order) VALUES 
+    (v_geo_horario_id, '1º semestre', NULL, 'https://fatecjacarei.cps.sp.gov.br/o-lorem-ipsum-e-um-texto-modelo-da-industria-tipografica-e-de-impressao-4/', 1),
+    (v_geo_horario_id, '2º semestre', NULL, 'https://fatecjacarei.cps.sp.gov.br/o-lorem-ipsum-e-um-texto-modelo-da-industria-tipografica-e-de-impressao-4/', 2),
+    (v_geo_horario_id, '3º semestre', NULL, 'https://fatecjacarei.cps.sp.gov.br/o-lorem-ipsum-e-um-texto-modelo-da-industria-tipografica-e-de-impressao-4/', 3),
     (v_geo_horario_id, '4º semestre', $$O 4º semestre não está sendo oferecido$$, NULL, 4),
-    (v_geo_horario_id, '5º semestre', NULL, 'assets/knowledge-base/png/horario-aula-5geo.png', 5),
+    (v_geo_horario_id, '5º semestre', NULL, 'https://fatecjacarei.cps.sp.gov.br/o-lorem-ipsum-e-um-texto-modelo-da-industria-tipografica-e-de-impressao-4/', 5),
     (v_geo_horario_id, '6º semestre', $$O 6º semestre não está sendo oferecido$$, NULL, 6);
 
     -- =========================================================================================
     -- MENU: MARH
     -- =========================================================================================
     INSERT INTO navigation_nodes (parent_id, title, content, display_order) VALUES 
-    (v_marh_id, 'Atividades Complementares (AACC)', $$É necessário cumprir 60 horas de AACC.$$, 1),
-    (v_marh_id, 'Datas importantes do semestre', $$Calendário Acadêmico padrão.$$, 2),
+    (v_marh_id, 'Atividades Complementares (AACC)', $$É necessário cumprir 60 horas de AACC.$$, 1);
+
+    INSERT INTO navigation_nodes (parent_id, title, content, link, display_order) VALUES 
+    (v_marh_id, 'Datas importantes do semestre', $$Calendário Acadêmico padrão. Acesse o calendário completo no link abaixo:$$, '/assets/knowledge-base/pdf/Calendario_Academico_2026.pdf', 2);
+
+    INSERT INTO navigation_nodes (parent_id, title, content, display_order) VALUES
     (v_marh_id, 'Disciplinas remotas', $$No 5º semestre: 20% da carga horária. No 6º semestre: Todas remotas.$$, 3),
     (v_marh_id, 'Portfólio', $$MARH não possui Portfólio; possui TG iniciado no 5º semestre.$$, 7),
     (v_marh_id, 'Trabalho de Graduação (TG/TCC)', $$O TG deve ser iniciado no 5º semestre...$$, 8);
@@ -196,23 +200,24 @@ BEGIN
     (v_marh_id, 'Horário das aulas', $$Qual semestre você deseja consultar?$$, 6)
     RETURNING id INTO v_marh_horario_id;
 
-    INSERT INTO navigation_nodes (parent_id, title, content, chunk_path, display_order) VALUES 
-    (v_marh_horario_id, '1º semestre', NULL, 'assets/knowledge-base/png/horario-aula-1marh.png', 1),
-    (v_marh_horario_id, '2º semestre', NULL, 'assets/knowledge-base/png/horario-aula-2marh.png', 2),
-    (v_marh_horario_id, '3º semestre', NULL, 'assets/knowledge-base/png/horario-aula-3marh.png', 3),
-    (v_marh_horario_id, '4º semestre', NULL, 'assets/knowledge-base/png/horario-aula-4marh.png', 4),
-    (v_marh_horario_id, '5º semestre', NULL, 'assets/knowledge-base/png/horario-aula-5marh.png', 5),
+    INSERT INTO navigation_nodes (parent_id, title, content, link, display_order) VALUES 
+    (v_marh_horario_id, '1º semestre', NULL, 'https://fatecjacarei.cps.sp.gov.br/o-lorem-ipsum-e-um-texto-modelo-da-industria-tipografica-e-de-impressao-4/', 1),
+    (v_marh_horario_id, '2º semestre', NULL, 'https://fatecjacarei.cps.sp.gov.br/o-lorem-ipsum-e-um-texto-modelo-da-industria-tipografica-e-de-impressao-4/', 2),
+    (v_marh_horario_id, '3º semestre', NULL, 'https://fatecjacarei.cps.sp.gov.br/o-lorem-ipsum-e-um-texto-modelo-da-industria-tipografica-e-de-impressao-4/', 3),
+    (v_marh_horario_id, '4º semestre', NULL, 'https://fatecjacarei.cps.sp.gov.br/o-lorem-ipsum-e-um-texto-modelo-da-industria-tipografica-e-de-impressao-4/', 4),
+    (v_marh_horario_id, '5º semestre', NULL, 'https://fatecjacarei.cps.sp.gov.br/o-lorem-ipsum-e-um-texto-modelo-da-industria-tipografica-e-de-impressao-4/', 5),
     (v_marh_horario_id, '6º semestre', $$O 6º semestre não está sendo oferecido$$, NULL, 6);
 
     -- =========================================================================================
     -- MENU: NÃO SOU ALUNO
     -- =========================================================================================
+    INSERT INTO navigation_nodes (parent_id, title, content, link, display_order) VALUES 
+    (v_nao_aluno_id, 'A Fatec possui cursos técnicos?', $$A Fatec oferece exclusivamente cursos de graduação tecnológica. Para cursos técnicos, acesse o link abaixo:$$, 'https://vestibulinho.etec.sp.gov.br', 1);
+
     INSERT INTO navigation_nodes (parent_id, title, content, display_order) VALUES 
-    (v_nao_aluno_id, 'A Fatec possui cursos técnicos?', $$A Fatec oferece exclusivamente cursos de graduação tecnológica. Para cursos técnicos acesse: <a href='https://vestibulinho.etec.sp.gov.br' target='_blank'>Vestibulinho Etec</a>$$, 1),
     (v_nao_aluno_id, 'Como ingressar na Fatec?', $$O ingresso na Fatec ocorre por meio de vestibular duas vezes ao ano.$$, 2),
     (v_nao_aluno_id, 'Como realizar a matrícula?', $$A matrícula é online por meio do portal oficial do vestibular.$$, 3),
     (v_nao_aluno_id, 'Cursos oferecidos na Fatec Jacareí', $$DSM, Geoprocessamento e MARH. Todos no período noturno.$$, 4),
     (v_nao_aluno_id, 'Horários das aulas', $$As aulas de todos os cursos ocorrem no período noturno, das 18h45 às 23h05.$$, 5);
 
--- CORREÇÃO AQUI: Fechamento com o mesmo nome
 END $seed$;
