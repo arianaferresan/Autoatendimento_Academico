@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useChatContext } from '../state/ChatContext';
 import {
-  fetchRootNodes, fetchNodeOptions,
+  fetchRootNodes, fetchNodeOptions, fetchExternoNodeId,
   submitDoubt, submitRating,
 } from '../services/chatService';
 import type { ChatItem, UserType } from '../types/chat';
@@ -9,62 +9,17 @@ import type { ChatItem, UserType } from '../types/chat';
 export type { ChatItem };
 
 export function useChatFlow(initialUserType?: string) {
-  const { items, addItem, removeItem, clearItems, userType } = useChatContext();
+  const { items, addItem, removeItem, removeLastTyping, clearItems, userType } = useChatContext();
 
   // ── Primitivos ──────────────────────────────────────────────────────────────
 
   const withTyping = useCallback((cb: () => void, delay = 900) => {
     addItem({ type: 'typing' });
     setTimeout(() => {
-      removeItem(
-        // remove o typing mais recente pelo tipo — o id é opaco aqui,
-        // por isso filtramos o último 'typing' via closure externa no ChatScreen
-        // (ver nota abaixo). Workaround: o ChatScreen renderiza no máximo 1 typing
-        // visível porque withTyping é chamado de forma sequencial (nunca paralela).
-        // Então remover todos é seguro: não haverá dois typings ao mesmo tempo.
-        -1, // sentinel — ver removeLastTyping abaixo
-      );
+      removeLastTyping();
       cb();
     }, delay);
-  }, [addItem, removeItem]);
-
-  // removeItem(-1) nunca combina com um id real (uid começa em 1).
-  // Precisamos de um helper que remova o último typing da lista.
-  // Como o Context só expõe removeItem(id), usamos CLEAR_TYPING via ADD/REMOVE
-  // com um flag especial — a solução mais simples: expor removeLastTyping.
-  // Para não alterar a interface do Context, substituímos withTyping por uma
-  // versão que usa clearItems de typing via filtro no reducer já existente:
-  // Solução final limpa abaixo ↓
-
-  const typingThenRun = useCallback((cb: () => void, delay = 900) => {
-    let typingId: number | undefined;
-    // Captura o id gerado pelo addItem inspecionando o retorno — mas addItem
-    // não retorna o id. Alternativa pragmática e sem quebrar a API do context:
-    // usamos um ref externo de sequência, replicando o uid() do reducer.
-    // O id do próximo item = valor atual de _id + 1 (o reducer incrementa antes).
-    // Para evitar acoplamento, a maneira mais robusta é usar REMOVE_ITEM com
-    // um type-discriminator. Implementamos aqui diretamente:
-    addItem({ type: 'typing' });
-    const timer = setTimeout(() => {
-      // Remove TODOS os itens do tipo 'typing' — seguro pois withTyping
-      // nunca é chamado em paralelo no fluxo atual.
-      clearItems(); // ERRADO: apagaria tudo.
-      cb();
-    }, delay);
-    return timer;
-  }, [addItem, clearItems]);
-
-  // ── Solução correta e simples ────────────────────────────────────────────────
-  // O Context expõe removeItem(id). O id do typing inserido não é capturado
-  // porque addItem não retorna nada. A correção estrutural é fazer addItem
-  // retornar o id — mas isso muda a interface. Optamos pela solução mais
-  // pragmática que não quebra nada: guardar o id localmente via closure,
-  // replicando o contador uid() de forma sincronizada.
-
-  // ── IMPLEMENTAÇÃO FINAL ──────────────────────────────────────────────────────
-  // addItem despacha para o reducer que chama uid() internamente.
-  // Replicamos o mesmo contador aqui com um módulo compartilhado.
-  // Ver src/state/uidCounter.ts abaixo — importado por ambos.
+  }, [addItem, removeLastTyping]);
 
   const botMsg = useCallback((text: string) =>
     addItem({ type: 'msg', from: 'bot', text }), [addItem]);
@@ -77,6 +32,7 @@ export function useChatFlow(initialUserType?: string) {
   const showRatingAndEnd = useCallback(() => {
     addItem({ type: 'typing' });
     setTimeout(() => {
+      removeLastTyping();
       addItem({
         type: 'ratingCard',
         onRate: (rating) => {
@@ -90,18 +46,23 @@ export function useChatFlow(initialUserType?: string) {
           };
           addItem({ type: 'typing' });
           setTimeout(() => {
+            removeLastTyping();
             botMsg(msg[rating] ?? 'Obrigado pela avaliação!');
             addItem({ type: 'typing' });
-            setTimeout(() => addItem({ type: 'restart' }), 700);
+            setTimeout(() => {
+              removeLastTyping();
+              addItem({ type: 'restart' });
+            }, 700);
           }, 800);
         },
       });
     }, 900);
-  }, [addItem, botMsg, userType]);
+  }, [addItem, removeLastTyping, botMsg, userType]);
 
   const showEndOption = useCallback((onContinue?: () => void) => {
     addItem({ type: 'typing' });
     setTimeout(() => {
+      removeLastTyping();
       const opts = onContinue
         ? ['Continuar atendimento', 'Finalizar atendimento']
         : ['Nos envie sua dúvida',  'Finalizar atendimento'];
@@ -120,6 +81,7 @@ export function useChatFlow(initialUserType?: string) {
           if (opt === 'Nos envie sua dúvida') {
             addItem({ type: 'typing' });
             setTimeout(() => {
+              removeLastTyping();
               addItem({
                 type:    'doubtForm',
                 isAluno: userType === 'aluno',
@@ -128,6 +90,7 @@ export function useChatFlow(initialUserType?: string) {
                     .then(() => {
                       addItem({ type: 'typing' });
                       setTimeout(() => {
+                        removeLastTyping();
                         botMsg('Sua dúvida foi enviada! Fique atento ao seu e-mail. 📧');
                         showEndOption(undefined);
                       }, 800);
@@ -135,6 +98,7 @@ export function useChatFlow(initialUserType?: string) {
                     .catch(() => {
                       addItem({ type: 'typing' });
                       setTimeout(() => {
+                        removeLastTyping();
                         botMsg('Não foi possível enviar agora. Tente novamente mais tarde. 😕');
                         showEndOption(undefined);
                       }, 800);
@@ -149,11 +113,12 @@ export function useChatFlow(initialUserType?: string) {
         },
       });
     }, 900);
-  }, [addItem, userMsg, botMsg, userType, showRatingAndEnd]);
+  }, [addItem, removeLastTyping, userMsg, botMsg, userType, showRatingAndEnd]);
 
   const askSatisfacao = useCallback((onSim: () => void) => {
     addItem({ type: 'typing' });
     setTimeout(() => {
+      removeLastTyping();
       addItem({
         type:    'chips',
         label:   'Conseguiu encontrar o que queria?',
@@ -164,7 +129,7 @@ export function useChatFlow(initialUserType?: string) {
         },
       });
     }, 900);
-  }, [addItem, userMsg, showEndOption]);
+  }, [addItem, removeLastTyping, userMsg, showEndOption]);
 
   // ── Navegação via API ────────────────────────────────────────────────────────
 
@@ -174,27 +139,31 @@ export function useChatFlow(initialUserType?: string) {
   ) => {
     addItem({ type: 'typing' });
     setTimeout(() => {
+      removeLastTyping();
       if (data.content) botMsg(data.content);
       if (data.link)    addItem({ type: 'link', url: data.link, label: 'Acesse o link abaixo:' });
       askSatisfacao(onBack);
     }, 900);
-  }, [addItem, botMsg, askSatisfacao]);
+  }, [addItem, removeLastTyping, botMsg, askSatisfacao]);
 
   const navigateNode = useCallback((
     nodeId: number | null,
     label:  string,
     onBack: () => void,
+    skipContent = false,
   ) => {
     addItem({ type: 'typing' });
 
     const run = async () => {
+      removeLastTyping();
       try {
         const response = nodeId === null
           ? await fetchRootNodes()
           : await fetchNodeOptions(nodeId);
 
         if (response.type === 'answer') {
-          showAnswer(response.data, onBack);
+          if (!skipContent) showAnswer(response.data, onBack);
+          else askSatisfacao(onBack);
           return;
         }
 
@@ -213,6 +182,7 @@ export function useChatFlow(initialUserType?: string) {
           },
         });
       } catch {
+        removeLastTyping();
         botMsg('Não consegui carregar as opções agora. Tente novamente. 😕');
         showEndOption(undefined);
       }
@@ -227,27 +197,52 @@ export function useChatFlow(initialUserType?: string) {
     clearItems();
     addItem({ type: 'typing' });
     setTimeout(() => {
+      removeLastTyping();
       botMsg('Olá! Eu sou o FAQtec e estou aqui para tirar suas dúvidas 😊');
-      addItem({ type: 'typing' });
-      setTimeout(() => {
-        navigateNode(null, 'Como posso te ajudar hoje?', () =>
-          navigateNode(null, 'Como posso te ajudar hoje?', () => {}));
-      }, 600);
+      if (type === 'aluno') {
+        addItem({ type: 'typing' });
+        setTimeout(() => {
+          removeLastTyping();
+          botMsg('Selecione o seu curso nas abas acima para começar! 👆');
+        }, 800);
+      } else {
+        // Externo: entra direto no nó "Não sou aluno" dos raiz
+        addItem({ type: 'typing' });
+        setTimeout(async () => {
+          removeLastTyping();
+          try {
+            const externoId = await fetchExternoNodeId();
+            if (externoId !== null) {
+              navigateNode(externoId, 'Como posso te ajudar hoje?', () =>
+                navigateNode(externoId, 'Como posso te ajudar hoje?', () => {}));
+            } else {
+              // fallback: mostra todos os nós raiz
+              navigateNode(null, 'Como posso te ajudar hoje?', () =>
+                navigateNode(null, 'Como posso te ajudar hoje?', () => {}));
+            }
+          } catch {
+            navigateNode(null, 'Como posso te ajudar hoje?', () =>
+              navigateNode(null, 'Como posso te ajudar hoje?', () => {}));
+          }
+        }, 600);
+      }
     }, 900);
-  }, [clearItems, addItem, botMsg, navigateNode]);
+  }, [clearItems, addItem, removeLastTyping, botMsg, navigateNode]);
 
   const startCourse = useCallback((courseNodeId: number, courseTitle: string) => {
     clearItems();
     addItem({ type: 'typing' });
     setTimeout(() => {
-      botMsg(`Você selecionou ${courseTitle}. O que gostaria de saber?`);
+      removeLastTyping();
+      botMsg(`Bem-vindo ao atendimento de ${courseTitle}. O que você procura?`);
       navigateNode(
         courseNodeId,
         `Sobre ${courseTitle}, o que deseja consultar?`,
         () => navigateNode(courseNodeId, `Sobre ${courseTitle}, o que deseja consultar?`, () => {}),
+        true,
       );
     }, 900);
-  }, [clearItems, addItem, botMsg, navigateNode]);
+  }, [clearItems, addItem, removeLastTyping, botMsg, navigateNode]);
 
-  return { items, startChat, startCourse, removeItem };
+  return { items, startChat, startCourse, removeItem, removeLastTyping };
 }
