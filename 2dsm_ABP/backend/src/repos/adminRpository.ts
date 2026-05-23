@@ -1,27 +1,6 @@
 import { pool } from "@/server/config/database.js";
 
-type Node = {
-  id: number;
-  parent_id: number | null;
-  title: string;
-  content: string | null;
-  display_order: number;
-  chunk_path: string | null;
-  link: string | null;
-  is_active: boolean;
-  created_at: Date;
-  updated_at: Date;
-};
-
-type SupportContact = {
-  id: number;
-  email: string;
-  message: string;
-  status: "ABERTA" | "ATENDIMENTO" | "RESPONDIDA";
-  created_at: Date;
-  closed_at: Date | null;
-  answered_by: string | null;
-};
+import type { Node, SupportContact, FullfillmentLog} from "@/types/typesAdmin.js";
 
 async function searchAllNodes(): Promise<Node[]> {
   const result = await pool.query<Node>(
@@ -134,6 +113,8 @@ async function createNode(
   return result.rows[0];
 }
 
+// Repos para suporte - FUNÇÂO
+
 async function getSupportContactById(
   id: number,
 ): Promise<SupportContact | undefined> {
@@ -167,6 +148,14 @@ async function updateSupportContactById(
   return result.rows[0];
 }
 
+async function getSupportContactByStatus(status: SupportContact["status"], offset: number ): Promise<SupportContact[]> {
+  const result = await pool.query<SupportContact>(
+    `SELECT id, email, message, status, created_at, closed_at, answered_by FROM support_contacts WHERE status = $1 LIMIT 10 OFFSET $2`,
+    [status, offset],
+  );
+  return result.rows;
+};
+
 //Melhorar essa função - FUNÇÂO
 async function deleteSupportContactById(id: number): Promise<void> {
   await pool.query(
@@ -176,6 +165,21 @@ async function deleteSupportContactById(id: number): Promise<void> {
     [id],
   );
 }
+
+// Repos para logs de atendimento - FUNÇÂO
+async function getAllFulfillmentLogs(): Promise<any[]> {
+  const result = await pool.query(
+    `SELECT session_id, navigation_flow, inquiry_ids, flag FROM fulfillment_logs ORDER BY created_at DESC`,
+  );
+  return result.rows;
+};
+
+async function createFulfillmentLog(data: Omit<FullfillmentLog, 'session_id'>): Promise<void> {
+  await pool.query(
+    `INSERT INTO fulfillment_logs ( navigation_flow, inquiry_ids, flag) VALUES ($1, $2, $3)`,
+    [data.navigation_flow, data.inquiry_ids, data.flag],
+  );
+};
 
 export {
   searchAllNodes,
@@ -188,4 +192,7 @@ export {
   updateSupportContactById,
   deleteSupportContactById,
   getSupportContactAll,
+  getSupportContactByStatus,
+  getAllFulfillmentLogs,
+  createFulfillmentLog,
 };
