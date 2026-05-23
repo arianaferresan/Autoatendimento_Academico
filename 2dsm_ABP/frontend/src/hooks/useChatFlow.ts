@@ -134,14 +134,15 @@ export function useChatFlow(initialUserType?: string) {
   // ── Navegação via API ────────────────────────────────────────────────────────
 
   const showAnswer = useCallback((
-    data: { content: string | null; link: string | null },
+    data: { content: string | null; link: string | null; chunk_path: string | null },
     onBack: () => void,
   ) => {
     addItem({ type: 'typing' });
     setTimeout(() => {
       removeLastTyping();
-      if (data.content) botMsg(data.content);
-      if (data.link)    addItem({ type: 'link', url: data.link, label: 'Acesse o link abaixo:' });
+      if (data.content)    botMsg(data.content);
+      if (data.chunk_path) addItem({ type: 'link', url: data.chunk_path, label: 'Acesse o arquivo abaixo:' });
+      if (data.link)       addItem({ type: 'link', url: data.link, label: 'Acesse o link abaixo:' });
       askSatisfacao(onBack);
     }, 900);
   }, [addItem, removeLastTyping, botMsg, askSatisfacao]);
