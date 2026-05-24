@@ -27,7 +27,7 @@ services:
   frontend:
     build: ./frontend
     ports:
-       - "5175:5173"
+       - "5175:5175"
     depends_on:
       - backend
     networks:
