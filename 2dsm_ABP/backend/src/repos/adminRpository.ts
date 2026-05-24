@@ -138,13 +138,13 @@ async function updateSupportContactById(
   answered_by: string | null,
 ): Promise<SupportContact | undefined> {
   const result = await pool.query<SupportContact>(
-    `
-    UPDATE support_contacts 
-    SET status = $2, answered_by = $3, updated_at = NOW(), closed_at = CASE WHEN $2 = 'RESPONDIDA' THEN NOW() ELSE closed_at END
-    WHERE id = $1
-    RETURNING *`,
-    [id, status, answered_by],
-  );
+  `
+  UPDATE support_contacts 
+  SET status = $2::inquiry_status, answered_by = $3, closed_at = CASE WHEN $2::inquiry_status = 'RESPONDIDA' THEN NOW() ELSE closed_at END
+  WHERE id = $1
+  RETURNING *`,
+  [id, status, answered_by],
+);
   return result.rows[0];
 }
 
