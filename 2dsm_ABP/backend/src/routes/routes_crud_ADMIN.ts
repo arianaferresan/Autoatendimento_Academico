@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { upload } from "@/server/config/multer.js";
-import { authMiddleware, authorize } from "@/middleware/authMiddleware.js";
+import { authMiddleware, authorize } from "../middleware/authMiddleware.js";
 
 import {
   getAllNodes,
@@ -14,6 +14,10 @@ import {
   getAllSupportContacts,
   getAllFulfillmentLogs,
   getSupportContactsByStatus,
+  getAllSecretariaUsers,
+  createSecretariaUser,
+  deleteUser,
+  getAllLogs,
 } from "@/controllers/adminController.js";
 
 const routerADMIN = Router();
@@ -95,5 +99,13 @@ routerADMIN.delete<{ id: string }>(
 // ─── Logs (fulfillment_logs)─────────────────────────────────────────────
 
 routerADMIN.get("/logs", authorize("admin"), getAllFulfillmentLogs);
+
+// ─── Usuários (Secretária) ─────────────────────────────────────────────────────
+routerADMIN.get("/usuarios", authorize("admin"), getAllSecretariaUsers);
+routerADMIN.post("/usuarios", authorize("admin"), createSecretariaUser);
+routerADMIN.delete("/usuarios/:id", authorize("admin"), deleteUser);
+
+// ─── Logs ──────────────────────────────────────────────────────────────────────
+routerADMIN.get("/logs", authorize("admin"), getAllLogs);
 
 export default routerADMIN;

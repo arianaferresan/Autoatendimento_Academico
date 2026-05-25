@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 interface Card {
   icon: string;
   title: string;
@@ -78,6 +80,12 @@ export default function WelcomeScreen({ onSelect }: WelcomeScreenProps) {
           ))}
         </div>
       </main>
+
+      <footer className="px-4 py-3">
+        <Link to="/login" className="text-xs text-gray-400 hover:text-gray-600 transition-colors">
+          Área administrativa
+        </Link>
+      </footer>
     </div>
   );
 }

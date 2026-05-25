@@ -1,8 +1,8 @@
-import { useState, FormEvent } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
-import logoFatec from '../assets/logo-fatec.png';
-import logoCps from '../assets/logo-cps.png';
+const logoFatec = '/logo-fatec.png';
+const logoCps = '/logo-cps.png';
 
 export default function Login() {
   const [username, setUsername] = useState('');
@@ -11,7 +11,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  async function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: React.BaseSyntheticEvent) {
     e.preventDefault();
     setErro('');
     setLoading(true);
@@ -31,6 +31,7 @@ export default function Login() {
       minHeight: '100vh',
       display: 'flex',
       flexDirection: 'column',
+      backgroundImage: 'url(/background.png)',
       backgroundSize: 'cover',
       backgroundRepeat: 'no-repeat',
       backgroundPosition: 'center top',
