@@ -11,6 +11,10 @@ import {
   getAllSupportContactsService,
   getAllFulfillmentLogsService,
   getSupportContactByStatusService,
+  getAllSecretariaUsersService,
+  createSecretariaUserService,
+  deleteUserService,
+  getAllLogsService,
 } from "@/services/adminService.js";
 
 import type { NodesParams} from "@/types/typesAdmin.js";
@@ -25,8 +29,8 @@ export const getAllNodes = async (_req: Request, res: Response) => {
   }
 };
 
-export const filterNodes = async (req: Request<NodesParams>, res: Response) => {
-  const { id } = req.params;
+export const filterNodes = async (req: Request, res: Response) => {
+  const { id } = req.params as { id: string };
 
   try {
     const idNum = parseInt(id, 10);
@@ -54,8 +58,8 @@ export const filterNodes = async (req: Request<NodesParams>, res: Response) => {
   }
 };
 
-export const deleteNode = async (req: Request<NodesParams>, res: Response) => {
-  const { id } = req.params;
+export const deleteNode = async (req: Request, res: Response) => {
+  const { id } = req.params as { id: string };
   try {
     const idNum = parseInt(id, 10);
     await deleteNodeByIdService(idNum);
@@ -66,9 +70,9 @@ export const deleteNode = async (req: Request<NodesParams>, res: Response) => {
   }
 };
 
-export const updateNode = async (req: Request<NodesParams>, res: Response) => {
+export const updateNode = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const { id } = req.params as { id: string };
     const { parent_id, title, content, display_order, link, is_active } =
       req.body;
     const new_chunk_path = req.file ? req.file.path : null;
@@ -152,10 +156,10 @@ export const creatNode = async (req: Request, res: Response) => {
 
 // ─── Support Contacts (Perguntas) ──────────────────────────────────────────────
 export const getSupportContactById = async (
-  req: Request<NodesParams>,
+  req: Request,
   res: Response,
 ) => {
-  const { id } = req.params;
+  const { id } = req.params as { id: string };
   try {
     const contact = await getSupportContactByIdService(parseInt(id, 10));
     if (!contact) {
@@ -180,11 +184,11 @@ export const getAllSupportContacts = async (_req: Request, res: Response) => {
 };
 
 export const updateSupportContactStatus = async (
-  req: Request<NodesParams>,
+  req: Request,
   res: Response,
 ) => {
   try {
-    const { id } = req.params;
+    const { id } = req.params as { id: string };
     const { status, answered_by } = req.body;
 
     if (!status) {
@@ -217,15 +221,14 @@ export const updateSupportContactStatus = async (
 };
 
 export const deleteSupportContact = async (
-  req: Request<NodesParams>,
+  req: Request,
   res: Response,
 ) => {
-  const { id } = req.params;
+  const { id } = req.params as { id: string };
   try {
     const idNum = parseInt(id, 10);
-    // O ideal seria verificar se o contato existe antes de deletar, mas por simplicidade...
     await deleteSupportContactByIdService(idNum);
-    res.status(204).send(); // 204 No Content é mais apropriado para DELETE
+    res.status(204).send();
   } catch (error) {
     console.error("Erro ao deletar contato de suporte:", error);
     res.status(500).json({ error: "Erro ao deletar contato de suporte" });
@@ -271,3 +274,62 @@ export const getAllFulfillmentLogs = async (
 
 
 
+// ─── Usuários (Secretária) ─────────────────────────────────────────────────────
+export const getAllSecretariaUsers = async (_req: Request, res: Response) => {
+  try {
+    const users = await getAllSecretariaUsersService();
+    res.json(users);
+  } catch (error) {
+    console.error("Erro ao buscar usuários:", error);
+    res.status(500).json({ error: "Erro ao buscar usuários" });
+  }
+};
+
+export const createSecretariaUser = async (req: Request, res: Response) => {
+  const { username, password, name } = req.body;
+  if (!username || !password || !name) {
+    res.status(400).json({ error: "username, password e name são obrigatórios." });
+    return;
+  }
+  try {
+    const user = await createSecretariaUserService(username, password, name);
+    res.status(201).json(user);
+  } catch (error: any) {
+    if (error?.code === '23505') {
+      res.status(409).json({ error: "Username já existe." });
+      return;
+    }
+    console.error("Erro ao criar usuário:", error);
+    res.status(500).json({ error: "Erro ao criar usuário" });
+  }
+};
+
+export const deleteUser = async (req: Request, res: Response) => {
+  const idNum = parseInt(String(req.params['id'] ?? ''), 10);
+  if (isNaN(idNum)) {
+    res.status(400).json({ error: "ID inválido." });
+    return;
+  }
+  try {
+    const deleted = await deleteUserService(idNum);
+    if (!deleted) {
+      res.status(404).json({ error: "Usuário não encontrado." });
+      return;
+    }
+    res.status(204).send();
+  } catch (error) {
+    console.error("Erro ao deletar usuário:", error);
+    res.status(500).json({ error: "Erro ao deletar usuário" });
+  }
+};
+
+// ─── Logs ──────────────────────────────────────────────────────────────────────
+export const getAllLogs = async (_req: Request, res: Response) => {
+  try {
+    const logs = await getAllLogsService();
+    res.json(logs);
+  } catch (error) {
+    console.error("Erro ao buscar logs:", error);
+    res.status(500).json({ error: "Erro ao buscar logs" });
+  }
+};

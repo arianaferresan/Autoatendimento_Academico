@@ -12,6 +12,12 @@ function ChatApp() {
 
   const handleSelect = (type: string) => {
     setUserType(type as UserType);
+function PublicArea() {
+  const [screen, setScreen] = useState<Screen>('welcome');
+  const [userType, setUserType] = useState<string>('');
+
+  const handleSelect = (type: string): void => {
+    setUserType(type);
     setScreen('chat');
   };
 
@@ -29,5 +35,15 @@ export default function App() {
         <Route path="/admin" element={<Admin />} />
       </Routes>
     </BrowserRouter>
+  );
+}
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<PublicArea />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/admin" element={<Admin />} />
+    </Routes>
   );
 }

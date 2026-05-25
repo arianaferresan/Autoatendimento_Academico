@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import {
   deleteNodeById,
   searchAllNodes,
@@ -12,6 +13,10 @@ import {
   getSupportContactByStatus,
   getAllFulfillmentLogs,
   createFulfillmentLog,
+  getAllSecretariaUsers,
+  createSecretariaUser,
+  deleteUserById,
+  getAllLogs,
 } from "@/repos/adminRpository.js";
 
 import type {
@@ -123,4 +128,25 @@ export const createFulfillmentLogService = async (
 export const getAllFulfillmentLogsService = async () => {
   const logs = await getAllFulfillmentLogs();
   return logs;
+};
+
+export const getAllSecretariaUsersService = async () => {
+  return getAllSecretariaUsers();
+};
+
+export const createSecretariaUserService = async (
+  username: string,
+  password: string,
+  name: string,
+) => {
+  const password_hash = await bcrypt.hash(password, 10);
+  return createSecretariaUser(username, password_hash, name);
+};
+
+export const deleteUserService = async (id: number): Promise<boolean> => {
+  return deleteUserById(id);
+};
+
+export const getAllLogsService = async () => {
+  return getAllLogs();
 };
