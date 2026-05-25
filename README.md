@@ -243,9 +243,6 @@ O backlog do projeto está organizado em documentos complementares para facilita
 | Histórias de Usuário | [DOCS/produto/user-stories.md](DOCS/produto/user-stories.md) |
 | Requisitos | [DOCS/produto/requisitos.md](DOCS/produto/requisitos.md) |
 
-## Cronograma das sprints 📅
-
-<<<<<<< HEAD
 ## Cronograma das Sprints 📅
 
 | Sprint | Status | Entrega prevista | Documento |
@@ -288,11 +285,9 @@ O backlog do projeto está organizado em documentos complementares para facilita
 - `2dsm ABP/init`: DDL e seed do banco de dados.
 
 ### End-Points Back-End [PORT: 3666] 🚪
-<<<<<<< HEAD
+
 - `Rota SWAGGER`: http://localhost:3666/api-docs/
-=======
 - `Rota SWAGGER`: http://localhost:3666/api/
->>>>>>> b70867e06ebade49ef6aeab7e356c5a84394ff2a
 - `Rota BackEnd publico`: http://localhost:3666/api/  
 - `Rota BackEnd ADMIN`: http://localhost:3666/admin/  
 
@@ -304,7 +299,7 @@ O backlog do projeto está organizado em documentos complementares para facilita
 | Sprint 01 | ![Status](https://img.shields.io/badge/Status-Conclu%C3%ADdo-success) | 05/05/2026 | Protótipo do fluxo público e documentação inicial | [Abrir](DOCS/sprints/sprint-01/README.md) |
 | Sprint 02 | ![Status](https://img.shields.io/badge/Status-Em%20andamento-FACC15) | 25/05/2026 | Integração real, persistência, frontend público e documentação | [Abrir](DOCS/sprints/sprint-02/README.md) |
 | Sprint 03 | ![Status](https://img.shields.io/badge/Status-Planejamento-3B82F6) | 22/06/2026 | Área interna, operação administrativa e refinamentos finais | [Abrir](DOCS/sprints/sprint-03/README.md) |
->>>>>>> 96f26486cb6a4e53227d28f7c6051dda6b653c94
+
 
 ## Aplicação
 
