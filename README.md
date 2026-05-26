@@ -13,7 +13,7 @@
 
 ---
 
-<a id="contexto-do-desafio"></a>
+`<a id="contexto-do-desafio"></a>`
 
 ## Contexto do desafio 📝
 
@@ -38,16 +38,16 @@ O sistema deve funcionar como um chatbot conversacional capaz de:
 - O banco PostgreSQL já possui schema e seed iniciais, mas a modelagem ainda está em revisão para sustentar documentos, chunks, evidências e logs de forma mais completa.
 - O replanejamento das correções apontadas pelo professor foi incorporado ao backlog do produto, aos READMEs das sprints e à documentação principal do repositório.
 
-<a id="arquitetura-geral"></a>
+`<a id="arquitetura-geral"></a>`
 
 ## Arquitetura geral 🧱
 
-| Camada | Papel no projeto | Situação atual |
-| --- | --- | --- |
-| Frontend | Interface do chatbot e futuros painéis internos | Implementado em React + TypeScript, com fluxo público inicial |
-| Backend | API HTTP, regras de negócio, autenticação e integração com banco | Implementado em Node.js + Express + TypeScript |
-| Banco de dados | Persistência dos nós de navegação, usuários internos, perguntas, logs e evidências | Implementado em PostgreSQL, com schema e seed iniciais |
-| Documentação | Requisitos, backlog, sprints, processo e diagramas | Mantida na pasta `DOCS/` |
+| Camada         | Papel no projeto                                                                         | Situação atual                                               |
+| -------------- | ---------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| Frontend       | Interface do chatbot e futuros painéis internos                                         | Implementado em React + TypeScript, com fluxo público inicial |
+| Backend        | API HTTP, regras de negócio, autenticação e integração com banco                    | Implementado em Node.js + Express + TypeScript                 |
+| Banco de dados | Persistência dos nós de navegação, usuários internos, perguntas, logs e evidências | Implementado em PostgreSQL, com schema e seed iniciais         |
+| Documentação | Requisitos, backlog, sprints, processo e diagramas                                       | Mantida na pasta `DOCS/`                                     |
 
 ## Estrutura do repositório 📂
 
@@ -120,21 +120,21 @@ O sistema deve funcionar como um chatbot conversacional capaz de:
 
 Atualmente, o projeto utiliza variáveis de ambiente para conexão com o banco e configuração do backend.
 
-| Variável | Uso |
-| --- | --- |
-| `PORT` | Porta do backend |
-| `DB_HOST` | Host do PostgreSQL |
-| `DB_PORT` | Porta do PostgreSQL |
-| `DB_NAME` | Nome do banco |
-| `DB_USER` | Usuário do banco |
-| `DB_PASSWORD` | Senha do banco |
+| Variável       | Uso                 |
+| --------------- | ------------------- |
+| `PORT`        | Porta do backend    |
+| `DB_HOST`     | Host do PostgreSQL  |
+| `DB_PORT`     | Porta do PostgreSQL |
+| `DB_NAME`     | Nome do banco       |
+| `DB_USER`     | Usuário do banco   |
+| `DB_PASSWORD` | Senha do banco      |
 
 ### Onde configurar 📍
 
 - Para `docker compose`, crie um arquivo `.env` em `2dsm_ABP/`.
 - Para executar o backend localmente fora do Docker, replique as mesmas variáveis em `2dsm_ABP/backend/.env` ou exporte-as no ambiente de execução.
 
-<a id="como-executar"></a>
+`<a id="como-executar"></a>`
 
 ## Como executar 🚀
 
@@ -198,7 +198,7 @@ npm run build
 
 > Observação: a proteção completa das rotas administrativas com JWT e RBAC faz parte do escopo priorizado da Sprint 2.
 
-<a id="documentacao"></a>
+`<a id="documentacao"></a>`
 
 ## Documentação 📁
 
@@ -224,32 +224,32 @@ Toda a documentação do projeto está centralizada em `DOCS/`.
 
 ### Links rápidos 📎
 
-| Categoria | Acesso |
-| --- | --- |
-| Índice geral | [DOCS/README.md](DOCS/README.md) |
-| Definition of Ready | [DOCS/processo/definition-of-ready.md](DOCS/processo/definition-of-ready.md) |
-| Definition of Done | [DOCS/processo/definition-of-done.md](DOCS/processo/definition-of-done.md) |
-| Diagramas | [DOCS/diagrama/README.md](DOCS/diagrama/README.md) |
-| Referências e anexos | [DOCS/referencias/README.md](DOCS/referencias/README.md) |
+| Categoria             | Acesso                                                                    |
+| --------------------- | ------------------------------------------------------------------------- |
+| Índice geral         | [DOCS/README.md](DOCS/README.md)                                             |
+| Definition of Ready   | [DOCS/processo/definition-of-ready.md](DOCS/processo/definition-of-ready.md) |
+| Definition of Done    | [DOCS/processo/definition-of-done.md](DOCS/processo/definition-of-done.md)   |
+| Diagramas             | [DOCS/diagrama/README.md](DOCS/diagrama/README.md)                           |
+| Referências e anexos | [DOCS/referencias/README.md](DOCS/referencias/README.md)                     |
 
 ## Backlog 🧾
 
 O backlog do projeto está organizado em documentos complementares para facilitar a visão geral, o refinamento e o acompanhamento das entregas.
 
-| Categoria | Acesso |
-| --- | --- |
-| Backlog do Produto | [DOCS/produto/backlog-do-produto.md](DOCS/produto/backlog-do-produto.md) |
-| Backlog Detalhado | [DOCS/produto/backlog-detalhado.md](DOCS/produto/backlog-detalhado.md) |
-| Histórias de Usuário | [DOCS/produto/user-stories.md](DOCS/produto/user-stories.md) |
-| Requisitos | [DOCS/produto/requisitos.md](DOCS/produto/requisitos.md) |
+| Categoria              | Acesso                                                                |
+| ---------------------- | --------------------------------------------------------------------- |
+| Backlog do Produto     | [DOCS/produto/backlog-do-produto.md](DOCS/produto/backlog-do-produto.md) |
+| Backlog Detalhado      | [DOCS/produto/backlog-detalhado.md](DOCS/produto/backlog-detalhado.md)   |
+| Histórias de Usuário | [DOCS/produto/user-stories.md](DOCS/produto/user-stories.md)             |
+| Requisitos             | [DOCS/produto/requisitos.md](DOCS/produto/requisitos.md)                 |
 
 ## Cronograma das Sprints 📅
 
-| Sprint | Status | Entrega prevista | Documento |
-| --- | --- | --- | --- |
-| Sprint 01 | ![Status](https://img.shields.io/badge/Status-Concluido-success) | 05/05/2026 | [Abrir](DOCS/sprints/sprint-01/README.md) |
-| Sprint 02 | ![Status](https://img.shields.io/badge/Status-Em%20andamento-FACC15) | 25/05/2026 | [Abrir](DOCS/sprints/sprint-02/README.md) |
-| Sprint 03 | ![Status](https://img.shields.io/badge/Status-Planejamento-3B82F6) | 22/06/2026 | [Abrir](DOCS/sprints/sprint-03/README.md) |
+| Sprint    | Status                                                             | Entrega prevista | Documento                              |
+| --------- | ------------------------------------------------------------------ | ---------------- | -------------------------------------- |
+| Sprint 01 | ![Status](https://img.shields.io/badge/Status-Concluido-success)     | 05/05/2026       | [Abrir](DOCS/sprints/sprint-01/README.md) |
+| Sprint 02 | ![Status](https://img.shields.io/badge/Status-Em%20andamento-FACC15) | 26/05/2026       | [Abrir](DOCS/sprints/sprint-02/README.md) |
+| Sprint 03 | ![Status](https://img.shields.io/badge/Status-Planejamento-3B82F6)   | 22/06/2026       | [Abrir](DOCS/sprints/sprint-03/README.md) |
 
 ## Estrutura do Repositório 📂
 
@@ -288,18 +288,17 @@ O backlog do projeto está organizado em documentos complementares para facilita
 
 - `Rota SWAGGER`: http://localhost:3666/api-docs/
 - `Rota SWAGGER`: http://localhost:3666/api/
-- `Rota BackEnd publico`: http://localhost:3666/api/  
-- `Rota BackEnd ADMIN`: http://localhost:3666/admin/  
+- `Rota BackEnd publico`: http://localhost:3666/api/
+- `Rota BackEnd ADMIN`: http://localhost:3666/admin/
 
+`<a id="aplicacao"></a>`
+===
 
-<a id="aplicacao"></a>
-=======
-| Sprint | Status | Entrega prevista | Frentes principais | Documento |
-| --- | --- | --- | --- | --- |
-| Sprint 01 | ![Status](https://img.shields.io/badge/Status-Conclu%C3%ADdo-success) | 05/05/2026 | Protótipo do fluxo público e documentação inicial | [Abrir](DOCS/sprints/sprint-01/README.md) |
-| Sprint 02 | ![Status](https://img.shields.io/badge/Status-Em%20andamento-FACC15) | 25/05/2026 | Integração real, persistência, frontend público e documentação | [Abrir](DOCS/sprints/sprint-02/README.md) |
-| Sprint 03 | ![Status](https://img.shields.io/badge/Status-Planejamento-3B82F6) | 22/06/2026 | Área interna, operação administrativa e refinamentos finais | [Abrir](DOCS/sprints/sprint-03/README.md) |
-
+| Sprint    | Status                                                              | Entrega prevista | Frentes principais                                                   | Documento                              |
+| --------- | ------------------------------------------------------------------- | ---------------- | -------------------------------------------------------------------- | -------------------------------------- |
+| Sprint 01 | ![Status](https://img.shields.io/badge/Status-Conclu%C3%ADdo-success) | 05/05/2026       | Protótipo do fluxo público e documentação inicial                | [Abrir](DOCS/sprints/sprint-01/README.md) |
+| Sprint 02 | ![Status](https://img.shields.io/badge/Status-Em%20andamento-FACC15)  | 25/05/2026       | Integração real, persistência, frontend público e documentação | [Abrir](DOCS/sprints/sprint-02/README.md) |
+| Sprint 03 | ![Status](https://img.shields.io/badge/Status-Planejamento-3B82F6)    | 22/06/2026       | Área interna, operação administrativa e refinamentos finais       | [Abrir](DOCS/sprints/sprint-03/README.md) |
 
 ## Aplicação
 
@@ -320,15 +319,15 @@ Projeto acadêmico em desenvolvimento. O replanejamento atual prioriza a convers
 
 ## Equipe 💼
 
-| Função | Nome | Contatos |
-| --- | --- | :---: |
-| Project Owner | Luiza Goncalves Manchini | [![GitHub](https://img.shields.io/badge/GitHub-Perfil-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/luiza-manchini) [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/luiza-manchini-b51a7b336/) |
-| Scrum Master | Felipe Faria Machado | [![GitHub](https://img.shields.io/badge/GitHub-Perfil-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/felipefmac) [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/felipefariamachado) |
-| Dev Team | Ariana Ferreira dos Santos | [![GitHub](https://img.shields.io/badge/GitHub-Perfil-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/arianaferresan) [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://br.linkedin.com/in/arianaferreira) |
-| Dev Team | Eloah Sousa da Silva | [![GitHub](https://img.shields.io/badge/GitHub-Perfil-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/eloahsousaa) [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/eloah-sousa-650038349/) |
-| Dev Team | Lucas Monteiro Correia | [![GitHub](https://img.shields.io/badge/GitHub-Perfil-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/lucasmonteiro14) [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/lucasmonteirocorreia) |
-| Dev Team | Pedro Goncalves Sampaio | [![GitHub](https://img.shields.io/badge/GitHub-Perfil-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/PedroSmp) [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/pedro-sampaio-463a77375) |
-| Dev Team | William Max dos Santos Silva | [![GitHub](https://img.shields.io/badge/GitHub-Perfil-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/WilliamM4x) [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/william-max-7b8036140/) |
+| Função      | Nome                         |                                                                                                                                                    Contatos                                                                                                                                                    |
+| ------------- | ---------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| Project Owner | Luiza Goncalves Manchini     | [![GitHub](https://img.shields.io/badge/GitHub-Perfil-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/luiza-manchini) [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/luiza-manchini-b51a7b336/) |
+| Scrum Master  | Felipe Faria Machado         |      [![GitHub](https://img.shields.io/badge/GitHub-Perfil-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/felipefmac) [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/felipefariamachado)      |
+| Dev Team      | Ariana Ferreira dos Santos   |       [![GitHub](https://img.shields.io/badge/GitHub-Perfil-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/arianaferresan) [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://br.linkedin.com/in/arianaferreira)       |
+| Dev Team      | Eloah Sousa da Silva         |    [![GitHub](https://img.shields.io/badge/GitHub-Perfil-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/eloahsousaa) [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/eloah-sousa-650038349/)    |
+| Dev Team      | Lucas Monteiro Correia       |   [![GitHub](https://img.shields.io/badge/GitHub-Perfil-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/lucasmonteiro14) [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/lucasmonteirocorreia)   |
+| Dev Team      | Pedro Goncalves Sampaio      |     [![GitHub](https://img.shields.io/badge/GitHub-Perfil-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/PedroSmp) [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/pedro-sampaio-463a77375)     |
+| Dev Team      | William Max dos Santos Silva |    [![GitHub](https://img.shields.io/badge/GitHub-Perfil-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/WilliamM4x) [![LinkedIn](https://img.shields.io/badge/LinkedIn-Perfil-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/william-max-7b8036140/)    |
 
 ---
 
