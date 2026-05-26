@@ -13,7 +13,6 @@
 
 ---
 
-`<a id="contexto-do-desafio"></a>`
 
 ## Contexto do desafio 📝
 
@@ -37,8 +36,6 @@ O sistema deve funcionar como um chatbot conversacional capaz de:
 - O backend em TypeScript já expõe rotas HTTP e documentação Swagger, mas a separação completa em camadas e a proteção das rotas administrativas fazem parte do trabalho da Sprint 2.
 - O banco PostgreSQL já possui schema e seed iniciais, mas a modelagem ainda está em revisão para sustentar documentos, chunks, evidências e logs de forma mais completa.
 - O replanejamento das correções apontadas pelo professor foi incorporado ao backlog do produto, aos READMEs das sprints e à documentação principal do repositório.
-
-`<a id="arquitetura-geral"></a>`
 
 ## Arquitetura geral 🧱
 
@@ -134,8 +131,6 @@ Atualmente, o projeto utiliza variáveis de ambiente para conexão com o banco e
 - Para `docker compose`, crie um arquivo `.env` em `2dsm_ABP/`.
 - Para executar o backend localmente fora do Docker, replique as mesmas variáveis em `2dsm_ABP/backend/.env` ou exporte-as no ambiente de execução.
 
-`<a id="como-executar"></a>`
-
 ## Como executar 🚀
 
 ### Pré-requisitos
@@ -198,8 +193,6 @@ npm run build
 
 > Observação: a proteção completa das rotas administrativas com JWT e RBAC faz parte do escopo priorizado da Sprint 2.
 
-`<a id="documentacao"></a>`
-
 ## Documentação 📁
 
 Toda a documentação do projeto está centralizada em `DOCS/`.
@@ -251,33 +244,6 @@ O backlog do projeto está organizado em documentos complementares para facilita
 | Sprint 02 | ![Status](https://img.shields.io/badge/Status-Em%20andamento-FACC15) | 26/05/2026       | [Abrir](DOCS/sprints/sprint-02/README.md) |
 | Sprint 03 | ![Status](https://img.shields.io/badge/Status-Planejamento-3B82F6)   | 22/06/2026       | [Abrir](DOCS/sprints/sprint-03/README.md) |
 
-## Estrutura do Repositório 📂
-
-```text
-.
-2dsm ABP
-|   ├── backend
-|   │   ├── data
-|   │   └── src
-|   │       ├── asset
-|   │       │   └── uploads
-|   │       ├── controllers
-|   │       ├── routes
-|   │       └── server
-|   │           └── config
-|   ├── frontend
-|   ├── .env
-|   ├── docker-compose
-|   └── init
-└── README.md
-├── DOCS
-│   ├── processo
-│   ├── produto
-│   ├── referencias
-│   ├── sprints
-│   └── README.md
-```
-
 ### Organização das Pastas 📋
 
 - `2dsm ABP/`: Aplicação principal com frontend, backend, banco e orquestração local.
@@ -290,15 +256,6 @@ O backlog do projeto está organizado em documentos complementares para facilita
 - `Rota SWAGGER`: http://localhost:3666/api/
 - `Rota BackEnd publico`: http://localhost:3666/api/
 - `Rota BackEnd ADMIN`: http://localhost:3666/admin/
-
-`<a id="aplicacao"></a>`
-===
-
-| Sprint    | Status                                                              | Entrega prevista | Frentes principais                                                   | Documento                              |
-| --------- | ------------------------------------------------------------------- | ---------------- | -------------------------------------------------------------------- | -------------------------------------- |
-| Sprint 01 | ![Status](https://img.shields.io/badge/Status-Conclu%C3%ADdo-success) | 05/05/2026       | Protótipo do fluxo público e documentação inicial                | [Abrir](DOCS/sprints/sprint-01/README.md) |
-| Sprint 02 | ![Status](https://img.shields.io/badge/Status-Em%20andamento-FACC15)  | 25/05/2026       | Integração real, persistência, frontend público e documentação | [Abrir](DOCS/sprints/sprint-02/README.md) |
-| Sprint 03 | ![Status](https://img.shields.io/badge/Status-Planejamento-3B82F6)    | 22/06/2026       | Área interna, operação administrativa e refinamentos finais       | [Abrir](DOCS/sprints/sprint-03/README.md) |
 
 ## Aplicação
 
