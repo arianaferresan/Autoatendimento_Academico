@@ -103,12 +103,12 @@ BEGIN
     RETURNING id INTO v_dsm_horario_id;
 
     INSERT INTO navigation_nodes (parent_id, title, content, link, display_order) VALUES 
-    (v_dsm_horario_id, '1º semestre', $$Horário de aulas do 1º semestre.$$, 'https://fatecjacarei.cps.sp.gov.br/o-lorem-ipsum-e-um-texto-modelo-da-industria-tipografica-e-de-impressao-4/', 1),
-    (v_dsm_horario_id, '2º semestre', $$Horário de aulas do 2º semestre.$$, 'https://fatecjacarei.cps.sp.gov.br/o-lorem-ipsum-e-um-texto-modelo-da-industria-tipografica-e-de-impressao-4/', 2),
-    (v_dsm_horario_id, '3º semestre', $$Horário de aulas do 3º semestre.$$, 'https://fatecjacarei.cps.sp.gov.br/o-lorem-ipsum-e-um-texto-modelo-da-industria-tipografica-e-de-impressao-4/', 3),
-    (v_dsm_horario_id, '4º semestre', $$Horário de aulas do 4º semestre.$$, 'https://fatecjacarei.cps.sp.gov.br/o-lorem-ipsum-e-um-texto-modelo-da-industria-tipografica-e-de-impressao-4/', 4),
-    (v_dsm_horario_id, '5º semestre', $$Horário de aulas do 5º semestre.$$, 'https://fatecjacarei.cps.sp.gov.br/o-lorem-ipsum-e-um-texto-modelo-da-industria-tipografica-e-de-impressao-4/', 5),
-    (v_dsm_horario_id, '6º semestre', $$Horário de aulas do 6º semestre.$$, 'https://fatecjacarei.cps.sp.gov.br/o-lorem-ipsum-e-um-texto-modelo-da-industria-tipografica-e-de-impressao-4/', 6);
+    (v_dsm_horario_id, '1º semestre', $$Horário de aulas do 1º semestre.$$, '/assets/knowledge-base/pdf/DSM-Horario-2026-1.pdf', 1),
+    (v_dsm_horario_id, '2º semestre', $$Horário de aulas do 2º semestre.$$, '/assets/knowledge-base/pdf/DSM-Horario-2026-1.pdf', 2),
+    (v_dsm_horario_id, '3º semestre', $$Horário de aulas do 3º semestre.$$, '/assets/knowledge-base/pdf/DSM-Horario-2026-1.pdf', 3),
+    (v_dsm_horario_id, '4º semestre', $$Horário de aulas do 4º semestre.$$, '/assets/knowledge-base/pdf/DSM-Horario-2026-1.pdf', 4),
+    (v_dsm_horario_id, '5º semestre', $$Horário de aulas do 5º semestre.$$, '/assets/knowledge-base/pdf/DSM-Horario-2026-1.pdf', 5),
+    (v_dsm_horario_id, '6º semestre', $$Horário de aulas do 6º semestre.$$, '/assets/knowledge-base/pdf/DSM-Horario-2026-1.pdf', 6);
 
     -- =========================================================================================
     -- MENU: GEOPROCESSAMENTO
@@ -152,11 +152,11 @@ BEGIN
     RETURNING id INTO v_geo_horario_id;
 
     INSERT INTO navigation_nodes (parent_id, title, content, link, display_order) VALUES 
-    (v_geo_horario_id, '1º semestre', NULL, 'https://fatecjacarei.cps.sp.gov.br/o-lorem-ipsum-e-um-texto-modelo-da-industria-tipografica-e-de-impressao-4/', 1),
-    (v_geo_horario_id, '2º semestre', NULL, 'https://fatecjacarei.cps.sp.gov.br/o-lorem-ipsum-e-um-texto-modelo-da-industria-tipografica-e-de-impressao-4/', 2),
-    (v_geo_horario_id, '3º semestre', NULL, 'https://fatecjacarei.cps.sp.gov.br/o-lorem-ipsum-e-um-texto-modelo-da-industria-tipografica-e-de-impressao-4/', 3),
+    (v_geo_horario_id, '1º semestre', NULL, '/assets/knowledge-base/pdf/Geo-Horario-2026-1.pdf', 1),
+    (v_geo_horario_id, '2º semestre', NULL, '/assets/knowledge-base/pdf/Geo-Horario-2026-1.pdf', 2),
+    (v_geo_horario_id, '3º semestre', NULL, '/assets/knowledge-base/pdf/Geo-Horario-2026-1.pdf', 3),
     (v_geo_horario_id, '4º semestre', $$O 4º semestre não está sendo oferecido$$, NULL, 4),
-    (v_geo_horario_id, '5º semestre', NULL, 'https://fatecjacarei.cps.sp.gov.br/o-lorem-ipsum-e-um-texto-modelo-da-industria-tipografica-e-de-impressao-4/', 5),
+    (v_geo_horario_id, '5º semestre', NULL, '/assets/knowledge-base/pdf/Geo-Horario-2026-1.pdf', 5),
     (v_geo_horario_id, '6º semestre', $$O 6º semestre não está sendo oferecido$$, NULL, 6);
 
     -- =========================================================================================
@@ -201,11 +201,11 @@ BEGIN
     RETURNING id INTO v_marh_horario_id;
 
     INSERT INTO navigation_nodes (parent_id, title, content, link, display_order) VALUES 
-    (v_marh_horario_id, '1º semestre', NULL, 'https://fatecjacarei.cps.sp.gov.br/o-lorem-ipsum-e-um-texto-modelo-da-industria-tipografica-e-de-impressao-4/', 1),
-    (v_marh_horario_id, '2º semestre', NULL, 'https://fatecjacarei.cps.sp.gov.br/o-lorem-ipsum-e-um-texto-modelo-da-industria-tipografica-e-de-impressao-4/', 2),
-    (v_marh_horario_id, '3º semestre', NULL, 'https://fatecjacarei.cps.sp.gov.br/o-lorem-ipsum-e-um-texto-modelo-da-industria-tipografica-e-de-impressao-4/', 3),
-    (v_marh_horario_id, '4º semestre', NULL, 'https://fatecjacarei.cps.sp.gov.br/o-lorem-ipsum-e-um-texto-modelo-da-industria-tipografica-e-de-impressao-4/', 4),
-    (v_marh_horario_id, '5º semestre', NULL, 'https://fatecjacarei.cps.sp.gov.br/o-lorem-ipsum-e-um-texto-modelo-da-industria-tipografica-e-de-impressao-4/', 5),
+    (v_marh_horario_id, '1º semestre', NULL, '/assets/knowledge-base/pdf/MARH-Horario-2026-1.pdf', 1),
+    (v_marh_horario_id, '2º semestre', NULL, '/assets/knowledge-base/pdf/MARH-Horario-2026-1.pdf', 2),
+    (v_marh_horario_id, '3º semestre', NULL, '/assets/knowledge-base/pdf/MARH-Horario-2026-1.pdf', 3),
+    (v_marh_horario_id, '4º semestre', NULL, '/assets/knowledge-base/pdf/MARH-Horario-2026-1.pdf', 4),
+    (v_marh_horario_id, '5º semestre', NULL, '/assets/knowledge-base/pdf/MARH-Horario-2026-1.pdf', 5),
     (v_marh_horario_id, '6º semestre', $$O 6º semestre não está sendo oferecido$$, NULL, 6);
 
     -- =========================================================================================

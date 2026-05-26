@@ -3,16 +3,20 @@ import { useState } from 'react';
 // Avatar do bot
 function BotAvatar() {
   return (
-    <div className="shrink-0 w-8 h-8 rounded-full overflow-hidden bg-[#005C6D] flex items-center justify-center">
-      <img
-        src="/foto-bot.png"
-        alt="bot"
-        className="w-full h-full object-cover"
-        onError={(e) => {
-          (e.target as HTMLImageElement).outerHTML = '<span class="text-base">🤖</span>';
-        }}
-      />
-    </div>
+    <img
+      src="/foto-bot.svg"
+      alt="bot"
+      style={{
+        width: '32px',
+        height: '32px',
+        borderRadius: '50%',
+        border: '2px solid rgba(0, 92, 109, 0.6)',
+        padding: '1px',
+      }}
+      onError={(e) => {
+        (e.target as HTMLImageElement).outerHTML = '<span style="font-size:20px">🤖</span>';
+      }}
+    />
   );
 }
 
