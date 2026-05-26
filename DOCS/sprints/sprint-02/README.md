@@ -2,7 +2,7 @@
 
 ## Status
 
-![Status](https://img.shields.io/badge/Status-Em%20andamento-FACC15)
+![Status](https://img.shields.io/badge/Status-Conclu%C3%ADdo-success)
 
 ## Período
 
