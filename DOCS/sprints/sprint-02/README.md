@@ -8,7 +8,7 @@
 
 | Marco | Data |
 | --- | --- |
-| Entrega prevista | 25/05/2026 |
+| Entrega prevista | 26/05/2026 |
 
 ## Objetivo
 
