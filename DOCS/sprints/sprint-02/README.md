@@ -51,8 +51,8 @@ Transformar o MVP mockado da Sprint 1 em um fluxo público real, integrado e rep
 
 | ID | Descrição | Autor(es) | Data | Pontuação | Status |
 | --- | --- | --- | --- | --- | --- |
-| BD03.1 | Revisar modelagem relacional do dominio | William, Lucas | - | 27 | ✅ |
-| BD03.2 | Ampliar seed do banco com base no Desafio.pdf | William | - | 28 | ✅ |
+| BD03.1 | Revisar modelagem relacional do dominio | William, Lucas | 25/05 | 27 | ✅ |
+| BD03.2 | Ampliar seed do banco com base no Desafio.pdf | William | 25/05 | 28 | ✅ |
 | DW01.1.1 | Revisão/remodelagem de protótipos | Pedro | 24/05 | 21 | ✅ |
 | DW01.1.2 | Página da tela inicial | Pedro | 19/05 | 5 | ✅ |
 | DW01.1.3 | Chatbot | Pedro | 19/05 | 5 | ✅ |
@@ -60,8 +60,8 @@ Transformar o MVP mockado da Sprint 1 em um fluxo público real, integrado e rep
 | DW01.1.5 | Página de login | Pedro | 19/05 | 5 | ✅ |
 | DW02 | Substituir navegacao mockada por API | Eloah, William | 24/05 | 34 | ✅ |
 | DW07 | Reorganizar frontend para integracao real | Eloah | 24/05 | 55 | ✅ |
-| DW08.1.1 | Implementar tela de email | Eloah, William | - | 21 | ✅ |
-| DW08.1.2 | Implementar Frontend | Eloah | - | 10 | ✅ |
+| DW08.1.1 | Implementar tela de email | Eloah, William | 25/05 | 21 | ✅ |
+| DW08.1.2 | Implementar Frontend | Eloah | 25/05 | 10 | ✅ |
 | DW08.1.3 | Implementar Backend | William | 24/05 | 11 | ✅ |
 | ES01.1 | Revisar README principal | Luiza | 18/05 | 2 | ✅ |
 | ES01.2 | Revisar indice da documentacao | Luiza | 18/05 | 2 | ✅ |
@@ -75,12 +75,12 @@ Transformar o MVP mockado da Sprint 1 em um fluxo público real, integrado e rep
 | ES01.10 | Reorganizar escopo da Sprint 3 | Luiza | 18/05 | 2 | ✅ |
 | ES01.11 | Validar READMEs das pastas principais | Luiza | 18/05 | 2 | ✅ |
 | ES01.12 | Quebrar backlog da Sprint 2 em tasks rastreaveis | Felipe | 19/05 | 2 | ✅ |
-| ES01.13 | Consolidar burndown e evidencias de colaboracao da Sprint 2 | Felipe | - | 2 | ✅ |
-| ES01.14 | Rodar checklist final da rubrica da Sprint 2 | Felipe, Luiza | - | 4 | ✅ |
+| ES01.13 | Consolidar burndown e evidencias de colaboracao da Sprint 2 | Felipe | 25/05 | 2 | ✅ |
+| ES01.14 | Rodar checklist final da rubrica da Sprint 2 | Felipe, Luiza | 25/05 | 4 | ✅ |
 | ES01.15 | Revisar diagrama de Casos de Uso | Ariana | 24/05 | 2 | ✅ |
-| ES01.16 | Produzir diagrama de Classes | Ariana | - | 2 | ✅ |
+| ES01.16 | Produzir diagrama de Classes | Ariana | 25/05 | 2 | ✅ |
 | TP01 | Definir perfis de acesso do sistema | Lucas | 24/05 | 21 | ✅ |
-| TP04 | Persistir envio de duvidas | Eloah, William | - | 34 | ✅ |
+| TP04 | Persistir envio de duvidas | Eloah, William | 25/05 | 34 | ✅ |
 | TP06.1.1 | Implementar login com JWT e Bearer Token | Lucas | 24/05 | 17 | ✅ |
 | TP06.1.2 | Criação de Middleware para proteção de rotas | Lucas | 24/05 | 17 | ✅ |
 | TP06.2 | Proteger rotas administrativas | William | 24/05 | 17 | ✅ |
@@ -90,9 +90,9 @@ Transformar o MVP mockado da Sprint 1 em um fluxo público real, integrado e rep
 | TP07.2.1 | Padronização de rotas | Lucas, William | 24/05 | 27 | ✅ |
 | TP07.2.2 | Login | Lucas | 24/05 | 10 | ✅ |
 | TP07.2.3 | Geral | William | 24/05 | 17 | ✅ |
-| TP08.1 | Criar .env.example | William | - | 11 | ✅ |
+| TP08.1 | Criar .env.example | William | 25/05 | 11 | ✅ |
 | TP08.2 | Completar docker-compose.yml | William, Eloah | 24/05 | 12 | ✅ |
-| TP08.3 | Validar execucao integrada do ambiente | Luiza | - | 11 | ✅ |
+| TP08.3 | Validar execucao integrada do ambiente | Luiza | 25/05 | 11 | ✅ |
 | TP09 | Aplicar hash seguro e proteger dados sensiveis | Lucas | 24/05 | 21 | ✅ |
 
 
