@@ -46,7 +46,7 @@ export default function WelcomeScreen({ onSelect }: WelcomeScreenProps) {
       <main className="flex flex-1 flex-col items-center justify-center px-6 py-12 gap-6">
         <div className="flex items-center gap-3">
           <h1 className="text-3xl font-extrabold text-gray-900">Olá! eu sou o FAQtec</h1>
-          <img src="/foto-bot.png"
+          <img src="/foto-bot.svg"
             alt="FAQtec"
             className="h-20 sm:h-24 object-contain"
             onError={(e) => {
