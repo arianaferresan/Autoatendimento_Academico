@@ -1,3 +1,4 @@
+import { EvidenceList } from './ChatComponents';
 import { useEffect, useRef, useState } from 'react';
 import { useChatFlow } from '../hooks/useChatFlow';
 import { useChatContext } from '../state/ChatContext';
@@ -8,15 +9,17 @@ import {
   ChipsRow, ConfirmRow, DoubtForm, RatingCard, RestartButton,
 } from './ChatComponents';
 
+
+
 interface ChatScreenProps {
-  onBack:   () => void;
+  onBack: () => void;
   userType: UserType;
 }
 
 interface CourseTab {
-  id:    number;
+  id: number;
   label: string;
-  full:  string;
+  full: string;
 }
 
 export default function ChatScreen({ onBack, userType }: ChatScreenProps) {
@@ -34,9 +37,9 @@ export default function ChatScreen({ onBack, userType }: ChatScreenProps) {
       const tabs = res.options
         .filter((o) => !o.title.toLowerCase().includes('não sou aluno'))
         .map((o) => ({
-          id:    o.id,
+          id: o.id,
           label: o.title,
-          full:  o.title,
+          full: o.title,
         }));
       setCourseTabs(tabs);
     });
@@ -88,7 +91,7 @@ export default function ChatScreen({ onBack, userType }: ChatScreenProps) {
               key={item.id}
               label={item.label}
               onYes={() => { removeItem(item.id); item.onYes!(); }}
-              onNo={() =>  { removeItem(item.id); item.onNo!(); }}
+              onNo={() => { removeItem(item.id); item.onNo!(); }}
             />
           ) : null;
 
@@ -105,6 +108,12 @@ export default function ChatScreen({ onBack, userType }: ChatScreenProps) {
       case 'restart':
         return <RestartButton key={item.id} onRestart={onBack} />;
 
+      case 'evidenceList':
+        return item.evidences !== undefined
+          ? <EvidenceList key={item.id} items={item.evidences} />
+          : null;
+
+      
       default:
         return null;
     }

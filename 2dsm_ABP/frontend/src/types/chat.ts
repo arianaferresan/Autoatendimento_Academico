@@ -40,7 +40,8 @@ export type ChatItemType =
   | 'confirm'
   | 'doubtForm'
   | 'ratingCard'
-  | 'restart';
+  | 'restart'
+  | 'evidenceList';
 
 export interface ChatItem {
   id:       number;
@@ -51,6 +52,7 @@ export interface ChatItem {
   options?: string[];
   label?:   string;
   isAluno?: boolean;
+  evidences?: { label: string; url: string }[];
   onSelect?: (opt: string) => void;
   onYes?:    () => void;
   onNo?:     () => void;

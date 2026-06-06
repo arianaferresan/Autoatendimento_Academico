@@ -28,6 +28,9 @@ services:
     build: ./frontend
     ports:
        - "5175:5175"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
     depends_on:
       - backend
     networks:

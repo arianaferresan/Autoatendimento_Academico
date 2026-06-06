@@ -38,11 +38,11 @@ export function useChatFlow(initialUserType?: string) {
         onRate: (rating) => {
           submitRating({ rating, userType: userType ?? 'externo' }).catch(console.warn);
           const msg: Record<string, string> = {
-            'Ruim':        'Lamentamos que sua experiência não tenha sido satisfatória. Vamos trabalhar para melhorar! 😔',
-            'Satisfatório':'Obrigado pelo feedback! Estamos sempre buscando melhorar. 🙂',
-            'Bom':         'Fico feliz que tenha sido útil! Sempre que precisar, estarei aqui. 😊',
-            'Muito bom':   'Que ótimo! Fico muito feliz em ter ajudado! 😄',
-            'Ótimo':       'Uau, que avaliação incrível! Obrigado pela confiança! 🌟',
+            'Ruim': 'Lamentamos que sua experiência não tenha sido satisfatória. Vamos trabalhar para melhorar! 😔',
+            'Satisfatório': 'Obrigado pelo feedback! Estamos sempre buscando melhorar. 🙂',
+            'Bom': 'Fico feliz que tenha sido útil! Sempre que precisar, estarei aqui. 😊',
+            'Muito bom': 'Que ótimo! Fico muito feliz em ter ajudado! 😄',
+            'Ótimo': 'Uau, que avaliação incrível! Obrigado pela confiança! 🌟',
           };
           addItem({ type: 'typing' });
           setTimeout(() => {
@@ -65,10 +65,10 @@ export function useChatFlow(initialUserType?: string) {
       removeLastTyping();
       const opts = onContinue
         ? ['Continuar atendimento', 'Finalizar atendimento']
-        : ['Nos envie sua dúvida',  'Finalizar atendimento'];
+        : ['Nos envie sua dúvida', 'Finalizar atendimento'];
 
       addItem({
-        type:  'chips',
+        type: 'chips',
         label: onContinue ? 'Como deseja prosseguir?' : 'O que você gostaria de fazer?',
         options: opts,
         onSelect: (opt) => {
@@ -83,7 +83,7 @@ export function useChatFlow(initialUserType?: string) {
             setTimeout(() => {
               removeLastTyping();
               addItem({
-                type:    'doubtForm',
+                type: 'doubtForm',
                 isAluno: userType === 'aluno',
                 onSubmit: (email, doubt) => {
                   submitDoubt({ email, doubt, userType: userType ?? 'externo' })
@@ -120,8 +120,8 @@ export function useChatFlow(initialUserType?: string) {
     setTimeout(() => {
       removeLastTyping();
       addItem({
-        type:    'chips',
-        label:   'Conseguiu encontrar o que queria?',
+        type: 'chips',
+        label: 'Conseguiu encontrar o que queria?',
         options: ['Sim', 'Não'],
         onSelect: (opt) => {
           userMsg(opt);
@@ -140,16 +140,23 @@ export function useChatFlow(initialUserType?: string) {
     addItem({ type: 'typing' });
     setTimeout(() => {
       removeLastTyping();
-      if (data.content)    botMsg(data.content);
-      if (data.chunk_path) addItem({ type: 'link', url: data.chunk_path, label: 'Acesse o arquivo abaixo:' });
-      if (data.link)       addItem({ type: 'link', url: data.link, label: 'Acesse o link abaixo:' });
+      if (data.content) botMsg(data.content);
+
+      // monta lista de evidências e exibe num único item
+      const evidences: { label: string; url: string }[] = [];
+      if (data.chunk_path) evidences.push({ label: 'Documento de referência', url: data.chunk_path });
+      if (data.link) evidences.push({ label: 'Link oficial', url: data.link });
+      if (evidences.length > 0) {
+        addItem({ type: 'evidenceList', evidences });
+      }
+
       askSatisfacao(onBack);
     }, 900);
   }, [addItem, removeLastTyping, botMsg, askSatisfacao]);
 
   const navigateNode = useCallback((
     nodeId: number | null,
-    label:  string,
+    label: string,
     onBack: () => void,
     skipContent = false,
   ) => {
@@ -168,7 +175,7 @@ export function useChatFlow(initialUserType?: string) {
           return;
         }
 
-        const options   = response.options.map((o) => o.title);
+        const options = response.options.map((o) => o.title);
         const optionMap = Object.fromEntries(response.options.map((o) => [o.title, o.id]));
 
         addItem({
@@ -215,15 +222,15 @@ export function useChatFlow(initialUserType?: string) {
             const externoId = await fetchExternoNodeId();
             if (externoId !== null) {
               navigateNode(externoId, 'Como posso te ajudar hoje?', () =>
-                navigateNode(externoId, 'Como posso te ajudar hoje?', () => {}));
+                navigateNode(externoId, 'Como posso te ajudar hoje?', () => { }));
             } else {
               // fallback: mostra todos os nós raiz
               navigateNode(null, 'Como posso te ajudar hoje?', () =>
-                navigateNode(null, 'Como posso te ajudar hoje?', () => {}));
+                navigateNode(null, 'Como posso te ajudar hoje?', () => { }));
             }
           } catch {
             navigateNode(null, 'Como posso te ajudar hoje?', () =>
-              navigateNode(null, 'Como posso te ajudar hoje?', () => {}));
+              navigateNode(null, 'Como posso te ajudar hoje?', () => { }));
           }
         }, 600);
       }
@@ -239,7 +246,7 @@ export function useChatFlow(initialUserType?: string) {
       navigateNode(
         courseNodeId,
         `Sobre ${courseTitle}, o que deseja consultar?`,
-        () => navigateNode(courseNodeId, `Sobre ${courseTitle}, o que deseja consultar?`, () => {}),
+        () => navigateNode(courseNodeId, `Sobre ${courseTitle}, o que deseja consultar?`, () => { }),
         true,
       );
     }, 900);
