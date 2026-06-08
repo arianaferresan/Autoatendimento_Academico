@@ -1,6 +1,15 @@
 import { pool } from "@/server/config/database.js";
 
-import type { Node, SupportContact, FullfillmentLog} from "@/types/typesAdmin.js";
+import type {
+  Node,
+  SupportContact,
+  FullfillmentLog,
+  LogStat,
+  SupportContactStat,
+  InquiryStat,
+} from "@/types/typesAdmin.js";
+
+import type { UserRow } from "@/types/types.js";
 
 async function searchAllNodes(): Promise<Node[]> {
   const result = await pool.query<Node>(
@@ -125,9 +134,13 @@ async function getSupportContactById(
   return result.rows[0];
 }
 
-async function getSupportContactAll(): Promise<SupportContact[]> {
+async function getSupportContactAll(
+  limit: number,
+  offset: number,
+): Promise<SupportContact[]> {
   const result = await pool.query<SupportContact>(
-    `SELECT id, email, message, status, created_at, closed_at, answered_by FROM support_contacts ORDER BY created_at DESC`,
+    `SELECT id, email, message, status, created_at, closed_at, answered_by FROM support_contacts ORDER BY created_at DESC LIMIT $1 OFFSET $2`,
+    [limit, offset],
   );
   return result.rows;
 }
@@ -135,26 +148,92 @@ async function getSupportContactAll(): Promise<SupportContact[]> {
 async function updateSupportContactById(
   id: number,
   status: SupportContact["status"],
-  answered_by: string | null,
+  answered_by: number | null,
 ): Promise<SupportContact | undefined> {
   const result = await pool.query<SupportContact>(
-  `
+    `
   UPDATE support_contacts 
   SET status = $2::inquiry_status, answered_by = $3, closed_at = CASE WHEN $2::inquiry_status = 'RESPONDIDA' THEN NOW() ELSE closed_at END
   WHERE id = $1
   RETURNING *`,
-  [id, status, answered_by],
-);
+    [id, status, answered_by],
+  );
   return result.rows[0];
 }
 
-async function getSupportContactByStatus(status: SupportContact["status"], offset: number ): Promise<SupportContact[]> {
+async function getSupportContactByStatus(
+  status: SupportContact["status"],
+  limit: number,
+  offset: number,
+): Promise<SupportContact[]> {
   const result = await pool.query<SupportContact>(
-    `SELECT id, email, message, status, created_at, closed_at, answered_by FROM support_contacts WHERE status = $1 LIMIT 10 OFFSET $2`,
-    [status, offset],
+    `SELECT id, email, message, status, created_at, closed_at, answered_by 
+     FROM support_contacts 
+     WHERE status = $1 
+     ORDER BY created_at DESC LIMIT $2 OFFSET $3`,
+    [status, limit, offset],
   );
   return result.rows;
-};
+}
+async function getSupportContactStats(): Promise<SupportContactStat[]> {
+  const result = await pool.query<SupportContactStat>(
+    `SELECT status, COUNT(*)::int AS count 
+     FROM support_contacts 
+     GROUP BY status`,
+  );
+  return result.rows;
+}
+
+async function getInquiryStats(): Promise<InquiryStat[]> {
+  const query = `
+    SELECT
+        TO_CHAR(fl.created_at, 'YYYY-MM') AS month,
+        (id_text)::int AS inquiry_id,
+        nn.title,
+        COUNT(*)::int AS count
+    FROM
+        fulfillment_logs fl,
+        jsonb_array_elements_text(fl.inquiry_ids) AS id_text
+    JOIN
+        navigation_nodes nn ON (id_text)::int = nn.id
+    WHERE
+        jsonb_array_length(fl.inquiry_ids) > 0
+    GROUP BY
+        month,
+        inquiry_id,
+        nn.title
+    ORDER BY
+        month DESC, count DESC;
+  `;
+  const { rows } = await pool.query<InquiryStat>(query);
+  return rows;
+}
+
+async function getInquiryStatsLeaf(): Promise<InquiryStat[]> {
+  const query = `
+    SELECT
+        TO_CHAR(fl.created_at, 'YYYY-MM') AS month,
+        (id_text)::int AS inquiry_id,
+        nn.title,
+        COUNT(*)::int AS count
+    FROM
+        fulfillment_logs fl,
+        jsonb_array_elements_text(fl.inquiry_ids) AS id_text
+    JOIN
+        navigation_nodes nn ON (id_text)::int = nn.id
+    WHERE
+        jsonb_array_length(fl.inquiry_ids) > 0 AND
+        NOT EXISTS (SELECT 1 FROM navigation_nodes child WHERE child.parent_id = nn.id)
+    GROUP BY
+        month,
+        inquiry_id,
+        nn.title
+    ORDER BY
+        month DESC, count DESC;
+  `;
+  const { rows } = await pool.query<InquiryStat>(query);
+  return rows;
+}
 
 //Melhorar essa função - FUNÇÂO
 async function deleteSupportContactById(id: number): Promise<void> {
@@ -166,37 +245,18 @@ async function deleteSupportContactById(id: number): Promise<void> {
   );
 }
 
-// Repos para logs de atendimento - FUNÇÂO
-async function getAllFulfillmentLogs(): Promise<any[]> {
-  const result = await pool.query(
-    `SELECT session_id, navigation_flow, inquiry_ids, flag FROM fulfillment_logs ORDER BY created_at DESC`,
-  );
-  return result.rows;
-};
-
-async function createFulfillmentLog(data: Omit<FullfillmentLog, 'session_id'>): Promise<void> {
+async function createFulfillmentLog(
+  data: Omit<FullfillmentLog, "session_id">,
+): Promise<void> {
   await pool.query(
     `INSERT INTO fulfillment_logs ( navigation_flow, inquiry_ids, flag) VALUES ($1, $2, $3)`,
-    [data.navigation_flow, data.inquiry_ids, data.flag],
+    [
+      JSON.stringify(data.navigation_flow),
+      JSON.stringify(data.inquiry_ids),
+      data.flag,
+    ],
   );
-};
-type UserRow = {
-  id: number;
-  username: string;
-  role: string;
-  name: string;
-  active: boolean;
-  created_at: Date;
-};
-
-type FulfillmentLog = {
-  id: number;
-  session_id: string;
-  navigation_flow: object[];
-  inquiry_ids: object[];
-  flag: 'ATENDEU' | 'NAO_ATENDEU' | null;
-  created_at: Date;
-};
+}
 
 async function getAllSecretariaUsers(): Promise<UserRow[]> {
   const result = await pool.query<UserRow>(
@@ -214,7 +274,13 @@ async function createSecretariaUser(
     `INSERT INTO users (username, password_hash, role, name) VALUES ($1, $2, 'secretaria', $3) RETURNING id, username, role, name, active, created_at`,
     [username, password_hash, name],
   );
-  return result.rows[0];
+  const user = result.rows[0];
+  if (!user) {
+    throw new Error(
+      "Falha ao criar usuário: nenhum dado foi retornado após a inserção.",
+    );
+  }
+  return user;
 }
 
 async function deleteUserById(id: number): Promise<boolean> {
@@ -225,11 +291,39 @@ async function deleteUserById(id: number): Promise<boolean> {
   return (result.rowCount ?? 0) > 0;
 }
 
-async function getAllLogs(): Promise<FulfillmentLog[]> {
-  const result = await pool.query<FulfillmentLog>(
-    `SELECT id, session_id, navigation_flow, inquiry_ids, flag, created_at FROM fulfillment_logs ORDER BY created_at DESC`,
+async function getAllLogs(
+  limit: number,
+  offset: number,
+): Promise<FullfillmentLog[]> {
+  const result = await pool.query<FullfillmentLog>(
+    `SELECT id, session_id, navigation_flow, inquiry_ids, flag, created_at 
+     FROM fulfillment_logs 
+     ORDER BY created_at DESC
+     LIMIT $1 OFFSET $2`,
+    [limit, offset],
   );
   return result.rows;
+}
+
+async function getLogStats(): Promise<LogStat[]> {
+  const query = `
+    SELECT
+        TO_CHAR(created_at, 'YYYY-MM') AS month,
+        (navigation_flow -> 0 ->> 'title') AS category,
+        COUNT(*)::int AS log_count
+    FROM
+        fulfillment_logs
+    WHERE
+        (navigation_flow -> 0 ->> 'title') IN ('DSM', 'Não sou aluno', 'MARH', 'Geoprocessamento')
+    GROUP BY
+        month,
+        category
+    ORDER BY
+        month DESC,
+        category ASC;
+  `;
+  const { rows } = await pool.query<LogStat>(query);
+  return rows;
 }
 
 export {
@@ -244,10 +338,13 @@ export {
   deleteSupportContactById,
   getSupportContactAll,
   getSupportContactByStatus,
-  getAllFulfillmentLogs,
+  getSupportContactStats,
   createFulfillmentLog,
   getAllSecretariaUsers,
   createSecretariaUser,
   deleteUserById,
   getAllLogs,
+  getLogStats,
+  getInquiryStats,
+  getInquiryStatsLeaf,
 };

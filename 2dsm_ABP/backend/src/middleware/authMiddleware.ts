@@ -1,7 +1,6 @@
-import type { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import type { JwtPayload, UserRole } from '../types.js';
-
+import type { Request, Response, NextFunction } from "express";
+import jwt from "jsonwebtoken";
+import type { JwtPayload, UserRole } from "../types/types.js";
 
 // Extende o tipo Request do Express para carregar o usuário autenticado
 declare global {
@@ -18,17 +17,17 @@ declare global {
 export function authMiddleware(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): void {
   const authHeader = req.headers.authorization;
 
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    res.status(401).json({ message: 'Token não fornecido.' });
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    res.status(401).json({ message: "Token não fornecido." });
     return;
   }
 
-  const token = authHeader.split(' ')[1] ?? '';
-  const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret_troque_em_producao';
+  const token = authHeader.split(" ")[1] ?? "";
+  const JWT_SECRET = process.env.JWT_SECRET || "dev_secret_troque_em_producao";
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as unknown as JwtPayload;
@@ -36,9 +35,11 @@ export function authMiddleware(
     next();
   } catch (err) {
     if (err instanceof jwt.TokenExpiredError) {
-      res.status(401).json({ message: 'Token expirado. Faça login novamente.' });
+      res
+        .status(401)
+        .json({ message: "Token expirado. Faça login novamente." });
     } else {
-      res.status(401).json({ message: 'Token inválido.' });
+      res.status(401).json({ message: "Token inválido." });
     }
   }
 }
@@ -49,13 +50,13 @@ export function authMiddleware(
 export function authorize(...roles: UserRole[]) {
   return (req: Request, res: Response, next: NextFunction): void => {
     if (!req.user) {
-      res.status(401).json({ message: 'Não autenticado.' });
+      res.status(401).json({ message: "Não autenticado." });
       return;
     }
 
     if (!roles.includes(req.user.role)) {
       res.status(403).json({
-        message: 'Acesso negado. Você não tem permissão para este recurso.',
+        message: "Acesso negado. Você não tem permissão para este recurso.",
       });
       return;
     }

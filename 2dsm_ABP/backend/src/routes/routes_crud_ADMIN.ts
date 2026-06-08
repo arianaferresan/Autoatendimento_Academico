@@ -12,12 +12,15 @@ import {
   updateSupportContactStatus,
   deleteSupportContact,
   getAllSupportContacts,
-  getAllFulfillmentLogs,
   getSupportContactsByStatus,
+  getSupportContactStats,
   getAllSecretariaUsers,
   createSecretariaUser,
   deleteUser,
+  getLogStats,
   getAllLogs,
+  getInquiryStats,
+  getInquiryStatsLeaf,
 } from "@/controllers/adminController.js";
 
 const routerADMIN = Router();
@@ -68,6 +71,13 @@ routerADMIN.get(
   getAllSupportContacts,
 );
 
+// Rota para estatísticas de perguntas
+routerADMIN.get(
+  "/perguntas/stats",
+  authorize("admin", "secretaria"),
+  getSupportContactStats,
+);
+
 //GET pergunta por ID
 routerADMIN.get<{ id: string }>(
   "/perguntas/:id",
@@ -98,14 +108,20 @@ routerADMIN.delete<{ id: string }>(
 
 // ─── Logs (fulfillment_logs)─────────────────────────────────────────────
 
-routerADMIN.get("/logs", authorize("admin"), getAllFulfillmentLogs);
+routerADMIN.get("/logs", authorize("admin"), getAllLogs);
+
+// Rota para estatísticas de logs
+routerADMIN.get("/logs/stats", authorize("admin"), getLogStats);
+
+// Rota para estatísticas de perguntas mais acessadas
+routerADMIN.get("/logs/inquiry-stats", authorize("admin"), getInquiryStats);
+
+// Rota para estatísticas de perguntas folha (respostas finais)
+routerADMIN.get("/logs/inquiry-stats-leaf", authorize("admin"), getInquiryStatsLeaf);
 
 // ─── Usuários (Secretária) ─────────────────────────────────────────────────────
 routerADMIN.get("/usuarios", authorize("admin"), getAllSecretariaUsers);
 routerADMIN.post("/usuarios", authorize("admin"), createSecretariaUser);
 routerADMIN.delete("/usuarios/:id", authorize("admin"), deleteUser);
-
-// ─── Logs ──────────────────────────────────────────────────────────────────────
-routerADMIN.get("/logs", authorize("admin"), getAllLogs);
 
 export default routerADMIN;

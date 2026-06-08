@@ -11,7 +11,7 @@ export interface UserRow {
   id: number;
   username: string;
   password_hash: string;
-  role: 'admin' | 'secretaria';
+  role: UserRole;
   name: string;
   active: boolean;
   created_at: Date;
