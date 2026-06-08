@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from "bcrypt";
 import {
   deleteNodeById,
   searchAllNodes,
@@ -11,12 +11,15 @@ import {
   getSupportContactAll,
   getSupportContactById,
   getSupportContactByStatus,
-  getAllFulfillmentLogs,
+  getSupportContactStats,
   createFulfillmentLog,
   getAllSecretariaUsers,
   createSecretariaUser,
   deleteUserById,
   getAllLogs,
+  getLogStats,
+  getInquiryStats,
+  getInquiryStatsLeaf,
 } from "@/repos/adminRpository.js";
 
 import type {
@@ -87,25 +90,27 @@ export const getSupportContactByIdService = async (
   return contact;
 };
 
-export const getAllSupportContactsService = async (): Promise<
-  SupportContact[]
-> => {
-  const contacts = await getSupportContactAll();
+export const getAllSupportContactsService = async (
+  limit: number,
+  offset: number,
+): Promise<SupportContact[]> => {
+  const contacts = await getSupportContactAll(limit, offset);
   return contacts;
 };
 
 export const getSupportContactByStatusService = async (
   status: SupportContact["status"],
+  limit: number,
   offset: number,
 ): Promise<SupportContact[]> => {
-  const contacts = await getSupportContactByStatus(status, offset);
+  const contacts = await getSupportContactByStatus(status, limit, offset);
   return contacts;
 };
 
 export const updateSupportContactByIdService = async (
   id: number,
   status: SupportContact["status"],
-  answered_by: string | null,
+  answered_by: number | null,
 ): Promise<SupportContact | undefined> => {
   const updatedContact = await updateSupportContactById(
     id,
@@ -125,9 +130,16 @@ export const createFulfillmentLogService = async (
   await createFulfillmentLog(data);
 };
 
-export const getAllFulfillmentLogsService = async () => {
-  const logs = await getAllFulfillmentLogs();
-  return logs;
+export const getSupportContactStatsService = async () => {
+  return getSupportContactStats();
+};
+
+export const getInquiryStatsService = async () => {
+  return getInquiryStats();
+};
+
+export const getInquiryStatsLeafService = async () => {
+  return getInquiryStatsLeaf();
 };
 
 export const getAllSecretariaUsersService = async () => {
@@ -147,6 +159,12 @@ export const deleteUserService = async (id: number): Promise<boolean> => {
   return deleteUserById(id);
 };
 
-export const getAllLogsService = async () => {
-  return getAllLogs();
+export const getAllLogsService = async (limit: number, offset: number) => {
+  return getAllLogs(limit, offset);
+};
+
+export const getLogsStatsService = async () => {
+  // Aqui poderiam entrar regras de negócio, como calcular estatísticas a partir dos logs.
+  const stats = await getLogStats();
+  return stats;
 };

@@ -305,16 +305,165 @@ export const swaggerDocument = {
         security: [{ bearerAuth: [] }],
         description:
           "Retorna um histórico de todas as interações dos usuários com o chatbot.",
+        parameters: [
+          {
+            name: "limit",
+            in: "query",
+            description: "Número de registros a serem retornados (padrão: 20).",
+            schema: { type: "integer", default: 20 },
+          },
+          {
+            name: "offset",
+            in: "query",
+            description:
+              "Número de registros a pular para paginação (padrão: 0).",
+            schema: { type: "integer", default: 0 },
+          },
+        ],
         responses: {
           "200": {
             description: "Lista de logs retornada com sucesso.",
             content: {
               "application/json": {
-                schema: { type: "array", items: { $ref: "#/components/schemas/FulfillmentLog" } },
+                schema: {
+                  type: "array",
+                  items: { $ref: "#/components/schemas/FulfillmentLog" },
+                },
               },
             },
           },
           "500": { description: "Erro ao buscar logs." },
+        },
+      },
+    },
+    "/admin/logs/stats": {
+      get: {
+        tags: ["Admin - Logs"],
+        summary: "Retorna estatísticas de uso dos logs",
+        security: [{ bearerAuth: [] }],
+        description:
+          "Agrupa os logs por mês e categoria (curso/perfil) para gerar estatísticas de uso do chatbot.",
+        responses: {
+          "200": {
+            description: "Estatísticas retornadas com sucesso.",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      month: { type: "string", example: "2026-06" },
+                      category: { type: "string", example: "DSM" },
+                      log_count: { type: "integer", example: 42 },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          "500": { description: "Erro ao buscar estatísticas." },
+        },
+      },
+    },
+    "/admin/logs/inquiry-stats": {
+      get: {
+        tags: ["Admin - Logs"],
+        summary: "Retorna a contagem de cada pergunta final acessada",
+        security: [{ bearerAuth: [] }],
+        description:
+          "Analisa todos os logs, desagrega os IDs das perguntas (inquiry_ids) e retorna a contagem de quantas vezes cada ID foi acessado. Ideal para gerar histogramas de perguntas mais frequentes.",
+        responses: {
+          "200": {
+            description: "Estatísticas retornadas com sucesso.",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      month: {
+                        type: "string",
+                        example: "2026-06",
+                        description:
+                          "Mês em que os acessos foram registrados (formato YYYY-MM).",
+                      },
+                      inquiry_id: {
+                        type: "integer",
+                        example: 15,
+                        description: "ID da pergunta final (nó de resposta).",
+                      },
+                      title: {
+                        type: "string",
+                        example:
+                          "Qual o horário de funcionamento da secretaria?",
+                        description: "Título da pergunta final acessada.",
+                      },
+                      count: {
+                        type: "integer",
+                        example: 87,
+                        description:
+                          "Número de vezes que a pergunta foi acessada no mês.",
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          "500": { description: "Erro ao buscar estatísticas." },
+        },
+      },
+    },
+    "/admin/logs/inquiry-stats-leaf": {
+      get: {
+        tags: ["Admin - Logs"],
+        summary:
+          "Retorna a contagem de cada pergunta final (nó folha) acessada",
+        security: [{ bearerAuth: [] }],
+        description:
+          "Analisa todos os logs, desagrega os IDs das perguntas e retorna a contagem de quantas vezes cada **nó folha (resposta final)** foi acessado. Ideal para gerar histogramas de perguntas mais frequentes.",
+        responses: {
+          "200": {
+            description: "Estatísticas retornadas com sucesso.",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      month: {
+                        type: "string",
+                        example: "2026-06",
+                        description:
+                          "Mês em que os acessos foram registrados (formato YYYY-MM).",
+                      },
+                      inquiry_id: {
+                        type: "integer",
+                        example: 15,
+                        description: "ID da pergunta final (nó de resposta).",
+                      },
+                      title: {
+                        type: "string",
+                        example:
+                          "Qual o horário de funcionamento da secretaria?",
+                        description: "Título da pergunta final acessada.",
+                      },
+                      count: {
+                        type: "integer",
+                        example: 87,
+                        description:
+                          "Número de vezes que a pergunta foi acessada no mês.",
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          "500": { description: "Erro ao buscar estatísticas." },
         },
       },
     },
@@ -329,6 +478,21 @@ export const swaggerDocument = {
         ],
         description:
           "Retorna uma lista de todos os contatos de suporte (perguntas) para gerenciamento pela secretaria.",
+        parameters: [
+          {
+            name: "limit",
+            in: "query",
+            description: "Número de registros a serem retornados (padrão: 20).",
+            schema: { type: "integer", default: 20 },
+          },
+          {
+            name: "offset",
+            in: "query",
+            description:
+              "Número de registros a pular para paginação (padrão: 0).",
+            schema: { type: "integer", default: 0 },
+          },
+        ],
         responses: {
           "200": {
             description: "Lista de perguntas retornada com sucesso.",
@@ -347,31 +511,76 @@ export const swaggerDocument = {
         },
       },
     },
+    "/admin/perguntas/stats": {
+      get: {
+        tags: ["Admin - Perguntas"],
+        summary: "Retorna estatísticas de perguntas por status",
+        security: [{ bearerAuth: [] }],
+        description:
+          "Agrupa as perguntas por status (ABERTA, ATENDIMENTO, RESPONDIDA) e retorna a contagem de cada um.",
+        responses: {
+          "200": {
+            description: "Estatísticas retornadas com sucesso.",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      status: {
+                        type: "string",
+                        enum: ["ABERTA", "ATENDIMENTO", "RESPONDIDA"],
+                        example: "ABERTA",
+                      },
+                      count: { type: "integer", example: 15 },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          "500": { description: "Erro ao buscar estatísticas." },
+        },
+      },
+    },
     "/admin/perguntas/status/:status": {
       get: {
         tags: ["Admin - Perguntas"],
         summary: "Filtra perguntas por status",
         security: [{ bearerAuth: [] }],
-        description: "Retorna uma lista de perguntas de suporte com base no status fornecido, com paginação.",
+        description:
+          "Retorna uma lista de perguntas de suporte com base no status fornecido, com paginação.",
         parameters: [
           {
             name: "status",
             in: "path",
             required: true,
             description: "Status para filtrar as perguntas.",
-            schema: { type: "string", enum: ["ABERTA", "ATENDIMENTO", "RESPONDIDA"] },
+            schema: {
+              type: "string",
+              enum: ["ABERTA", "ATENDIMENTO", "RESPONDIDA"],
+            },
+          },
+          {
+            name: "limit",
+            in: "query",
+            description: "Número de registros a serem retornados (padrão: 10).",
+            schema: { type: "integer", default: 10 },
           },
           {
             name: "offset",
             in: "query",
-            required: true,
-            description: "Número de registros a pular para paginação.",
+            description:
+              "Número de registros a pular para paginação (padrão: 0).",
             schema: { type: "integer", default: 0 },
           },
         ],
         responses: {
           "200": { description: "Lista de perguntas retornada com sucesso." },
-          "400": { description: "Parâmetros 'status' ou 'offset' inválidos." },
+          "400": {
+            description: "Parâmetros 'status', 'limit' ou 'offset' inválidos.",
+          },
           "500": { description: "Erro interno no servidor." },
         },
       },
@@ -454,11 +663,6 @@ export const swaggerDocument = {
                     type: "string",
                     enum: ["ABERTA", "ATENDIMENTO", "RESPONDIDA"],
                     description: "Novo status da pergunta.",
-                  },
-                  answered_by: {
-                    type: "string",
-                    description:
-                      "Email do membro da secretaria que está respondendo.",
                   },
                 },
               },
@@ -569,7 +773,11 @@ export const swaggerDocument = {
         type: "object",
         properties: {
           id: { type: "integer", description: "ID único do log." },
-          session_id: { type: "string", format: "uuid", description: "ID da sessão do usuário." },
+          session_id: {
+            type: "string",
+            format: "uuid",
+            description: "ID da sessão do usuário.",
+          },
           navigation_flow: {
             type: "array",
             items: { type: "object" },
@@ -582,7 +790,7 @@ export const swaggerDocument = {
           },
           flag: {
             type: "string",
-            enum: ["ATENDEU", "NAO_ATENDEU"],
+            enum: ["ÓTIMO", "BOM", "MUITO BOM", "SATISFATÓRIO", "RUIM"],
             nullable: true,
             description: "Avaliação de satisfação do usuário.",
           },
@@ -595,7 +803,18 @@ export const swaggerDocument = {
         properties: {
           navigation_flow: { type: "array", items: { type: "object" } },
           inquiry_ids: { type: "array", items: { type: "integer" } },
-          flag: { type: "string", enum: ["ATENDEU", "NAO_ATENDEU"] },
+          flag: {
+            type: "string",
+            enum: ["ÓTIMO", "BOM", "MUITO BOM", "SATISFATÓRIO", "RUIM"],
+          },
+        },
+        example: {
+          navigation_flow: [
+            { id: 1, title: "DSM" },
+            { id: 5, title: "Horários" },
+          ],
+          inquiry_ids: [1, 5],
+          flag: "ÓTIMO",
         },
       },
       SupportContact: {
@@ -616,7 +835,11 @@ export const swaggerDocument = {
           },
           created_at: { type: "string", format: "date-time" },
           closed_at: { type: "string", format: "date-time", nullable: true },
-          answered_by: { type: "string", nullable: true },
+          answered_by: {
+            type: "integer",
+            nullable: true,
+            description: "ID do usuário que respondeu.",
+          },
         },
       },
       LoginCredentials: {

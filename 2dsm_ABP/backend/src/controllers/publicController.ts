@@ -53,16 +53,18 @@ export const createSupportContact = async (req: Request, res: Response) => {
         .json({ error: "Os campos 'email' e 'message' são obrigatórios." });
     }
 
-    // Adicionar validação de email aqui seria uma boa prática
+    // Validação do formato do email com uma expressão regular
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (typeof email !== "string" || !emailRegex.test(email)) {
+      return res.status(400).json({ error: "O e-mail fornecido é inválido." });
+    }
 
     await createSupportContactService(email, message);
 
-    res
-      .status(201)
-      .json({
-        message:
-          "Pergunta enviada com sucesso. Você receberá uma resposta no e-mail informado.",
-      });
+    res.status(201).json({
+      message:
+        "Pergunta enviada com sucesso. Você receberá uma resposta no e-mail informado.",
+    });
   } catch (error) {
     console.error("Erro ao criar contato de suporte:", error);
     res.status(500).json({ error: "Erro ao criar contato de suporte" });
@@ -71,11 +73,25 @@ export const createSupportContact = async (req: Request, res: Response) => {
 
 export const createFulfillmentLog = async (req: Request, res: Response) => {
   const { navigation_flow, inquiry_ids, flag } = req.body;
-  try{
+  try {
     if (!navigation_flow || !inquiry_ids || !flag) {
-      res.status(400).json({ error: "Campos obrigatórios: navigation_flow, inquiry_ids, flag" });
+      res
+        .status(400)
+        .json({
+          error: "Campos obrigatórios: navigation_flow, inquiry_ids, flag",
+        });
       return;
     }
+
+    const validFlags = ["ÓTIMO", "BOM", "MUITO BOM", "SATISFATÓRIO", "RUIM"];
+    if (!validFlags.includes(flag)) {
+      return res.status(400).json({
+        error: `Valor inválido para o campo 'flag'. Valores permitidos: ${validFlags.join(
+          ", ",
+        )}`,
+      });
+    }
+
     const logData = {
       navigation_flow,
       inquiry_ids,
@@ -84,8 +100,7 @@ export const createFulfillmentLog = async (req: Request, res: Response) => {
 
     await createFulfillmentLogService(logData);
     res.status(201).json({ message: "Log de fulfillment criado com sucesso" });
-
-  }catch(error){
+  } catch (error) {
     console.error("Erro ao criar log de fulfillment:", error);
     res.status(500).json({ error: "Erro ao criar log de fulfillment" });
   }

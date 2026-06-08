@@ -15,7 +15,13 @@ IF NOT EXISTS (
   SELECT 1
   FROM pg_type
   WHERE typname = 'satisfaction_flag'
-) THEN CREATE TYPE satisfaction_flag AS ENUM ('ATENDEU', 'NAO_ATENDEU');
+) THEN CREATE TYPE satisfaction_flag AS ENUM (
+  'ÓTIMO',
+  'BOM',
+  'MUITO BOM',
+  'SATISFATÓRIO',
+  'RUIM'
+);
 END IF;
 END;
 $$;
@@ -45,6 +51,7 @@ CREATE TABLE IF NOT EXISTS navigation_nodes (
 );
 CREATE INDEX idx_navigation_parent_id ON navigation_nodes(parent_id);
 CREATE INDEX idx_navigation_is_active ON navigation_nodes(is_active);
+
 -- Tabela de logs e satisfação 
 CREATE TABLE IF NOT EXISTS fulfillment_logs (
   id BIGSERIAL PRIMARY KEY,
@@ -54,6 +61,7 @@ CREATE TABLE IF NOT EXISTS fulfillment_logs (
   flag satisfaction_flag,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
 -- Tabela de Suporte 
 CREATE TABLE IF NOT EXISTS support_contacts (
   id SERIAL PRIMARY KEY,
@@ -62,5 +70,6 @@ CREATE TABLE IF NOT EXISTS support_contacts (
   status inquiry_status NOT NULL DEFAULT 'ABERTA',
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   closed_at TIMESTAMPTZ,
-  answered_by INT REFERENCES users(id) ON DELETE SET NULL
+  answered_by INT REFERENCES users(id) ON DELETE
+  SET NULL
 );

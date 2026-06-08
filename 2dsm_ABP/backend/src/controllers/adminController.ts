@@ -9,15 +9,18 @@ import {
   updateSupportContactByIdService,
   deleteSupportContactByIdService,
   getAllSupportContactsService,
-  getAllFulfillmentLogsService,
   getSupportContactByStatusService,
+  getSupportContactStatsService,
   getAllSecretariaUsersService,
   createSecretariaUserService,
   deleteUserService,
   getAllLogsService,
+  getLogsStatsService,
+  getInquiryStatsService,
+  getInquiryStatsLeafService,
 } from "@/services/adminService.js";
 
-import type { NodesParams} from "@/types/typesAdmin.js";
+import type { NodesParams, SupportContact } from "@/types/typesAdmin.js";
 
 export const getAllNodes = async (_req: Request, res: Response) => {
   try {
@@ -155,10 +158,7 @@ export const creatNode = async (req: Request, res: Response) => {
 };
 
 // ─── Support Contacts (Perguntas) ──────────────────────────────────────────────
-export const getSupportContactById = async (
-  req: Request,
-  res: Response,
-) => {
+export const getSupportContactById = async (req: Request, res: Response) => {
   const { id } = req.params as { id: string };
   try {
     const contact = await getSupportContactByIdService(parseInt(id, 10));
@@ -173,13 +173,35 @@ export const getSupportContactById = async (
   }
 };
 
-export const getAllSupportContacts = async (_req: Request, res: Response) => {
+export const getAllSupportContacts = async (req: Request, res: Response) => {
   try {
-    const contacts = await getAllSupportContactsService();
+    const { limit = "20", offset = "0" } = req.query;
+    const limitNum = parseInt(limit as string, 10);
+    const offsetNum = parseInt(offset as string, 10);
+
+    if (isNaN(limitNum) || isNaN(offsetNum)) {
+      return res.status(400).json({
+        error: "Parâmetros 'limit' e 'offset' devem ser números válidos.",
+      });
+    }
+
+    const contacts = await getAllSupportContactsService(limitNum, offsetNum);
     res.json(contacts);
   } catch (error) {
     console.error("Erro ao buscar contatos de suporte:", error);
     res.status(500).json({ error: "Erro ao buscar contatos de suporte" });
+  }
+};
+
+export const getSupportContactStats = async (_req: Request, res: Response) => {
+  try {
+    const stats = await getSupportContactStatsService();
+    res.status(200).json(stats);
+  } catch (error) {
+    console.error("Erro ao buscar estatísticas de perguntas:", error);
+    res
+      .status(500)
+      .json({ message: "Erro interno ao buscar estatísticas de perguntas." });
   }
 };
 
@@ -188,12 +210,23 @@ export const updateSupportContactStatus = async (
   res: Response,
 ) => {
   try {
-    const { id } = req.params as { id: string };
-    const { status, answered_by } = req.body;
+    // O ID do usuário autenticado é extraído do objeto `req.user` populado pelo middleware de autenticação.
+    // A asserção `as any` é usada aqui, mas o ideal seria estender a interface Request do Express.
+    const userId = (req as any).user?.id;
+    if (!userId) {
+      return res
+        .status(401)
+        .json({ error: "Usuário não autenticado ou ID não encontrado." });
+    }
 
-    if (!status) {
-      res.status(400).json({ error: "O campo 'status' é obrigatório." });
-      return;
+    const { id } = req.params as { id: string };
+    const { status } = req.body;
+
+    const validStatuses = ["ABERTA", "ATENDIMENTO", "RESPONDIDA"];
+    if (!status || !validStatuses.includes(status)) {
+      return res.status(400).json({
+        error: `Status inválido. Valores permitidos: ${validStatuses.join(", ")}.`,
+      });
     }
 
     const idNum = parseInt(id, 10);
@@ -204,8 +237,8 @@ export const updateSupportContactStatus = async (
 
     const updatedContact = await updateSupportContactByIdService(
       idNum,
-      status,
-      answered_by || null,
+      status as SupportContact["status"],
+      userId,
     );
 
     if (!updatedContact) {
@@ -220,10 +253,7 @@ export const updateSupportContactStatus = async (
   }
 };
 
-export const deleteSupportContact = async (
-  req: Request,
-  res: Response,
-) => {
+export const deleteSupportContact = async (req: Request, res: Response) => {
   const { id } = req.params as { id: string };
   try {
     const idNum = parseInt(id, 10);
@@ -235,44 +265,43 @@ export const deleteSupportContact = async (
   }
 };
 
-export const getSupportContactsByStatus = async (req: Request, res: Response) => {
+export const getSupportContactsByStatus = async (
+  req: Request,
+  res: Response,
+) => {
   let { status } = req.params;
-  const { offset } = req.query;
+  const { limit = "10", offset = "0" } = req.query;
 
   status = String(status).toUpperCase().trim();
-  
-  if (!status || (status !== "ABERTA" && status !== "ATENDIMENTO" && status !== "RESPONDIDA")) {
-    res.status(400).json({ error: "O campo 'status' é obrigatório." });
-    return;
+
+  const validStatuses = ["ABERTA", "ATENDIMENTO", "RESPONDIDA"];
+  if (!status || !validStatuses.includes(status)) {
+    return res.status(400).json({ error: "Parâmetro 'status' inválido." });
   }
-  if (!offset || isNaN(Number(offset))) {
-    res.status(400).json({ error: "O campo 'offset' deve ser um número válido." });
-    return;
+
+  const limitNum = parseInt(limit as string, 10);
+  const offsetNum = parseInt(offset as string, 10);
+
+  if (isNaN(limitNum) || isNaN(offsetNum)) {
+    return res.status(400).json({
+      error: "Parâmetros 'limit' e 'offset' devem ser números válidos.",
+    });
   }
+
   try {
-    const offsetNum = parseInt(String(offset), 10);
-    const contacts = await getSupportContactByStatusService(status, offsetNum);
+    const contacts = await getSupportContactByStatusService(
+      status as SupportContact["status"],
+      limitNum,
+      offsetNum,
+    );
     res.json(contacts);
   } catch (error) {
     console.error("Erro ao buscar contatos de suporte por status:", error);
-    res.status(500).json({ error: "Erro ao buscar contatos de suporte por status" });
+    res
+      .status(500)
+      .json({ error: "Erro ao buscar contatos de suporte por status" });
   }
 };
-
-// ─── Logs (fulfillment_logs) ─────────────────────────────────────────────
-
-export const getAllFulfillmentLogs = async (
-  _req: Request, res: Response) => {
-  try{
-    const logs = await getAllFulfillmentLogsService();
-    res.json(logs);
-  }catch(error){
-    console.error("Erro ao buscar logs de fulfillment:", error);
-    res.status(500).json({ error: "Erro ao buscar logs de fulfillment" });
-  }
-};
-
-
 
 // ─── Usuários (Secretária) ─────────────────────────────────────────────────────
 export const getAllSecretariaUsers = async (_req: Request, res: Response) => {
@@ -288,14 +317,16 @@ export const getAllSecretariaUsers = async (_req: Request, res: Response) => {
 export const createSecretariaUser = async (req: Request, res: Response) => {
   const { username, password, name } = req.body;
   if (!username || !password || !name) {
-    res.status(400).json({ error: "username, password e name são obrigatórios." });
+    res
+      .status(400)
+      .json({ error: "username, password e name são obrigatórios." });
     return;
   }
   try {
     const user = await createSecretariaUserService(username, password, name);
     res.status(201).json(user);
   } catch (error: any) {
-    if (error?.code === '23505') {
+    if (error?.code === "23505") {
       res.status(409).json({ error: "Username já existe." });
       return;
     }
@@ -305,7 +336,7 @@ export const createSecretariaUser = async (req: Request, res: Response) => {
 };
 
 export const deleteUser = async (req: Request, res: Response) => {
-  const idNum = parseInt(String(req.params['id'] ?? ''), 10);
+  const idNum = parseInt(String(req.params["id"] ?? ""), 10);
   if (isNaN(idNum)) {
     res.status(400).json({ error: "ID inválido." });
     return;
@@ -324,12 +355,59 @@ export const deleteUser = async (req: Request, res: Response) => {
 };
 
 // ─── Logs ──────────────────────────────────────────────────────────────────────
-export const getAllLogs = async (_req: Request, res: Response) => {
+export const getAllLogs = async (req: Request, res: Response) => {
   try {
-    const logs = await getAllLogsService();
+    const { limit = "20", offset = "0" } = req.query;
+
+    const limitNum = parseInt(limit as string, 10);
+    const offsetNum = parseInt(offset as string, 10);
+
+    if (isNaN(limitNum) || isNaN(offsetNum)) {
+      return res.status(400).json({
+        error: "Parâmetros 'limit' e 'offset' devem ser números válidos.",
+      });
+    }
+
+    const logs = await getAllLogsService(limitNum, offsetNum);
     res.json(logs);
   } catch (error) {
     console.error("Erro ao buscar logs:", error);
     res.status(500).json({ error: "Erro ao buscar logs" });
+  }
+};
+
+export const getLogStats = async (_req: Request, res: Response) => {
+  try {
+    const stats = await getLogsStatsService();
+    res.status(200).json(stats);
+  } catch (error) {
+    console.error("Erro ao buscar estatísticas de logs:", error);
+    res
+      .status(500)
+      .json({ message: "Erro interno ao buscar estatísticas de logs." });
+  }
+};
+
+export const getInquiryStats = async (_req: Request, res: Response) => {
+  try {
+    const stats = await getInquiryStatsService();
+    res.status(200).json(stats);
+  } catch (error) {
+    console.error("Erro ao buscar estatísticas de perguntas por ID:", error);
+    res.status(500).json({
+      message: "Erro interno ao buscar estatísticas de perguntas acessadas.",
+    });
+  }
+};
+
+export const getInquiryStatsLeaf = async (_req: Request, res: Response) => {
+  try {
+    const stats = await getInquiryStatsLeafService();
+    res.status(200).json(stats);
+  } catch (error) {
+    console.error("Erro ao buscar estatísticas de perguntas folha:", error);
+    res.status(500).json({
+      message: "Erro interno ao buscar estatísticas de perguntas folha.",
+    });
   }
 };
