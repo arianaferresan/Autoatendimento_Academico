@@ -39,7 +39,7 @@ export const deleteALL = async (_req: Request, res: Response) => {
     res.status(200).json({ message: "Banco deletado com sucesso!" });
   } catch (error) {
     console.error("Erro ao deletar banco:", error);
-    res.status(500).json({ erro: "Falha ao deletar banco." });
+    res.status(500).json({ error: "Falha ao deletar banco." });
   }
 };
 

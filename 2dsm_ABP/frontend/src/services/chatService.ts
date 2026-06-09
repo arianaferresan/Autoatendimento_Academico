@@ -1,6 +1,10 @@
 import type { ApiNodeResponse } from '../types/chat';
 
+<<<<<<< HEAD
 const API_BASE = '';
+=======
+const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:3666';
+>>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
 
 async function apiFetch<T>(path: string): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, {
@@ -65,4 +69,8 @@ export async function submitRating(_payload: RatingPayload): Promise<void> {
   // Ainda não existe rota de avaliação no backend.
   // Por enquanto só evita quebrar o front.
   return Promise.resolve();
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8

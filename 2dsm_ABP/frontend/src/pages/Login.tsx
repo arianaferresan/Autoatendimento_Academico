@@ -18,6 +18,10 @@ export default function Login() {
     try {
       const { data } = await api.post('/auth/login', { username, password });
       localStorage.setItem('token', data.token);
+<<<<<<< HEAD
+=======
+      localStorage.setItem('role', data.user.role); // adicionar essa linha
+>>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
       navigate('/admin');
     } catch {
       setErro('Usuário ou senha inválidos');
@@ -31,11 +35,67 @@ export default function Login() {
       minHeight: '100vh',
       display: 'flex',
       flexDirection: 'column',
+<<<<<<< HEAD
       backgroundImage: 'url(/background.png)',
       backgroundSize: 'cover',
       backgroundRepeat: 'no-repeat',
       backgroundPosition: 'center top',
     }}>
+=======
+      backgroundImage: 'url(/background.svg)',
+      backgroundSize: 'cover',
+      backgroundRepeat: 'no-repeat',
+      backgroundPosition: 'center',
+      position: 'relative',
+      imageRendering: 'auto',
+    }}>
+      {/* Botão de voltar para chat */}
+      <button
+        onClick={() => navigate('/')}
+        style={{
+          position: 'fixed',
+          bottom: '24px',
+          left: '24px',
+          backgroundColor: '#8B0000',
+          color: '#fff',
+          border: 'none',
+          borderRadius: '8px',
+          padding: '12px 20px',
+          fontSize: '14px',
+          fontWeight: 600,
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          boxShadow: '0 4px 12px rgba(139, 0, 0, 0.3)',
+          transition: 'all 0.3s ease',
+          zIndex: 1000,
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.backgroundColor = '#a00000';
+          e.currentTarget.style.boxShadow = '0 6px 16px rgba(139, 0, 0, 0.4)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.backgroundColor = '#8B0000';
+          e.currentTarget.style.boxShadow = '0 4px 12px rgba(139, 0, 0, 0.3)';
+        }}
+      >
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <line x1="19" y1="12" x2="5" y2="12" />
+          <polyline points="12 19 5 12 12 5" />
+        </svg>
+        Voltar ao chat
+      </button>
+>>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
       <header style={{
   backgroundColor: '#ffffff',
   padding: '10px 24px',
@@ -53,7 +113,11 @@ export default function Login() {
   <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #ccc', borderRadius: '4px', overflow: 'hidden' }}>
     <input type="text" placeholder="O que deseja localizar?" readOnly
       style={{ border: 'none', outline: 'none', padding: '8px 12px', fontSize: '14px', color: '#555', width: '240px', backgroundColor: '#fff' }} />
+<<<<<<< HEAD
     <button style={{ backgroundColor: '#8B0000', border: 'none', padding: '8px 12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+=======
+    <button style={{ backgroundColor: '#8B0000', border: 'none', padding: '11px 12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+>>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="11" cy="11" r="8" />
         <line x1="21" y1="21" x2="16.65" y2="16.65" />

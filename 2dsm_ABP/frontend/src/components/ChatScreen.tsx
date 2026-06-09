@@ -30,12 +30,27 @@ export default function ChatScreen({ onBack, userType }: ChatScreenProps) {
   const [courseTabs, setCourseTabs] = useState<CourseTab[]>([]);
 
   // Busca os nós raiz da API e monta as abas de curso dinamicamente
+<<<<<<< HEAD
+=======
+  const CURSOS_CONHECIDOS = ['dsm', 'geoprocessamento', 'marh'];
+
+>>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
   useEffect(() => {
     if (userType !== 'aluno') return;
     fetchRootNodes().then((res) => {
       if (res.type !== 'menu') return;
       const tabs = res.options
+<<<<<<< HEAD
         .filter((o) => !o.title.toLowerCase().includes('não sou aluno'))
+=======
+        .filter((o) => {
+          const titulo = o.title.toLowerCase();
+          return (
+            !titulo.includes('não sou aluno') &&
+            CURSOS_CONHECIDOS.some((curso) => titulo.includes(curso))
+          );
+        })
+>>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
         .map((o) => ({
           id: o.id,
           label: o.title,
@@ -113,7 +128,11 @@ export default function ChatScreen({ onBack, userType }: ChatScreenProps) {
           ? <EvidenceList key={item.id} items={item.evidences} />
           : null;
 
+<<<<<<< HEAD
       
+=======
+
+>>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
       default:
         return null;
     }

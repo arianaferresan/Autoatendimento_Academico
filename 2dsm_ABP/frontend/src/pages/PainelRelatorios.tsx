@@ -29,7 +29,11 @@ export default function PainelRelatorios() {
   // Estados de controle dos filtros da tela
   const [mesFiltro, setMesFiltro] = useState('05/2026');
   const [tipoUsuario, setTipoUsuario] = useState('Todos');
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
   // Estados para gerenciar o carregamento do banco
   const [loading, setLoading] = useState(true);
   const [metrics, setMetrics] = useState<DashboardMetrics>({
@@ -40,9 +44,12 @@ export default function PainelRelatorios() {
     avaliacoes: []
   });
 
+<<<<<<< HEAD
   // 🌟 NOVO MAPEAMENTO DE CORES DISTINTAS SOLICITADO
   const CORES_CPS = ['bg-[#0D6811]', 'bg-[#1353A3]', 'bg-[#AD0E09]', 'bg-[#6B7280]'];
 
+=======
+>>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
   // Gatilho que dispara a busca no banco sempre que um filtro mudar
   useEffect(() => {
     fetchDashboardData();
@@ -52,6 +59,7 @@ export default function PainelRelatorios() {
   async function fetchDashboardData() {
     setLoading(true);
     try {
+<<<<<<< HEAD
       // Alinha com o backend para criarem essa rota ou ajusta para a rota real de logs públicos
       const response = await api.get(`/admin/relatorios?mes=${mesFiltro}&tipo=${tipoUsuario}`);
       
@@ -87,6 +95,43 @@ export default function PainelRelatorios() {
           { id: '2', email: 'usuario.externo@gmail.com', mensagem: 'Não encontrei o valor da taxa de inscrição do vestibular.', resolvido: false },
           { id: '3', email: 'silva.fatec@fatec.sp.gov.br', mensagem: 'O horário do fretado da JTU está atualizado para o meio do ano.', resolvido: true },
         ]
+=======
+      const { data: respondidas } = await api.get(
+        `/admin/perguntas/status/RESPONDIDA?limit=50&offset=0`
+      );
+
+      // Monta as avaliações a partir das perguntas respondidas reais
+      const avaliacoes: EvaluationData[] = respondidas.map((item: any) => ({
+        id: String(item.id),
+        email: item.email ?? "Sem e-mail",
+        mensagem: item.message ?? "",
+        resolvido: true, // todas aqui têm status RESPONDIDA
+      }));
+
+      const total = avaliacoes.length;
+
+      setMetrics({
+        totalVotos: total,
+        votosSim: total,
+        votosNao: 0,
+        categorias: [
+          { nome: 'Secretaria', quantidade: Math.round(total * 0.45), porcentagem: 45, corClass: 'bg-[#0D6811]' },
+          { nome: 'Horários', quantidade: Math.round(total * 0.30), porcentagem: 30, corClass: 'bg-[#1353A3]' },
+          { nome: 'Estágio', quantidade: Math.round(total * 0.15), porcentagem: 15, corClass: 'bg-[#AD0E09]' },
+          { nome: 'Outros', quantidade: Math.round(total * 0.10), porcentagem: 10, corClass: 'bg-[#6B7280]' },
+        ],
+        avaliacoes,
+      });
+    } catch (error) {
+      console.error("Erro ao buscar perguntas respondidas:", error);
+      // fallback vazio — não exibe dados fictícios
+      setMetrics({
+        totalVotos: 0,
+        votosSim: 0,
+        votosNao: 0,
+        categorias: [],
+        avaliacoes: [],
+>>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
       });
     } finally {
       setLoading(false);
@@ -95,6 +140,7 @@ export default function PainelRelatorios() {
 
   return (
     <div className="flex flex-col space-y-6 w-full animate-fadeIn font-sans">
+<<<<<<< HEAD
       
       {/* SEÇÃO DE FILTROS */}
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gray-300 pb-4">
@@ -105,6 +151,18 @@ export default function PainelRelatorios() {
             <span className="text-[10px] font-bold text-gray-400 uppercase px-1">Período</span>
             <select 
               value={mesFiltro} 
+=======
+
+      {/* SEÇÃO DE FILTROS */}
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gray-300 pb-4">
+        <h1 className="text-2xl font-bold text-gray-700">Análise de Dados e Logs</h1>
+
+        <div className="flex items-center gap-3 bg-white p-2 rounded-lg border border-gray-200 shadow-sm">
+          <div className="flex flex-col">
+            <span className="text-[10px] font-bold text-gray-400 uppercase px-1">Período</span>
+            <select
+              value={mesFiltro}
+>>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
               onChange={(e) => setMesFiltro(e.target.value)}
               className="text-sm bg-transparent border-none outline-none font-semibold text-gray-600 cursor-pointer px-1 py-0.5"
             >
@@ -115,8 +173,13 @@ export default function PainelRelatorios() {
           <div className="w-px h-8 bg-gray-200" />
           <div className="flex flex-col">
             <span className="text-[10px] font-bold text-gray-400 uppercase px-1">Tipo de Usuário</span>
+<<<<<<< HEAD
             <select 
               value={tipoUsuario} 
+=======
+            <select
+              value={tipoUsuario}
+>>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
               onChange={(e) => setTipoUsuario(e.target.value)}
               className="text-sm bg-transparent border-none outline-none font-semibold text-gray-600 cursor-pointer px-1 py-0.5"
             >
@@ -137,12 +200,20 @@ export default function PainelRelatorios() {
           {/* LINHA 1 DE CARDS: Termos e Categorias */}
           <div className="flex flex-wrap gap-6 w-full">
             <MostSearchedTerms />
+<<<<<<< HEAD
             
+=======
+
+>>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
             {/* CARD DE CATEGORIAS COMPLETO */}
             <div className="flex-1 min-w-[320px] bg-[#F4F4F4] border border-gray-200 rounded-xl p-6 shadow-sm flex flex-col justify-between">
               <div>
                 <h3 className="font-bold text-gray-700 text-xl mb-4">Categorias</h3>
+<<<<<<< HEAD
                 
+=======
+
+>>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
                 <div className="flex items-center gap-6">
                   <div className="relative w-28 h-28 flex items-center justify-center shrink-0 bg-white rounded-full shadow-inner border border-gray-200">
                     <div className="absolute inset-2 rounded-full bg-[#F4F4F4] flex flex-col items-center justify-center">
@@ -223,9 +294,14 @@ export default function PainelRelatorios() {
                     <div key={av.id} className="bg-white p-3 rounded-lg border border-gray-200/80 shadow-sm text-sm">
                       <div className="flex items-center justify-between mb-1">
                         <span className="font-bold text-gray-600 text-xs">{av.email}</span>
+<<<<<<< HEAD
                         <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
                           av.resolvido ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                         }`}>
+=======
+                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${av.resolvido ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                          }`}>
+>>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
                           {av.resolvido ? 'Resolvido ' : 'Não Resolvido '}
                         </span>
                       </div>
@@ -241,4 +317,8 @@ export default function PainelRelatorios() {
 
     </div>
   );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8

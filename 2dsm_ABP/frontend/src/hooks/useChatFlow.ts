@@ -8,6 +8,7 @@ import type { ChatItem, UserType } from '../types/chat';
 
 export type { ChatItem };
 
+<<<<<<< HEAD
 export function useChatFlow(initialUserType?: string) {
   const { items, addItem, removeItem, removeLastTyping, clearItems, userType } = useChatContext();
 
@@ -21,6 +22,13 @@ export function useChatFlow(initialUserType?: string) {
     }, delay);
   }, [addItem, removeLastTyping]);
 
+=======
+export function useChatFlow(initialUserType?: UserType) {
+  const { items, addItem, removeItem, removeLastTyping, clearItems, userType, setUserType } = useChatContext();
+
+  // ── Primitivos ──────────────────────────────────────────────────────────────
+
+>>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
   const botMsg = useCallback((text: string) =>
     addItem({ type: 'msg', from: 'bot', text }), [addItem]);
 
@@ -36,7 +44,11 @@ export function useChatFlow(initialUserType?: string) {
       addItem({
         type: 'ratingCard',
         onRate: (rating) => {
+<<<<<<< HEAD
           submitRating({ rating, userType: userType ?? 'externo' }).catch(console.warn);
+=======
+          submitRating({ rating, userType: userType ?? initialUserType ?? 'externo' }).catch(console.warn);
+>>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
           const msg: Record<string, string> = {
             'Ruim': 'Lamentamos que sua experiência não tenha sido satisfatória. Vamos trabalhar para melhorar! 😔',
             'Satisfatório': 'Obrigado pelo feedback! Estamos sempre buscando melhorar. 🙂',
@@ -57,7 +69,11 @@ export function useChatFlow(initialUserType?: string) {
         },
       });
     }, 900);
+<<<<<<< HEAD
   }, [addItem, removeLastTyping, botMsg, userType]);
+=======
+  }, [addItem, removeLastTyping, botMsg, userType, initialUserType]);
+>>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
 
   const showEndOption = useCallback((onContinue?: () => void) => {
     addItem({ type: 'typing' });
@@ -84,9 +100,15 @@ export function useChatFlow(initialUserType?: string) {
               removeLastTyping();
               addItem({
                 type: 'doubtForm',
+<<<<<<< HEAD
                 isAluno: userType === 'aluno',
                 onSubmit: (email, doubt) => {
                   submitDoubt({ email, doubt, userType: userType ?? 'externo' })
+=======
+                isAluno: (userType ?? initialUserType) === 'aluno',
+                onSubmit: (email, doubt) => {
+                  submitDoubt({ email, doubt, userType: userType ?? initialUserType ?? 'externo' })
+>>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
                     .then(() => {
                       addItem({ type: 'typing' });
                       setTimeout(() => {
@@ -113,7 +135,11 @@ export function useChatFlow(initialUserType?: string) {
         },
       });
     }, 900);
+<<<<<<< HEAD
   }, [addItem, removeLastTyping, userMsg, botMsg, userType, showRatingAndEnd]);
+=======
+  }, [addItem, removeLastTyping, userMsg, botMsg, userType, initialUserType, showRatingAndEnd]);
+>>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
 
   const askSatisfacao = useCallback((onSim: () => void) => {
     addItem({ type: 'typing' });
@@ -202,6 +228,10 @@ export function useChatFlow(initialUserType?: string) {
   // ── API pública do hook ──────────────────────────────────────────────────────
 
   const startChat = useCallback((type: UserType) => {
+<<<<<<< HEAD
+=======
+    setUserType(type);
+>>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
     clearItems();
     addItem({ type: 'typing' });
     setTimeout(() => {
@@ -235,7 +265,11 @@ export function useChatFlow(initialUserType?: string) {
         }, 600);
       }
     }, 900);
+<<<<<<< HEAD
   }, [clearItems, addItem, removeLastTyping, botMsg, navigateNode]);
+=======
+  }, [setUserType, clearItems, addItem, removeLastTyping, botMsg, navigateNode]);
+>>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
 
   const startCourse = useCallback((courseNodeId: number, courseTitle: string) => {
     clearItems();
@@ -253,4 +287,8 @@ export function useChatFlow(initialUserType?: string) {
   }, [clearItems, addItem, removeLastTyping, botMsg, navigateNode]);
 
   return { items, startChat, startCourse, removeItem, removeLastTyping };
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8

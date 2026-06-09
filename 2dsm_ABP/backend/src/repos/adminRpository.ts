@@ -246,7 +246,7 @@ async function deleteSupportContactById(id: number): Promise<void> {
 }
 
 async function createFulfillmentLog(
-  data: Omit<FullfillmentLog, "session_id">,
+  data: Omit<FullfillmentLog, "session_id" | "created_at">,
 ): Promise<void> {
   await pool.query(
     `INSERT INTO fulfillment_logs ( navigation_flow, inquiry_ids, flag) VALUES ($1, $2, $3)`,
