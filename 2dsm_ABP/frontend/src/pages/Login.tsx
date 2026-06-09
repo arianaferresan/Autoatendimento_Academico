@@ -18,6 +18,7 @@ export default function Login() {
     try {
       const { data } = await api.post('/auth/login', { username, password });
       localStorage.setItem('token', data.token);
+      localStorage.setItem('role', data.user.role); // adicionar essa linha
       navigate('/admin');
     } catch {
       setErro('Usuário ou senha inválidos');
