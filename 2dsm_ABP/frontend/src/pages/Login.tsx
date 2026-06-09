@@ -32,11 +32,12 @@ export default function Login() {
       minHeight: '100vh',
       display: 'flex',
       flexDirection: 'column',
-      backgroundImage: 'url(/background.png)',
+      backgroundImage: 'url(/background.svg)',
       backgroundSize: 'cover',
       backgroundRepeat: 'no-repeat',
-      backgroundPosition: 'center top',
+      backgroundPosition: 'center',
       position: 'relative',
+      imageRendering: 'auto',
     }}>
       {/* Botão de voltar para chat */}
       <button
@@ -101,7 +102,7 @@ export default function Login() {
   <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #ccc', borderRadius: '4px', overflow: 'hidden' }}>
     <input type="text" placeholder="O que deseja localizar?" readOnly
       style={{ border: 'none', outline: 'none', padding: '8px 12px', fontSize: '14px', color: '#555', width: '240px', backgroundColor: '#fff' }} />
-    <button style={{ backgroundColor: '#8B0000', border: 'none', padding: '8px 12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <button style={{ backgroundColor: '#8B0000', border: 'none', padding: '11px 12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="11" cy="11" r="8" />
         <line x1="21" y1="21" x2="16.65" y2="16.65" />

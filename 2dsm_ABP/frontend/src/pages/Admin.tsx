@@ -502,7 +502,7 @@ export default function Admin() {
             style={{
               backgroundColor: "#8B0000",
               border: "none",
-              padding: "8px 12px",
+              padding: "11px 12px",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
