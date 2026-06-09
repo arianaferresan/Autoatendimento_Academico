@@ -337,6 +337,7 @@ function ItemModalAdmin({
 export default function Admin() {
   const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>("duvidas");
+  const role = localStorage.getItem('role'); // adicionar essa linha
   const [duvidas, setDuvidas] = useState<SupportContact[]>([]);
   const [loading, setLoading] = useState(false);
   const [msgRespondida, setMsgRespondida] = useState(false);
@@ -459,6 +460,7 @@ export default function Admin() {
 
   function handleSair() {
     localStorage.removeItem("token");
+    localStorage.removeItem("role"); // adicionar essa linha
     navigate("/login");
   }
 
@@ -552,7 +554,8 @@ export default function Admin() {
             flexShrink: 0,
           }}
         >
-          {(["painel", "relatorio", "duvidas"] as Tab[]).map((t) => {
+{(["painel", "relatorio", "duvidas"] as Tab[]).filter(t => !(t === "relatorio" && role === "secretaria")).map((t) => {
+
             const labels: Record<Tab, string> = {
               painel: "Painel de perguntas",
               relatorio: "Relatório",
