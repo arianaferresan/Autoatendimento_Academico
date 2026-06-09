@@ -25,6 +25,7 @@ type Toast = { msg: string; type: 'success' | 'error' } | null;
 interface ModalState {
   mode: 'create' | 'edit';
   node?: Node;
+  parentNodeId?: number; // nó pai para modo create
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -173,7 +174,7 @@ function ItemModal({
     editing && modal.node!.content ? 'resposta' : 'menu'
   );
   const [parentId, setParentId] = useState<number | null>(
-    editing ? modal.node!.parent_id : null
+    editing ? modal.node!.parent_id : (modal.parentNodeId ?? null)
   );
   const [content, setContent] = useState(editing ? modal.node!.content ?? '' : '');
   const [link, setLink] = useState(editing ? modal.node!.link ?? '' : '');
@@ -217,7 +218,10 @@ function ItemModal({
   }
 
   // filtra nós que podem ser pai (exclui o próprio nó e seus descendentes)
-  const parentOptions = allNodes.filter(n => n.id !== modal.node?.id);
+  // em modo create, mostra apenas o nó pai direto
+  const parentOptions = modal.mode === 'create' && modal.parentNodeId
+    ? allNodes.filter(n => n.id === modal.parentNodeId)
+    : allNodes.filter(n => n.id !== modal.node?.id);
 
   return (
     <div
@@ -628,7 +632,7 @@ export default function PainelPerguntas() {
         <div style={{ flex: 1 }} />
 
         <button
-          onClick={() => setModal({ mode: 'create' })}
+          onClick={() => setModal({ mode: 'create', parentNodeId: selectedNode?.id })}
           style={{
             backgroundColor: "transparent",
             border: "2px solid #fff",
@@ -796,16 +800,16 @@ export default function PainelPerguntas() {
                 </span>
                 <div style={{ flex: 1 }} />
                 <button
-                  onClick={() => setModal({ mode: 'create' })}
-                  style={{
-                    backgroundColor: '#8B0000', color: '#fff', border: 'none',
-                    borderRadius: '4px', padding: '7px 14px', fontSize: '13px',
-                    fontWeight: 600, cursor: 'pointer', display: 'flex',
-                    alignItems: 'center', gap: '5px',
-                  }}
+                onClick={() => setModal({ mode: 'create', parentNodeId: selectedNode?.id })}
+                style={{
+                  backgroundColor: '#8B0000', color: '#fff', border: 'none',
+                  borderRadius: '4px', padding: '7px 14px', fontSize: '13px',
+                  fontWeight: 600, cursor: 'pointer', display: 'flex',
+                  alignItems: 'center', gap: '5px',
+                }}
                 >
-                  + Adicionar item
-                </button>
+                + Adicionar item
+              </button>
               </div>
 
               {/* aviso de reordenação */}

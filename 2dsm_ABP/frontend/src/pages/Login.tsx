@@ -36,7 +36,54 @@ export default function Login() {
       backgroundSize: 'cover',
       backgroundRepeat: 'no-repeat',
       backgroundPosition: 'center top',
+      position: 'relative',
     }}>
+      {/* Botão de voltar para chat */}
+      <button
+        onClick={() => navigate('/')}
+        style={{
+          position: 'fixed',
+          bottom: '24px',
+          left: '24px',
+          backgroundColor: '#8B0000',
+          color: '#fff',
+          border: 'none',
+          borderRadius: '8px',
+          padding: '12px 20px',
+          fontSize: '14px',
+          fontWeight: 600,
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          boxShadow: '0 4px 12px rgba(139, 0, 0, 0.3)',
+          transition: 'all 0.3s ease',
+          zIndex: 1000,
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.backgroundColor = '#a00000';
+          e.currentTarget.style.boxShadow = '0 6px 16px rgba(139, 0, 0, 0.4)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.backgroundColor = '#8B0000';
+          e.currentTarget.style.boxShadow = '0 4px 12px rgba(139, 0, 0, 0.3)';
+        }}
+      >
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <line x1="19" y1="12" x2="5" y2="12" />
+          <polyline points="12 19 5 12 12 5" />
+        </svg>
+        Voltar ao chat
+      </button>
       <header style={{
   backgroundColor: '#ffffff',
   padding: '10px 24px',
