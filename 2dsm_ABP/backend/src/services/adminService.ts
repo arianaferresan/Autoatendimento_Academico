@@ -125,7 +125,7 @@ export const deleteSupportContactByIdService = async (id: number) => {
 };
 
 export const createFulfillmentLogService = async (
-  data: Omit<FullfillmentLog, "session_id">,
+  data: Omit<FullfillmentLog, "session_id" | "created_at">,
 ) => {
   await createFulfillmentLog(data);
 };

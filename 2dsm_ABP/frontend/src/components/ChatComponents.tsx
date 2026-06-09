@@ -109,7 +109,6 @@ interface LinkCardProps {
   label?: string;
 }
 export function LinkCard({ url, label }: LinkCardProps) {
-  const handleCopy = () => navigator.clipboard.writeText(url).catch(() => {});
   return (
     <div className="flex flex-col self-start animate-fadeUp gap-1.5 max-w-[80%]">
       <BotAvatar />

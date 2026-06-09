@@ -628,6 +628,7 @@ export default function PainelPerguntas() {
         <div style={{ flex: 1 }} />
 
         <button
+          onClick={() => setModal({ mode: 'create' })}
           style={{
             backgroundColor: "transparent",
             border: "2px solid #fff",

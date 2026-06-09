@@ -60,12 +60,10 @@ const inputStyle: React.CSSProperties = {
 // ─── Modal de criação de item ─────────────────────────────────────────────────
 
 function ItemModalAdmin({
-  modal,
   allNodes,
   onClose,
   onSave,
 }: {
-  modal: ModalState;
   allNodes: Node[];
   onClose: () => void;
   onSave: (data: Partial<Node> & { id?: number }) => Promise<void>;
@@ -352,9 +350,6 @@ export default function Admin() {
     type: "success" | "error";
   } | null>(null);
 
-  // Estados de exportação
-  const [nodesParaExportar, setNodesParaExportar] = useState<any[]>([]);
-
   useEffect(() => {
     if (tab === "duvidas") fetchDuvidas();
   }, [tab, statusFiltro]);
@@ -364,7 +359,6 @@ export default function Admin() {
       .get<Node[]>("/admin/nodes/all")
       .then(({ data }) => {
         setAllNodes(data);
-        setNodesParaExportar(data);
       })
       .catch(() => {});
   }, []);
@@ -383,18 +377,6 @@ export default function Admin() {
     }
   }
 
-  function handleExportar() {
-    const blob = new Blob([JSON.stringify(nodesParaExportar, null, 2)], {
-      type: "application/json",
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "base-de-conhecimento.json";
-    a.click();
-    URL.revokeObjectURL(url);
-  }
-
   async function handleSaveNode(data: Partial<Node> & { id?: number }) {
     try {
       const form = new FormData();
@@ -410,7 +392,6 @@ export default function Admin() {
       setModalCriar(null);
       const { data: nodes } = await api.get<Node[]>("/admin/nodes/all");
       setAllNodes(nodes);
-      setNodesParaExportar(nodes);
       showToastAdmin("Item criado com sucesso!", "success");
     } catch {
       showToastAdmin("Erro ao criar item.", "error");
@@ -967,7 +948,6 @@ export default function Admin() {
       {/* Modal de criação de item */}
       {modalCriar && (
         <ItemModalAdmin
-          modal={modalCriar}
           allNodes={allNodes}
           onClose={() => setModalCriar(null)}
           onSave={handleSaveNode}

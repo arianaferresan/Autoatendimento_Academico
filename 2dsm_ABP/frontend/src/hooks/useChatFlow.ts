@@ -8,18 +8,10 @@ import type { ChatItem, UserType } from '../types/chat';
 
 export type { ChatItem };
 
-export function useChatFlow(initialUserType?: string) {
-  const { items, addItem, removeItem, removeLastTyping, clearItems, userType } = useChatContext();
+export function useChatFlow(initialUserType?: UserType) {
+  const { items, addItem, removeItem, removeLastTyping, clearItems, userType, setUserType } = useChatContext();
 
   // ── Primitivos ──────────────────────────────────────────────────────────────
-
-  const withTyping = useCallback((cb: () => void, delay = 900) => {
-    addItem({ type: 'typing' });
-    setTimeout(() => {
-      removeLastTyping();
-      cb();
-    }, delay);
-  }, [addItem, removeLastTyping]);
 
   const botMsg = useCallback((text: string) =>
     addItem({ type: 'msg', from: 'bot', text }), [addItem]);
@@ -36,7 +28,7 @@ export function useChatFlow(initialUserType?: string) {
       addItem({
         type: 'ratingCard',
         onRate: (rating) => {
-          submitRating({ rating, userType: userType ?? 'externo' }).catch(console.warn);
+          submitRating({ rating, userType: userType ?? initialUserType ?? 'externo' }).catch(console.warn);
           const msg: Record<string, string> = {
             'Ruim': 'Lamentamos que sua experiência não tenha sido satisfatória. Vamos trabalhar para melhorar! 😔',
             'Satisfatório': 'Obrigado pelo feedback! Estamos sempre buscando melhorar. 🙂',
@@ -57,7 +49,7 @@ export function useChatFlow(initialUserType?: string) {
         },
       });
     }, 900);
-  }, [addItem, removeLastTyping, botMsg, userType]);
+  }, [addItem, removeLastTyping, botMsg, userType, initialUserType]);
 
   const showEndOption = useCallback((onContinue?: () => void) => {
     addItem({ type: 'typing' });
@@ -84,9 +76,9 @@ export function useChatFlow(initialUserType?: string) {
               removeLastTyping();
               addItem({
                 type: 'doubtForm',
-                isAluno: userType === 'aluno',
+                isAluno: (userType ?? initialUserType) === 'aluno',
                 onSubmit: (email, doubt) => {
-                  submitDoubt({ email, doubt, userType: userType ?? 'externo' })
+                  submitDoubt({ email, doubt, userType: userType ?? initialUserType ?? 'externo' })
                     .then(() => {
                       addItem({ type: 'typing' });
                       setTimeout(() => {
@@ -113,7 +105,7 @@ export function useChatFlow(initialUserType?: string) {
         },
       });
     }, 900);
-  }, [addItem, removeLastTyping, userMsg, botMsg, userType, showRatingAndEnd]);
+  }, [addItem, removeLastTyping, userMsg, botMsg, userType, initialUserType, showRatingAndEnd]);
 
   const askSatisfacao = useCallback((onSim: () => void) => {
     addItem({ type: 'typing' });
@@ -202,6 +194,7 @@ export function useChatFlow(initialUserType?: string) {
   // ── API pública do hook ──────────────────────────────────────────────────────
 
   const startChat = useCallback((type: UserType) => {
+    setUserType(type);
     clearItems();
     addItem({ type: 'typing' });
     setTimeout(() => {
@@ -235,7 +228,7 @@ export function useChatFlow(initialUserType?: string) {
         }, 600);
       }
     }, 900);
-  }, [clearItems, addItem, removeLastTyping, botMsg, navigateNode]);
+  }, [setUserType, clearItems, addItem, removeLastTyping, botMsg, navigateNode]);
 
   const startCourse = useCallback((courseNodeId: number, courseTitle: string) => {
     clearItems();

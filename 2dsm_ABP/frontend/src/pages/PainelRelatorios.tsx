@@ -40,9 +40,6 @@ export default function PainelRelatorios() {
     avaliacoes: []
   });
 
-  // 🌟 NOVO MAPEAMENTO DE CORES DISTINTAS SOLICITADO
-  const CORES_CPS = ['bg-[#0D6811]', 'bg-[#1353A3]', 'bg-[#AD0E09]', 'bg-[#6B7280]'];
-
   // Gatilho que dispara a busca no banco sempre que um filtro mudar
   useEffect(() => {
     fetchDashboardData();
