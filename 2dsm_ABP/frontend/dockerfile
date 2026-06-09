@@ -6,8 +6,11 @@ COPY package*.json ./
 
 RUN npm install
 
+# permitir o Vite
+RUN chmod +x /app/node_modules/.bin/vite
+
 COPY . .
 
 EXPOSE 5175
 
-CMD ["npm", "run", "dev", "--", "--host"]
+CMD ["npm", "run", "dev"]

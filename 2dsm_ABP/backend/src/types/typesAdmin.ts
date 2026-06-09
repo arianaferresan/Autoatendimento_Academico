@@ -54,6 +54,12 @@ type InquiryStat = {
   count: number;
 };
 
+type SatisfactionStat = {
+  month: string;
+  flag: string | null;
+  count: number;
+};
+
 type Node = {
   id: number;
   parent_id: number | null;
@@ -81,4 +87,5 @@ export type {
   LogStat,
   SupportContactStat,
   InquiryStat,
+  SatisfactionStat,
 };

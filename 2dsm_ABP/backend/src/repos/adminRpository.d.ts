@@ -1,0 +1,25 @@
+import type { Node, SupportContact, FullfillmentLog, LogStat, SupportContactStat, InquiryStat, SatisfactionStat } from "@/types/typesAdmin.js";
+import type { UserRow } from "@/types/types.js";
+declare function searchAllNodes(): Promise<Node[]>;
+declare function searchNodeById(id: number): Promise<Node[]>;
+declare function findNodeById(id: number): Promise<Node | undefined>;
+declare function deleteNodeById(id: number): Promise<void>;
+declare function updateNodeById(id: number, parent_id: number | null, title: string, content: string | null, display_order: number, link: string | null, is_active: boolean, chunk_path: string | null): Promise<Node | undefined>;
+declare function createNode(parent_id: number | null, title: string, content: string | null, display_order: number, link: string | null, is_active: boolean, chunk_path: string | null): Promise<Node | undefined>;
+declare function getSupportContactById(id: number): Promise<SupportContact | undefined>;
+declare function getSupportContactAll(limit: number, offset: number): Promise<SupportContact[]>;
+declare function updateSupportContactById(id: number, status: SupportContact["status"], answered_by: number | null): Promise<SupportContact | undefined>;
+declare function getSupportContactByStatus(status: SupportContact["status"], limit: number, offset: number): Promise<SupportContact[]>;
+declare function getSupportContactStats(): Promise<SupportContactStat[]>;
+declare function getInquiryStats(): Promise<InquiryStat[]>;
+declare function getInquiryStatsLeaf(): Promise<InquiryStat[]>;
+declare function deleteSupportContactById(id: number): Promise<void>;
+declare function createFulfillmentLog(data: Omit<FullfillmentLog, "id" | "session_id" | "created_at">): Promise<void>;
+declare function getAllSecretariaUsers(): Promise<UserRow[]>;
+declare function createSecretariaUser(username: string, password_hash: string, name: string): Promise<UserRow>;
+declare function deleteUserById(id: number): Promise<boolean>;
+declare function getAllLogs(limit: number, offset: number): Promise<FullfillmentLog[]>;
+declare function getLogStats(): Promise<LogStat[]>;
+declare function getSatisfactionStats(): Promise<SatisfactionStat[]>;
+export { searchAllNodes, searchNodeById, deleteNodeById, updateNodeById, findNodeById, createNode, getSupportContactById, updateSupportContactById, deleteSupportContactById, getSupportContactAll, getSupportContactByStatus, getSupportContactStats, createFulfillmentLog, getAllSecretariaUsers, createSecretariaUser, deleteUserById, getAllLogs, getLogStats, getInquiryStats, getInquiryStatsLeaf, getSatisfactionStats, };
+//# sourceMappingURL=adminRpository.d.ts.map

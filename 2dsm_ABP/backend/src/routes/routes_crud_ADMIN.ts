@@ -17,10 +17,11 @@ import {
   getAllSecretariaUsers,
   createSecretariaUser,
   deleteUser,
-  getLogStats,
+  getLogsStats,
   getAllLogs,
   getInquiryStats,
   getInquiryStatsLeaf,
+  getSatisfactionStats,
 } from "@/controllers/adminController.js";
 
 const routerADMIN = Router();
@@ -111,7 +112,10 @@ routerADMIN.delete<{ id: string }>(
 routerADMIN.get("/logs", authorize("admin"), getAllLogs);
 
 // Rota para estatísticas de logs
-routerADMIN.get("/logs/stats", authorize("admin"), getLogStats);
+routerADMIN.get("/logs/stats", authorize("admin"), getLogsStats);
+
+// Rota para estatísticas de satisfação
+routerADMIN.get("/logs/satisfaction-stats", authorize("admin"), getSatisfactionStats);
 
 // Rota para estatísticas de perguntas mais acessadas
 routerADMIN.get("/logs/inquiry-stats", authorize("admin"), getInquiryStats);

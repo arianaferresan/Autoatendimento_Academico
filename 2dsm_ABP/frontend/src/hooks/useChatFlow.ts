@@ -1,39 +1,72 @@
-import { useCallback } from 'react';
+import { useCallback, useRef, useEffect } from 'react';
 import { useChatContext } from '../state/ChatContext';
 import {
   fetchRootNodes, fetchNodeOptions, fetchExternoNodeId,
-  submitDoubt, submitRating,
+  submitDoubt, submitRating, submitFulfillmentLog
 } from '../services/chatService';
 import type { ChatItem, UserType } from '../types/chat';
 
 export type { ChatItem };
 
-<<<<<<< HEAD
-export function useChatFlow(initialUserType?: string) {
-  const { items, addItem, removeItem, removeLastTyping, clearItems, userType } = useChatContext();
+export function useChatFlow() {
+  const {
+    items, addItem, removeItem, removeLastTyping, clearItems, userType,
+    hasSentDoubt, setHasSentDoubt, currentCourseId, currentCourseTitle, setCourse,
+    sessionLog, addToLog, clearLog
+  } = useChatContext();
+
+  // Mantém a referência mais recente do log para evitar o problema de "stale closure" nos callbacks
+  const sessionLogRef = useRef(sessionLog);
+  useEffect(() => {
+    sessionLogRef.current = sessionLog;
+  }, [sessionLog]);
 
   // ── Primitivos ──────────────────────────────────────────────────────────────
 
-  const withTyping = useCallback((cb: () => void, delay = 900) => {
-    addItem({ type: 'typing' });
-    setTimeout(() => {
-      removeLastTyping();
-      cb();
-    }, delay);
-  }, [addItem, removeLastTyping]);
-
-=======
-export function useChatFlow(initialUserType?: UserType) {
-  const { items, addItem, removeItem, removeLastTyping, clearItems, userType, setUserType } = useChatContext();
-
-  // ── Primitivos ──────────────────────────────────────────────────────────────
-
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
   const botMsg = useCallback((text: string) =>
     addItem({ type: 'msg', from: 'bot', text }), [addItem]);
 
   const userMsg = useCallback((text: string) =>
     addItem({ type: 'msg', from: 'user', text }), [addItem]);
+
+  // Envia log para o servidor antes de limpar
+  const flushLog = useCallback((flag: string | null = null) => {
+    const currentLog = sessionLogRef.current;
+    if (currentLog.length > 0) {
+      submitFulfillmentLog({
+        navigation_flow: currentLog,
+        inquiry_ids: currentLog.map(l => l.id),
+        flag
+      }).catch(console.warn);
+      clearLog();
+    }
+  }, [clearLog]);
+
+  // ── Helper de Restart ───────────────────────────────────────────────────────
+
+  // Permite recarregar o chat na raiz do curso selecionado (se houver), ou globalmente
+  const restartCurrentCourse = useCallback(() => {
+    flushLog(null);
+    setHasSentDoubt(false); // Reseta o estado de envio de dúvida
+
+    if (currentCourseId !== null && currentCourseTitle !== null) {
+      clearItems();
+      // Ao reiniciar o curso, o primeiro item do log deve ser o próprio curso novamente
+      addToLog(currentCourseId, currentCourseTitle);
+      addItem({ type: 'typing' });
+      setTimeout(() => {
+        removeLastTyping();
+        navigateNode(
+          currentCourseId,
+          `Sobre ${currentCourseTitle}, o que deseja consultar?`,
+          () => navigateNode(currentCourseId, `Sobre ${currentCourseTitle}, o que deseja consultar?`, () => { }),
+          true,
+        );
+      }, 900);
+    } else {
+      addItem({ type: 'restart' });
+    }
+  }, [currentCourseId, currentCourseTitle, clearItems, addItem, removeLastTyping, flushLog, addToLog, setHasSentDoubt]);
 
   // ── Encerramento ─────────────────────────────────────────────────────────────
 
@@ -44,11 +77,7 @@ export function useChatFlow(initialUserType?: UserType) {
       addItem({
         type: 'ratingCard',
         onRate: (rating) => {
-<<<<<<< HEAD
           submitRating({ rating, userType: userType ?? 'externo' }).catch(console.warn);
-=======
-          submitRating({ rating, userType: userType ?? initialUserType ?? 'externo' }).catch(console.warn);
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
           const msg: Record<string, string> = {
             'Ruim': 'Lamentamos que sua experiência não tenha sido satisfatória. Vamos trabalhar para melhorar! 😔',
             'Satisfatório': 'Obrigado pelo feedback! Estamos sempre buscando melhorar. 🙂',
@@ -60,6 +89,7 @@ export function useChatFlow(initialUserType?: UserType) {
           setTimeout(() => {
             removeLastTyping();
             botMsg(msg[rating] ?? 'Obrigado pela avaliação!');
+            flushLog(rating.toUpperCase());
             addItem({ type: 'typing' });
             setTimeout(() => {
               removeLastTyping();
@@ -69,19 +99,25 @@ export function useChatFlow(initialUserType?: UserType) {
         },
       });
     }, 900);
-<<<<<<< HEAD
-  }, [addItem, removeLastTyping, botMsg, userType]);
-=======
-  }, [addItem, removeLastTyping, botMsg, userType, initialUserType]);
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
+  }, [addItem, removeLastTyping, botMsg, userType, flushLog]);
 
-  const showEndOption = useCallback((onContinue?: () => void) => {
+  const showEndOption = useCallback((onContinue?: () => void, onBack?: () => void) => {
     addItem({ type: 'typing' });
     setTimeout(() => {
       removeLastTyping();
-      const opts = onContinue
-        ? ['Continuar atendimento', 'Finalizar atendimento']
-        : ['Nos envie sua dúvida', 'Finalizar atendimento'];
+      
+      const opts = [];
+      if (onBack) opts.push('Ver outras opções');
+      
+      if (onContinue) {
+        opts.push('Continuar atendimento', 'Finalizar atendimento');
+      } else {
+        // Só oferece envio de dúvida se ainda não enviou nesta sessão
+        if (!hasSentDoubt) {
+          opts.push('Envie sua dúvida');
+        }
+        opts.push('Finalizar atendimento');
+      }
 
       addItem({
         type: 'chips',
@@ -90,33 +126,56 @@ export function useChatFlow(initialUserType?: UserType) {
         onSelect: (opt) => {
           userMsg(opt);
 
+          if (opt === 'Ver outras opções' && onBack) {
+            onBack(); return;
+          }
+
           if (opt === 'Continuar atendimento' && onContinue) {
             onContinue(); return;
           }
 
-          if (opt === 'Nos envie sua dúvida') {
+          if (opt === 'Fazer outra consulta') {
+            restartCurrentCourse();
+            return;
+          }
+
+          if (opt === 'Envie sua dúvida') {
             addItem({ type: 'typing' });
             setTimeout(() => {
               removeLastTyping();
               addItem({
                 type: 'doubtForm',
-<<<<<<< HEAD
                 isAluno: userType === 'aluno',
                 onSubmit: (email, doubt) => {
-                  submitDoubt({ email, doubt, userType: userType ?? 'externo' })
-=======
-                isAluno: (userType ?? initialUserType) === 'aluno',
-                onSubmit: (email, doubt) => {
-                  submitDoubt({ email, doubt, userType: userType ?? initialUserType ?? 'externo' })
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
-                    .then(() => {
-                      addItem({ type: 'typing' });
-                      setTimeout(() => {
-                        removeLastTyping();
-                        botMsg('Sua dúvida foi enviada! Fique atento ao seu e-mail. 📧');
-                        showEndOption(undefined);
-                      }, 800);
-                    })
+              submitDoubt({ email, doubt, userType: userType ?? 'externo' })
+                .then(() => {
+                  setHasSentDoubt(true);
+                  addItem({ type: 'typing' });
+                  setTimeout(() => {
+                    removeLastTyping();
+                    botMsg('Sua dúvida foi enviada com sucesso! 📧');
+                    addItem({ type: 'typing' });
+                    setTimeout(() => {
+                      removeLastTyping();
+                      botMsg('Nossa equipe analisará sua solicitação e retornará através do e-mail informado.');
+                      
+                      // Oferece opções lógicas após o envio
+                      addItem({
+                        type: 'chips',
+                        label: 'O que você gostaria de fazer agora?',
+                        options: ['Fazer outra consulta', 'Finalizar atendimento'],
+                        onSelect: (nextOpt) => {
+                          userMsg(nextOpt);
+                          if (nextOpt === 'Fazer outra consulta') {
+                            restartCurrentCourse();
+                          } else {
+                            showRatingAndEnd();
+                          }
+                        }
+                      });
+                    }, 800);
+                  }, 800);
+                })
                     .catch(() => {
                       addItem({ type: 'typing' });
                       setTimeout(() => {
@@ -130,16 +189,16 @@ export function useChatFlow(initialUserType?: UserType) {
             }, 900);
             return;
           }
+          
+          if (opt === 'Finalizar atendimento') {
+             flushLog(null);
+          }
 
           showRatingAndEnd();
         },
       });
     }, 900);
-<<<<<<< HEAD
-  }, [addItem, removeLastTyping, userMsg, botMsg, userType, showRatingAndEnd]);
-=======
-  }, [addItem, removeLastTyping, userMsg, botMsg, userType, initialUserType, showRatingAndEnd]);
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
+  }, [addItem, removeLastTyping, userMsg, botMsg, userType, showRatingAndEnd, hasSentDoubt, setHasSentDoubt, restartCurrentCourse, flushLog]);
 
   const askSatisfacao = useCallback((onSim: () => void) => {
     addItem({ type: 'typing' });
@@ -151,7 +210,7 @@ export function useChatFlow(initialUserType?: UserType) {
         options: ['Sim', 'Não'],
         onSelect: (opt) => {
           userMsg(opt);
-          opt === 'Sim' ? showEndOption(onSim) : showEndOption(undefined);
+          opt === 'Sim' ? showEndOption(onSim) : showEndOption(undefined, onSim);
         },
       });
     }, 900);
@@ -166,14 +225,21 @@ export function useChatFlow(initialUserType?: UserType) {
     addItem({ type: 'typing' });
     setTimeout(() => {
       removeLastTyping();
-      if (data.content) botMsg(data.content);
 
-      // monta lista de evidências e exibe num único item
-      const evidences: { label: string; url: string }[] = [];
-      if (data.chunk_path) evidences.push({ label: 'Documento de referência', url: data.chunk_path });
-      if (data.link) evidences.push({ label: 'Link oficial', url: data.link });
-      if (evidences.length > 0) {
-        addItem({ type: 'evidenceList', evidences });
+      const hasContent = !!(data.content?.trim() || data.link?.trim() || data.chunk_path?.trim());
+
+      if (!hasContent) {
+        botMsg('Desculpe, esta opção ainda não possui uma resposta detalhada configurada. Por favor, entre em contato com a secretaria para mais informações. 😕');
+      } else {
+        if (data.content) botMsg(data.content);
+
+        // monta lista de evidências e exibe num único item
+        const evidences: { label: string; url: string }[] = [];
+        if (data.chunk_path) evidences.push({ label: 'Documento de referência', url: data.chunk_path });
+        if (data.link) evidences.push({ label: 'Link oficial', url: data.link });
+        if (evidences.length > 0) {
+          addItem({ type: 'evidenceList', evidences });
+        }
       }
 
       askSatisfacao(onBack);
@@ -211,6 +277,7 @@ export function useChatFlow(initialUserType?: UserType) {
           onSelect: (title) => {
             userMsg(title);
             const id = optionMap[title];
+            addToLog(id, title);
             navigateNode(id, 'O que você gostaria de saber?', () =>
               navigateNode(nodeId, label, onBack));
           },
@@ -223,16 +290,15 @@ export function useChatFlow(initialUserType?: UserType) {
     };
 
     setTimeout(run, 900);
-  }, [addItem, userMsg, botMsg, showAnswer, showEndOption]);
+  }, [addItem, userMsg, botMsg, showAnswer, showEndOption, addToLog]);
 
   // ── API pública do hook ──────────────────────────────────────────────────────
 
   const startChat = useCallback((type: UserType) => {
-<<<<<<< HEAD
-=======
-    setUserType(type);
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
     clearItems();
+    clearLog();
+    setCourse(null, null);
+    setHasSentDoubt(false); // Garante que a opção de dúvida apareça em novas sessões
     addItem({ type: 'typing' });
     setTimeout(() => {
       removeLastTyping();
@@ -251,6 +317,8 @@ export function useChatFlow(initialUserType?: UserType) {
           try {
             const externoId = await fetchExternoNodeId();
             if (externoId !== null) {
+              setCourse(externoId, 'Não sou aluno');
+              addToLog(externoId, 'Não sou aluno');
               navigateNode(externoId, 'Como posso te ajudar hoje?', () =>
                 navigateNode(externoId, 'Como posso te ajudar hoje?', () => { }));
             } else {
@@ -265,14 +333,14 @@ export function useChatFlow(initialUserType?: UserType) {
         }, 600);
       }
     }, 900);
-<<<<<<< HEAD
-  }, [clearItems, addItem, removeLastTyping, botMsg, navigateNode]);
-=======
-  }, [setUserType, clearItems, addItem, removeLastTyping, botMsg, navigateNode]);
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
+  }, [clearItems, clearLog, setCourse, setHasSentDoubt, addItem, removeLastTyping, botMsg, addToLog, navigateNode]);
 
   const startCourse = useCallback((courseNodeId: number, courseTitle: string) => {
     clearItems();
+    clearLog();
+    setCourse(courseNodeId, courseTitle);
+    setHasSentDoubt(false); // Garante que a opção de dúvida apareça em novas sessões
+    addToLog(courseNodeId, courseTitle);
     addItem({ type: 'typing' });
     setTimeout(() => {
       removeLastTyping();
@@ -284,11 +352,7 @@ export function useChatFlow(initialUserType?: UserType) {
         true,
       );
     }, 900);
-  }, [clearItems, addItem, removeLastTyping, botMsg, navigateNode]);
+  }, [clearItems, clearLog, setCourse, setHasSentDoubt, addToLog, addItem, removeLastTyping, botMsg, navigateNode]);
 
   return { items, startChat, startCourse, removeItem, removeLastTyping };
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8

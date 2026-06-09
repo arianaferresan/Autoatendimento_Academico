@@ -1,10 +1,6 @@
 import type { ApiNodeResponse } from '../types/chat';
 
-<<<<<<< HEAD
-const API_BASE = '';
-=======
-const API_BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:3666';
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
+const API_BASE = 'http://localhost:3666';
 
 async function apiFetch<T>(path: string): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, {
@@ -69,8 +65,23 @@ export async function submitRating(_payload: RatingPayload): Promise<void> {
   // Ainda não existe rota de avaliação no backend.
   // Por enquanto só evita quebrar o front.
   return Promise.resolve();
-<<<<<<< HEAD
 }
-=======
+
+export interface FulfillmentLogPayload {
+  navigation_flow: { title: string; id: number }[];
+  inquiry_ids: number[];
+  flag: string | null;
 }
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
+
+export async function submitFulfillmentLog(payload: FulfillmentLogPayload): Promise<void> {
+  const res = await fetch(`${API_BASE}/api/logs`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({})) as { error?: string };
+    throw new Error(body.error ?? `HTTP ${res.status}`);
+  }
+}

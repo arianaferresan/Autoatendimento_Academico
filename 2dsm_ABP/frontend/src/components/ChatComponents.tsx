@@ -29,8 +29,8 @@ interface EvidenceListProps {
 export function EvidenceList({ items }: EvidenceListProps) {
   if (items.length === 0) return null;
   return (
-    <div className="flex flex-col self-start animate-fadeUp gap-1 max-w-[80%]">
-      <div className="bg-[#004757] rounded-2xl px-4 py-3 flex flex-col gap-2">
+    <div className="flex flex-col self-start animate-fadeUp gap-1 max-w-[85%]">
+      <div className="bg-[#004757] rounded-2xl px-4 py-3 flex flex-col gap-2 shadow-sm">
         <span className="text-white/70 text-[11px] font-semibold uppercase tracking-wide">
           📎 Evidências
         </span>
@@ -46,7 +46,7 @@ export function EvidenceList({ items }: EvidenceListProps) {
             title={item.label}
             className="flex items-center gap-2 bg-[#003a47] text-white text-[12px] px-3 py-2
                        rounded-xl hover:opacity-80 transition-opacity
-                       text-left break-all cursor-pointer border-0 w-full"
+                       text-left break-all cursor-pointer border-0 w-full font-medium"
           >
             <span className="text-base shrink-0">🔗</span>
             <span className="flex-1 truncate">{item.label}</span>
@@ -68,10 +68,10 @@ export function MessageBubble({ text, from }: MessageBubbleProps) {
 
   if (isBot) {
     return (
-      <div className="flex flex-col self-start animate-fadeUp gap-1.5">
+      <div className="flex flex-col self-start animate-fadeUp gap-2 max-w-[85%]">
         <BotAvatar />
         <div
-          className="bg-[#005c6d] text-white px-4 py-3 rounded-2xl text-[13px] leading-relaxed whitespace-pre-line max-w-[80%]"
+          className="bg-[#005c6d] text-white px-5 py-3.5 rounded-2xl text-[14px] leading-relaxed whitespace-pre-line shadow-sm"
           dangerouslySetInnerHTML={{ __html: text }}
         />
       </div>
@@ -79,7 +79,7 @@ export function MessageBubble({ text, from }: MessageBubbleProps) {
   }
 
   return (
-    <div className="max-w-[65%] px-4 py-2.5 rounded-2xl text-[13px] leading-relaxed text-gray-600 bg-[#d9dde0] self-end animate-fadeUp">
+    <div className="max-w-[70%] px-5 py-3 rounded-2xl text-[14px] leading-relaxed text-gray-700 bg-[#d9dde0] self-end animate-fadeUp shadow-sm">
       {text}
     </div>
   );
@@ -88,9 +88,9 @@ export function MessageBubble({ text, from }: MessageBubbleProps) {
 // Typing indicator
 export function TypingIndicator() {
   return (
-    <div className="flex flex-col self-start animate-fadeUp gap-1.5">
+    <div className="flex flex-col self-start animate-fadeUp gap-2">
       <BotAvatar />
-      <div className="flex gap-1 items-center px-4 py-3 bg-[#005c6d] rounded-2xl">
+      <div className="flex gap-1 items-center px-4 py-3 bg-[#005c6d] rounded-2xl shadow-sm">
         {[0, 200, 400].map((delay) => (
           <span
             key={delay}
@@ -109,15 +109,11 @@ interface LinkCardProps {
   label?: string;
 }
 export function LinkCard({ url, label }: LinkCardProps) {
-<<<<<<< HEAD
-  const handleCopy = () => navigator.clipboard.writeText(url).catch(() => {});
-=======
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
   return (
-    <div className="flex flex-col self-start animate-fadeUp gap-1.5 max-w-[80%]">
+    <div className="flex flex-col self-start animate-fadeUp gap-2 max-w-[85%]">
       <BotAvatar />
-      <div className="bg-[#005C6D] rounded-2xl px-4 py-3 flex flex-col gap-2">
-        <span className="text-white text-[13px] leading-relaxed">
+      <div className="bg-[#005C6D] rounded-2xl px-5 py-4 flex flex-col gap-3 shadow-sm">
+        <span className="text-white text-[14px] leading-relaxed font-medium">
           {label ?? 'Ok, aqui está o link que te leva direto para a grade horária do seu curso:'}
         </span>
         <button
@@ -127,9 +123,9 @@ export function LinkCard({ url, label }: LinkCardProps) {
     window.open(fullUrl, '_blank');
   }}
   title="Clique para abrir o link"
-  className="flex items-center gap-2 bg-[#004757] text-white text-[12px] px-3 py-2
+  className="flex items-center gap-2 bg-[#004757] text-white text-[12px] px-3.5 py-2.5
              rounded-xl hover:opacity-80 transition-opacity
-             text-left break-all cursor-pointer border-0 overflow-hidden w-full"
+             text-left break-all cursor-pointer border-0 overflow-hidden w-full font-bold"
 >
   <span className="flex-1">{url}</span>
   <span className="text-base shrink-0">&#128203;</span>
@@ -139,7 +135,7 @@ export function LinkCard({ url, label }: LinkCardProps) {
   );
 }
 
-// Chips de seleção — dentro do card verde junto com a mensagem do bot
+// Chips de seleção
 interface ChipsRowProps {
   options: string[];
   onSelect: (opt: string) => void;
@@ -159,24 +155,24 @@ export function ChipsRow({ options, onSelect, label }: ChipsRowProps) {
   };
 
   return (
-    <div className="flex flex-col self-start animate-fadeUp gap-1.5 max-w-[85%]">
+    <div className="flex flex-col self-start animate-fadeUp gap-2 max-w-[90%]">
       <BotAvatar />
-      <div className="bg-[#005c6d] rounded-2xl px-4 py-3 flex flex-col gap-3">
+      <div className="bg-[#005c6d] rounded-2xl px-5 py-4 flex flex-col gap-4 shadow-sm">
         {label && (
-          <span className="text-white text-[13px] leading-relaxed">{label}</span>
+          <span className="text-white text-[14px] leading-relaxed font-medium">{label}</span>
         )}
-        <div className="chips-row flex flex-wrap gap-2">
+        <div className="chips-row flex flex-wrap gap-2.5">
           {options.map((opt) => (
             <button
               key={opt}
               onClick={(e) => handleClick(opt, e)}
-              className={`rounded-full px-3.5 py-1.5 text-[12px] font-semibold border border-white/40
-                cursor-pointer transition-colors duration-150 disabled:cursor-default
+              className={`rounded-full px-4 py-2 text-[12px] font-bold border border-white/40
+                cursor-pointer transition-all duration-200 disabled:cursor-default
                 ${selected === opt
-                  ? 'bg-white text-[#1a4a3a] border-white'
+                  ? 'bg-white text-[#005c6d] border-white scale-105 shadow-md'
                   : selected !== null
                     ? 'bg-transparent text-white/40 border-white/20'
-                    : 'bg-transparent text-white hover:bg-white/10'
+                    : 'bg-transparent text-white hover:bg-white/10 hover:border-white'
                 }`}
             >
               {opt}
@@ -196,24 +192,24 @@ interface ConfirmRowProps {
 }
 export function ConfirmRow({ onYes, onNo, label }: ConfirmRowProps) {
   return (
-    <div className="flex flex-col self-start animate-fadeUp gap-1.5">
+    <div className="flex flex-col self-start animate-fadeUp gap-2">
       <BotAvatar />
-      <div className="bg-[#005c6d] rounded-2xl px-4 py-3 flex flex-col gap-3">
+      <div className="bg-[#005c6d] rounded-2xl px-5 py-4 flex flex-col gap-4 shadow-sm">
         {label && (
-          <span className="text-white text-[13px] leading-relaxed">{label}</span>
+          <span className="text-white text-[14px] leading-relaxed font-medium">{label}</span>
         )}
-        <div className="flex gap-2">
+        <div className="flex gap-3">
           <button
             onClick={onYes}
-            className="px-5 py-1.5 rounded-full bg-[#1D9E75] text-white text-[13px] font-bold
-                       hover:opacity-90 transition-opacity border-0 cursor-pointer"
+            className="px-6 py-2 rounded-full bg-[#1D9E75] text-white text-[13px] font-black
+                       hover:bg-[#168a62] transition-colors border-0 cursor-pointer shadow-sm"
           >
             ✓ Sim
           </button>
           <button
             onClick={onNo}
-            className="px-5 py-1.5 rounded-full bg-[#C0392B] text-white text-[13px] font-bold
-                       hover:opacity-90 transition-opacity border-0 cursor-pointer"
+            className="px-6 py-2 rounded-full bg-[#C0392B] text-white text-[13px] font-black
+                       hover:bg-[#a93226] transition-colors border-0 cursor-pointer shadow-sm"
           >
             ✗ Não
           </button>
@@ -239,15 +235,15 @@ export function DoubtForm({ onSubmit, isAluno }: DoubtFormProps) {
   };
 
   return (
-    <div className="flex flex-col self-start animate-fadeUp gap-1.5 max-w-[85%]">
+    <div className="flex flex-col self-start animate-fadeUp gap-2 max-w-[90%]">
       <BotAvatar />
-      <div className="bg-[#C0392B] rounded-2xl px-4 py-3 flex flex-col gap-3">
-        <span className="text-white text-[13px] font-semibold leading-relaxed">
+      <div className="bg-[#C0392B] rounded-2xl px-5 py-4 flex flex-col gap-4 shadow-md">
+        <span className="text-white text-[14px] font-bold leading-relaxed">
           Por favor nos conte qual é a sua dúvida?
         </span>
-        <div className="flex flex-col gap-1">
-          <span className="text-white/80 text-[11px]">
-            {isAluno ? 'Nos informe seu E-mail institucional:' : 'Nos informe seu E-mail:'}
+        <div className="flex flex-col gap-1.5">
+          <span className="text-white/80 text-[11px] font-black uppercase tracking-tighter">
+            {isAluno ? 'E-mail institucional:' : 'Seu E-mail:'}
           </span>
           <input
             type="email"
@@ -255,28 +251,28 @@ export function DoubtForm({ onSubmit, isAluno }: DoubtFormProps) {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Digite seu E-mail aqui..."
             disabled={sent}
-            className="rounded-lg px-3 py-2 text-[12px] text-gray-700 bg-white border-0 outline-none placeholder-gray-400 disabled:opacity-60"
+            className="rounded-xl px-4 py-2.5 text-[13px] text-gray-700 bg-white border-0 outline-none placeholder-gray-400 disabled:opacity-60 font-medium"
           />
         </div>
-        <div className="flex flex-col gap-1">
-          <span className="text-white/80 text-[11px]">Escreva sua dúvida:</span>
+        <div className="flex flex-col gap-1.5">
+          <span className="text-white/80 text-[11px] font-black uppercase tracking-tighter">Escreva sua dúvida:</span>
           <textarea
             value={doubt}
             onChange={(e) => setDoubt(e.target.value)}
-            placeholder="Digite aqui..."
+            placeholder="Digite aqui sua mensagem detalhada..."
             disabled={sent}
-            rows={3}
-            className="rounded-lg px-3 py-2 text-[12px] text-gray-700 bg-white border-0 outline-none placeholder-gray-400 resize-none disabled:opacity-60"
+            rows={4}
+            className="rounded-xl px-4 py-2.5 text-[13px] text-gray-700 bg-white border-0 outline-none placeholder-gray-400 resize-none disabled:opacity-60 font-medium"
           />
         </div>
         {!sent && (
           <div className="flex justify-end">
             <button
               onClick={handleSubmit}
-              className="px-5 py-1.5 rounded-lg bg-[#1D9E75] text-white text-[12px] font-bold
-                         hover:opacity-90 transition-opacity border-0 cursor-pointer"
+              className="px-8 py-2.5 rounded-xl bg-[#1D9E75] text-white text-[13px] font-black
+                         hover:bg-[#168a62] transition-all active:scale-95 border-0 cursor-pointer shadow-lg"
             >
-              Enviar
+              Enviar Mensagem
             </button>
           </div>
         )}
@@ -307,24 +303,24 @@ export function RatingCard({ onRate }: RatingCardProps) {
   };
 
   return (
-    <div className="flex flex-col self-start animate-fadeUp gap-1.5 max-w-[85%]">
+    <div className="flex flex-col self-start animate-fadeUp gap-2 max-w-[90%]">
       <BotAvatar />
-      <div className="bg-[#005c6d] rounded-2xl px-4 py-3 flex flex-col gap-3">
-        <span className="text-white text-[13px] leading-relaxed">
-          Poderia avaliar o nosso atendimento?
+      <div className="bg-[#005c6d] rounded-2xl px-5 py-5 flex flex-col gap-5 shadow-sm">
+        <span className="text-white text-[14px] leading-relaxed font-bold">
+          Como você avalia o meu atendimento?
         </span>
-        <div className="flex gap-3 justify-around">
+        <div className="flex gap-2 justify-around">
           {ratings.map((r) => (
             <button
               key={r.label}
               onClick={() => handleRate(r.label)}
               disabled={!!selected}
-              className={`flex flex-col items-center gap-1 bg-transparent border-0 cursor-pointer
-                transition-opacity disabled:cursor-default
-                ${selected && selected !== r.label ? 'opacity-30' : 'opacity-100'}`}
+              className={`flex flex-col items-center gap-2 bg-transparent border-0 cursor-pointer
+                transition-all duration-300 disabled:cursor-default
+                ${selected === r.label ? 'scale-125' : selected ? 'opacity-30 grayscale' : 'hover:scale-110'}`}
             >
-              <span className="text-2xl">{r.emoji}</span>
-              <span className="text-white text-[10px]">{r.label}</span>
+              <span className="text-3xl">{r.emoji}</span>
+              <span className="text-white text-[10px] font-bold uppercase">{r.label}</span>
             </button>
           ))}
         </div>
@@ -339,18 +335,17 @@ interface RestartButtonProps {
 }
 export function RestartButton({ onRestart }: RestartButtonProps) {
   return (
-    <div className="flex justify-center animate-fadeUp mt-2">
+    <div className="flex justify-center animate-fadeUp mt-4 mb-4">
       <button
         onClick={onRestart}
-        className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#C0392B] text-white
-                   text-[13px] font-bold hover:bg-[#96281B] transition-colors border-0 cursor-pointer shadow"
+        className="flex items-center gap-3 px-8 py-3 rounded-full bg-[#C0392B] text-white
+                   text-[14px] font-bold uppercase tracking-widest hover:bg-[#96281B] transition-all active:scale-95 border-0 cursor-pointer shadow-lg"
       >
-        ↩ Voltar ao início
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/>
+        </svg>
+        ENCERRAR
       </button>
     </div>
   );
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8

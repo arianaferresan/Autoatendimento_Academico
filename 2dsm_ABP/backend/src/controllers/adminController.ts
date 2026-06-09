@@ -18,6 +18,7 @@ import {
   getLogsStatsService,
   getInquiryStatsService,
   getInquiryStatsLeafService,
+  getSatisfactionStatsService,
 } from "@/services/adminService.js";
 
 import type { NodesParams, SupportContact } from "@/types/typesAdmin.js";
@@ -376,15 +377,27 @@ export const getAllLogs = async (req: Request, res: Response) => {
   }
 };
 
-export const getLogStats = async (_req: Request, res: Response) => {
+export const getLogsStats = async (req: Request, res: Response) => {
   try {
     const stats = await getLogsStatsService();
     res.status(200).json(stats);
   } catch (error) {
     console.error("Erro ao buscar estatísticas de logs:", error);
-    res
-      .status(500)
-      .json({ message: "Erro interno ao buscar estatísticas de logs." });
+    res.status(500).json({
+      message: "Erro interno ao buscar estatísticas de logs.",
+    });
+  }
+};
+
+export const getSatisfactionStats = async (req: Request, res: Response) => {
+  try {
+    const stats = await getSatisfactionStatsService();
+    res.status(200).json(stats);
+  } catch (error) {
+    console.error("Erro ao buscar estatísticas de satisfação:", error);
+    res.status(500).json({
+      message: "Erro interno ao buscar estatísticas de satisfação.",
+    });
   }
 };
 

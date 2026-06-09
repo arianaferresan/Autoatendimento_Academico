@@ -1,15 +1,19 @@
 import { Pool } from "pg";
-import * as dotenv from "dotenv";
+import dotenv from "dotenv";
+import path from "path";
 
-dotenv.config();
+// Garante que o dotenv procure o arquivo .env na raiz da pasta backend
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
-// Configuração do Banco usando process.env
+console.log("DEBUG DATABASE: Host ->", process.env.DB_HOST);
+console.log("DEBUG DATABASE: Senha preenchida? ->", process.env.DB_PASSWORD ? "SIM" : "NÃO");
+
 export const pool = new Pool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  port: Number(process.env.DB_PORT),
+  port: Number(process.env.DB_PORT) || 5432,
 });
 
 pool.on("connect", () => {

@@ -1,324 +1,359 @@
 import { useState, useEffect } from 'react';
 import { MostSearchedTerms } from '../components/MostSearchedTerms';
-import api from '../services/api'; // Importando a API que você já usa no Admin.tsx
+import api from '../services/api';
 
-// --- INTERFACES PARA O BANCO DE DADOS ---
-interface EvaluationData {
-  id: string;
+interface SupportContact {
+  id: number;
   email: string;
-  mensagem: string;
-  resolvido: boolean;
+  message: string;
+  status: string;
+  created_at: string;
 }
 
-interface CategoryData {
-  nome: string;
-  quantidade: number;
-  porcentagem: number;
-  corClass: string;
+interface SupportStat {
+  status: string;
+  count: number;
 }
 
-interface DashboardMetrics {
-  totalVotos: number;
-  votosSim: number;
-  votosNao: number;
-  categorias: CategoryData[];
-  avaliacoes: EvaluationData[];
+interface LogStat {
+  month: string;
+  category: string;
+  log_count: number;
 }
 
-export default function PainelRelatorios() {
-  // Estados de controle dos filtros da tela
-  const [mesFiltro, setMesFiltro] = useState('05/2026');
-  const [tipoUsuario, setTipoUsuario] = useState('Todos');
-<<<<<<< HEAD
-  
-=======
+interface InquiryStat {
+  month: string;
+  title: string;
+  count: number;
+}
 
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
-  // Estados para gerenciar o carregamento do banco
-  const [loading, setLoading] = useState(true);
-  const [metrics, setMetrics] = useState<DashboardMetrics>({
-    totalVotos: 0,
-    votosSim: 0,
-    votosNao: 0,
-    categorias: [],
-    avaliacoes: []
+interface SatisfactionStat {
+  month: string;
+  flag: string | null;
+  count: number;
+}
+
+interface PainelRelatoriosProps {
+  onNavigateToDuvidas?: () => void;
+}
+
+export default function PainelRelatorios({ onNavigateToDuvidas }: PainelRelatoriosProps) {
+  const [mesFiltro, setMesFiltro] = useState(() => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
   });
+  
+  const [loading, setLoading] = useState(true);
+  const [perguntaStats, setPerguntaStats] = useState<SupportStat[]>([]);
+  const [recentQuestions, setRecentQuestions] = useState<SupportContact[]>([]);
+  const [categoryStats, setCategoryStats] = useState<LogStat[]>([]);
+  const [termStats, setTermStats] = useState<InquiryStat[]>([]);
+  const [satisfactionStats, setSatisfactionStats] = useState<SatisfactionStat[]>([]);
 
-<<<<<<< HEAD
-  // 🌟 NOVO MAPEAMENTO DE CORES DISTINTAS SOLICITADO
-  const CORES_CPS = ['bg-[#0D6811]', 'bg-[#1353A3]', 'bg-[#AD0E09]', 'bg-[#6B7280]'];
-
-=======
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
-  // Gatilho que dispara a busca no banco sempre que um filtro mudar
   useEffect(() => {
     fetchDashboardData();
-  }, [mesFiltro, tipoUsuario]);
+  }, [mesFiltro]);
 
-  // Função assíncrona para puxar os dados do Backend (Docker)
   async function fetchDashboardData() {
     setLoading(true);
     try {
-<<<<<<< HEAD
-      // Alinha com o backend para criarem essa rota ou ajusta para a rota real de logs públicos
-      const response = await api.get(`/admin/relatorios?mes=${mesFiltro}&tipo=${tipoUsuario}`);
-      
-      // Mapeia as cores dinamicamente para não depender do backend enviar classes do Tailwind
-      const categoriasComCores = response.data.categorias.map((cat: any, index: number) => ({
-        ...cat,
-        corClass: CORES_CPS[index] || 'bg-gray-400'
-      }));
-
-      setMetrics({
-        totalVotos: response.data.totalVotos,
-        votosSim: response.data.votosSim,
-        votosNao: response.data.votosNao,
-        categorias: categoriasComCores,
-        avaliacoes: response.data.avaliacoes
-      });
+      const [pStats, pRecent, lStats, iStats, sStats] = await Promise.all([
+        api.get<SupportStat[]>('/admin/perguntas/stats'),
+        api.get<SupportContact[]>('/admin/perguntas?limit=8'),
+        api.get<LogStat[]>('/admin/logs/stats'),
+        api.get<InquiryStat[]>('/admin/logs/inquiry-stats'),
+        api.get<SatisfactionStat[]>('/admin/logs/satisfaction-stats')
+      ]);
+      setPerguntaStats(pStats.data);
+      setRecentQuestions(pRecent.data);
+      setCategoryStats(lStats.data);
+      setTermStats(iStats.data);
+      setSatisfactionStats(sStats.data);
     } catch (error) {
-      console.error("Erro ao buscar dados do dashboard, aplicando Fallback (Mock):", error);
-      
-      // 🌟 DADOS MOCKADOS COM AS NOVAS CORES SEPARADAS APLICADAS
-      setMetrics({
-        totalVotos: 143,
-        votosSim: 120,
-        votosNao: 23,
-        categorias: [
-          { nome: 'Secretaria', quantidade: 450, porcentagem: 45, corClass: 'bg-[#0D6811]' }, // Verde
-          { nome: 'Horários', quantidade: 300, porcentagem: 30, corClass: 'bg-[#1353A3]' },   // Azul
-          { nome: 'Estágio', quantidade: 150, porcentagem: 15, corClass: 'bg-[#AD0E09]' },    // Vermelho
-          { nome: 'Outros', quantidade: 100, porcentagem: 10, corClass: 'bg-[#6B7280]' },     // Grafite
-        ],
-        avaliacoes: [
-          { id: '1', email: 'aluno1@fatec.sp.gov.br', mensagem: 'Consegui puxar o PDF do calendário acadêmico bem rápido, vlw!', resolvido: true },
-          { id: '2', email: 'usuario.externo@gmail.com', mensagem: 'Não encontrei o valor da taxa de inscrição do vestibular.', resolvido: false },
-          { id: '3', email: 'silva.fatec@fatec.sp.gov.br', mensagem: 'O horário do fretado da JTU está atualizado para o meio do ano.', resolvido: true },
-        ]
-=======
-      const { data: respondidas } = await api.get(
-        `/admin/perguntas/status/RESPONDIDA?limit=50&offset=0`
-      );
-
-      // Monta as avaliações a partir das perguntas respondidas reais
-      const avaliacoes: EvaluationData[] = respondidas.map((item: any) => ({
-        id: String(item.id),
-        email: item.email ?? "Sem e-mail",
-        mensagem: item.message ?? "",
-        resolvido: true, // todas aqui têm status RESPONDIDA
-      }));
-
-      const total = avaliacoes.length;
-
-      setMetrics({
-        totalVotos: total,
-        votosSim: total,
-        votosNao: 0,
-        categorias: [
-          { nome: 'Secretaria', quantidade: Math.round(total * 0.45), porcentagem: 45, corClass: 'bg-[#0D6811]' },
-          { nome: 'Horários', quantidade: Math.round(total * 0.30), porcentagem: 30, corClass: 'bg-[#1353A3]' },
-          { nome: 'Estágio', quantidade: Math.round(total * 0.15), porcentagem: 15, corClass: 'bg-[#AD0E09]' },
-          { nome: 'Outros', quantidade: Math.round(total * 0.10), porcentagem: 10, corClass: 'bg-[#6B7280]' },
-        ],
-        avaliacoes,
-      });
-    } catch (error) {
-      console.error("Erro ao buscar perguntas respondidas:", error);
-      // fallback vazio — não exibe dados fictícios
-      setMetrics({
-        totalVotos: 0,
-        votosSim: 0,
-        votosNao: 0,
-        categorias: [],
-        avaliacoes: [],
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
-      });
+      console.error("Erro ao buscar dados do dashboard:", error);
     } finally {
       setLoading(false);
     }
   }
 
+  const filteredCategories = categoryStats.filter(s => s.month === mesFiltro);
+  const totalLogs = filteredCategories.reduce((sum, c) => sum + Number(c.log_count), 0);
+
+  const filteredTerms = termStats
+    .filter(s => s.month === mesFiltro)
+    .slice(0, 5)
+    .map(t => ({ title: t.title, count: Number(t.count) }));
+
+  const respondidas = Number(perguntaStats.find(s => s.status === 'RESPONDIDA')?.count || 0);
+  const abertas = perguntaStats.filter(s => s.status !== 'RESPONDIDA').reduce((sum, s) => sum + Number(s.count), 0);
+  const totalPerguntas = respondidas + abertas;
+
+  const filteredSatisfaction = satisfactionStats.filter(s => s.month === mesFiltro);
+  
+  const totalSessions = filteredSatisfaction.reduce((sum, s) => sum + Number(s.count), 0);
+  const ratedSessions = filteredSatisfaction.filter(s => s.flag !== null).reduce((sum, s) => sum + Number(s.count), 0);
+  const engagementRate = totalSessions > 0 ? ((ratedSessions / totalSessions) * 100).toFixed(0) : 0;
+
+  const flagWeights: Record<string, number> = { 'RUIM': 1, 'SATISFATÓRIO': 2, 'BOM': 3, 'MUITO BOM': 4, 'ÓTIMO': 5 };
+  let weightedSum = 0;
+  let positiveCount = 0;
+
+  const distribution = { 'RUIM': 0, 'SATISFATÓRIO': 0, 'BOM': 0, 'MUITO BOM': 0, 'ÓTIMO': 0 };
+
+  filteredSatisfaction.filter(s => s.flag !== null).forEach(s => {
+    const count = Number(s.count);
+    const flag = s.flag as keyof typeof distribution;
+    if (flagWeights[flag]) {
+      weightedSum += flagWeights[flag] * count;
+      distribution[flag] += count;
+      if (['BOM', 'MUITO BOM', 'ÓTIMO'].includes(flag)) {
+        positiveCount += count;
+      }
+    }
+  });
+
+  const averageRating = ratedSessions > 0 ? (weightedSum / ratedSessions).toFixed(1) : '0.0';
+  const satisfactionRate = ratedSessions > 0 ? ((positiveCount / ratedSessions) * 100).toFixed(0) : 0;
+
+  const CORES_SVG: Record<string, string> = {
+    'Secretaria': '#059669',
+    'DSM': '#1d4ed8',
+    'Não sou aluno': '#b91c1c',
+    'MARH': '#f97316',
+    'Geoprocessamento': '#9333ea'
+  };
+
+  const CORES_AVALIACAO: Record<string, string> = {
+    'RUIM': '#ef4444',
+    'SATISFATÓRIO': '#f59e0b',
+    'BOM': '#3b82f6',
+    'MUITO BOM': '#6366f1',
+    'ÓTIMO': '#10b981'
+  };
+
   return (
-    <div className="flex flex-col space-y-6 w-full animate-fadeIn font-sans">
-<<<<<<< HEAD
+    <div className="flex flex-col space-y-6">
       
-      {/* SEÇÃO DE FILTROS */}
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gray-300 pb-4">
-        <h1 className="text-2xl font-bold text-gray-700">Análise de Dados e Logs</h1>
-        
-        <div className="flex items-center gap-3 bg-white p-2 rounded-lg border border-gray-200 shadow-sm">
-          <div className="flex flex-col">
-            <span className="text-[10px] font-bold text-gray-400 uppercase px-1">Período</span>
-            <select 
-              value={mesFiltro} 
-=======
-
-      {/* SEÇÃO DE FILTROS */}
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gray-300 pb-4">
-        <h1 className="text-2xl font-bold text-gray-700">Análise de Dados e Logs</h1>
-
-        <div className="flex items-center gap-3 bg-white p-2 rounded-lg border border-gray-200 shadow-sm">
-          <div className="flex flex-col">
-            <span className="text-[10px] font-bold text-gray-400 uppercase px-1">Período</span>
-            <select
-              value={mesFiltro}
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
-              onChange={(e) => setMesFiltro(e.target.value)}
-              className="text-sm bg-transparent border-none outline-none font-semibold text-gray-600 cursor-pointer px-1 py-0.5"
-            >
-              <option value="05/2026">Maio / 2026</option>
-              <option value="06/2026">Junho / 2026</option>
-            </select>
-          </div>
-          <div className="w-px h-8 bg-gray-200" />
-          <div className="flex flex-col">
-            <span className="text-[10px] font-bold text-gray-400 uppercase px-1">Tipo de Usuário</span>
-<<<<<<< HEAD
-            <select 
-              value={tipoUsuario} 
-=======
-            <select
-              value={tipoUsuario}
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
-              onChange={(e) => setTipoUsuario(e.target.value)}
-              className="text-sm bg-transparent border-none outline-none font-semibold text-gray-600 cursor-pointer px-1 py-0.5"
-            >
-              <option value="Todos">Todos</option>
-              <option value="aluno">Aluno FATEC</option>
-              <option value="externo">Externo / Visitante</option>
-            </select>
-          </div>
+      {/* HEADER DE FILTROS - PADRONIZADO */}
+      <div className="bg-white p-4 rounded-lg border border-gray-300 shadow-sm flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h2 className="text-xl font-bold text-gray-800">Relatórios e Métricas</h2>
+          <p className="text-gray-500 text-xs font-semibold uppercase">Visão geral do sistema e interações</p>
+        </div>
+        <div className="flex items-center gap-3 bg-gray-50 p-2 rounded border border-gray-200">
+           <label className="text-[10px] font-bold text-gray-400 uppercase px-1">Período:</label>
+           <input type="month" value={mesFiltro} onChange={(e) => setMesFiltro(e.target.value)} className="text-sm font-bold text-gray-700 bg-transparent outline-none cursor-pointer" />
+           <button onClick={fetchDashboardData} className="text-gray-400 hover:text-[#8B0000] ml-2">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><polyline points="21 3 21 8 16 8"/></svg>
+           </button>
         </div>
       </div>
 
       {loading ? (
-        <div className="flex justify-center items-center py-20 text-gray-400 font-medium">
-          Carregando dados do banco...
-        </div>
+        <div className="py-20 text-center text-gray-400 italic font-bold">Compilando dados...</div>
       ) : (
         <>
-          {/* LINHA 1 DE CARDS: Termos e Categorias */}
-          <div className="flex flex-wrap gap-6 w-full">
-            <MostSearchedTerms />
-<<<<<<< HEAD
-            
-=======
-
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
-            {/* CARD DE CATEGORIAS COMPLETO */}
-            <div className="flex-1 min-w-[320px] bg-[#F4F4F4] border border-gray-200 rounded-xl p-6 shadow-sm flex flex-col justify-between">
-              <div>
-                <h3 className="font-bold text-gray-700 text-xl mb-4">Categorias</h3>
-<<<<<<< HEAD
-                
-=======
-
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
-                <div className="flex items-center gap-6">
-                  <div className="relative w-28 h-28 flex items-center justify-center shrink-0 bg-white rounded-full shadow-inner border border-gray-200">
-                    <div className="absolute inset-2 rounded-full bg-[#F4F4F4] flex flex-col items-center justify-center">
-                      <span className="text-xs text-gray-400 font-semibold uppercase">Total</span>
-                      <span className="text-lg font-bold text-gray-700">
-                        {metrics.categorias.reduce((sum, c) => sum + c.quantidade, 0)}
-                      </span>
-                    </div>
-                    {/* 🌟 SVG RECONFIGURADO COM AS CORES MISTAS PROPOSTAS */}
-                    <svg className="w-full h-full transform -rotate-90">
-                      {/* Categoria 1: Secretaria (Verde #0D6811) */}
-                      <circle cx="56" cy="56" r="46" fill="transparent" stroke="#0D6811" strokeWidth="12" strokeDasharray="290" strokeDashoffset="0" />
-                      {/* Categoria 2: Horários (Azul #1353A3) */}
-                      <circle cx="56" cy="56" r="46" fill="transparent" stroke="#1353A3" strokeWidth="12" strokeDasharray="290" strokeDashoffset="130" />
-                      {/* Categoria 3: Estágio (Vermelho #AD0E09) */}
-                      <circle cx="56" cy="56" r="46" fill="transparent" stroke="#AD0E09" strokeWidth="12" strokeDasharray="290" strokeDashoffset="215" />
-                    </svg>
-                  </div>
-
-                  <div className="flex-1 space-y-2">
-                    {metrics.categorias.map((cat) => (
-                      <div key={cat.nome} className="text-xs">
-                        <div className="flex justify-between text-gray-600 font-medium mb-0.5">
-                          <span>{cat.nome}</span>
-                          <span className="font-bold text-gray-700">{cat.quantidade} ({cat.porcentagem}%)</span>
-                        </div>
-                        <div className="w-full bg-white/60 h-2 rounded-full overflow-hidden border border-gray-200/50">
-                          <div className={`${cat.corClass} h-full rounded-full transition-all duration-300`} style={{ width: `${cat.porcentagem}%` }} />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            {/* SATISFAÇÃO DOS USUÁRIOS */}
+            <div className="lg:col-span-3 bg-white p-6 rounded-lg border border-gray-300 shadow-sm flex flex-col">
+              <div className="mb-6 flex justify-between items-end">
+                 <div>
+                    <h3 className="font-bold text-gray-800">Satisfação dos Usuários</h3>
+                    <span className="text-[10px] font-bold text-gray-400 uppercase">Avaliações do Chatbot no Período</span>
+                 </div>
+                 <div className="text-right">
+                    <span className="text-xs font-bold text-gray-500 uppercase">Engajamento de Avaliação: </span>
+                    <span className="text-sm font-bold text-[#8B0000]">{engagementRate}%</span>
+                    <p className="text-[9px] text-gray-400 mt-0.5">({ratedSessions} avaliações de {totalSessions} sessões)</p>
+                 </div>
               </div>
-              <div className="text-[11px] text-gray-400 border-t border-gray-200 pt-3 mt-4">
-                Categoria principal: <span className="font-bold text-gray-500">{metrics.categorias[0]?.nome || 'Nenhuma'}</span>
+
+              {totalSessions === 0 ? (
+                <div className="flex flex-col items-center justify-center py-10 text-center">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" strokeWidth="2" className="mb-2"><circle cx="12" cy="12" r="10"/><line x1="8" y1="15" x2="16" y2="15"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                  <p className="text-gray-400 italic text-xs font-medium">Nenhum atendimento realizado neste período.</p>
+                </div>
+              ) : ratedSessions === 0 ? (
+                <div className="flex flex-col items-center justify-center py-10 text-center">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" strokeWidth="2" className="mb-2"><circle cx="12" cy="12" r="10"/><line x1="8" y1="15" x2="16" y2="15"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                  <p className="text-gray-400 italic text-xs font-medium">Os atendimentos deste período não receberam avaliações.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+                   <div className="flex flex-col items-center justify-center border-r border-gray-100 pr-8">
+                      <span className="text-[48px] font-black text-gray-800 leading-none">{averageRating}</span>
+                      <div className="flex text-yellow-400 text-lg mt-2 mb-1">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                           <span key={i}>{i < Math.round(Number(averageRating)) ? '★' : '☆'}</span>
+                        ))}
+                      </div>
+                      <span className="text-[10px] font-bold text-gray-400 uppercase">Média Ponderada</span>
+                   </div>
+
+                   <div className="flex flex-col items-center justify-center border-r border-gray-100 pr-8">
+                      <span className="text-[48px] font-black text-[#2E7D32] leading-none">{satisfactionRate}%</span>
+                      <span className="text-[10px] font-bold text-[#2E7D32] uppercase mt-3">Satisfação Positiva</span>
+                      <span className="text-[9px] text-gray-400 mt-1">(Bom, Muito Bom e Ótimo)</span>
+                   </div>
+
+                   <div className="space-y-2 flex-1 pl-4">
+                      {['ÓTIMO', 'MUITO BOM', 'BOM', 'SATISFATÓRIO', 'RUIM'].map(flag => {
+                         const f = flag as keyof typeof distribution;
+                         const count = distribution[f];
+                         const percent = ratedSessions > 0 ? (count / ratedSessions) * 100 : 0;
+                         return (
+                           <div key={flag} className="flex items-center gap-3">
+                              <span className="text-[9px] font-bold text-gray-500 uppercase w-20 text-right">{flag}</span>
+                              <div className="flex-1 h-2.5 bg-gray-100 rounded-full overflow-hidden">
+                                 <div className="h-full rounded-full transition-all duration-700" style={{ width: `${percent}%`, backgroundColor: CORES_AVALIACAO[flag] }} />
+                              </div>
+                              <span className="text-xs font-bold text-gray-700 w-8">{count}</span>
+                           </div>
+                         );
+                      })}
+                   </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
+            {/* TERMOS */}
+            <div className="lg:col-span-5">
+               <MostSearchedTerms terms={filteredTerms} />
+            </div>
+            
+            {/* CATEGORIAS */}
+            <div className="lg:col-span-7 bg-white p-6 rounded-lg border border-gray-300 shadow-sm flex flex-col">
+              <div className="mb-6">
+                 <h3 className="font-bold text-gray-800">Interesse por Área</h3>
+                 <span className="text-[10px] font-bold text-gray-400 uppercase">Distribuição de acessos no Chat</span>
+              </div>
+
+              <div className="flex flex-col md:flex-row items-center gap-8 flex-1">
+                 <div className="relative w-40 h-40 shrink-0">
+                    <svg className="w-full h-full transform -rotate-90">
+                       <circle cx="80" cy="80" r="70" fill="transparent" stroke="#f1f5f9" strokeWidth="18" />
+                       {totalLogs > 0 ? (
+                         (() => {
+                            let cumulativePercent = 0;
+                            return filteredCategories.map((cat) => {
+                               const percent = (cat.log_count / totalLogs);
+                               const strokeDashoffset = 440 - (percent * 440);
+                               const rotation = (cumulativePercent * 360);
+                               cumulativePercent += percent;
+                               return (
+                                 <circle 
+                                   key={cat.category} 
+                                   cx="80" 
+                                   cy="80" 
+                                   r="70" 
+                                   fill="transparent" 
+                                   stroke={CORES_SVG[cat.category] || '#94a3b8'} 
+                                   strokeWidth="18" 
+                                   strokeDasharray="440" 
+                                   strokeDashoffset={strokeDashoffset}
+                                   style={{ transform: `rotate(${rotation}deg)`, transformOrigin: 'center' }}
+                                   className="transition-all duration-500"
+                                 />
+                               );
+                            });
+                         })()
+                       ) : (
+                        <circle cx="80" cy="80" r="70" fill="transparent" stroke="#e2e8f0" strokeWidth="10" strokeDasharray="5,5" />
+                       )}
+                    </svg>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center">
+                       <span className="text-2xl font-bold text-gray-800">{totalLogs}</span>
+                       <span className="text-[9px] font-bold text-gray-400 uppercase">Sessões</span>
+                    </div>
+                 </div>
+
+                 <div className="space-y-3 w-full">
+                    {filteredCategories.length === 0 ? (
+                      <div className="flex flex-col items-center justify-center py-6 text-center">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" strokeWidth="2" className="mb-2"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><polyline points="21 3 21 8 16 8"/></svg>
+                        <p className="text-gray-400 italic text-xs font-medium">Nenhum dado registrado para o período.</p>
+                      </div>
+                    ) : (
+                      filteredCategories.map((cat) => (
+                        <div key={cat.category} className="flex flex-col">
+                          <div className="flex justify-between text-xs font-bold mb-1.5">
+                             <span className="text-gray-600 flex items-center gap-2">
+                               <span className="w-2 h-2 rounded-full" style={{ backgroundColor: CORES_SVG[cat.category] || '#94a3b8' }} />
+                               {cat.category}
+                             </span>
+                             <span className="text-gray-800">{cat.log_count} <span className="text-[10px] text-gray-400 font-normal">({((cat.log_count / totalLogs) * 100).toFixed(0)}%)</span></span>
+                          </div>
+                          <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                             <div className="h-full rounded-full transition-all duration-700" style={{ width: `${(cat.log_count / totalLogs) * 100}%`, backgroundColor: CORES_SVG[cat.category] || '#94a3b8' }} />
+                          </div>
+                        </div>
+                      ))
+                    )}
+                 </div>
               </div>
             </div>
           </div>
 
-          {/* LINHA 2 DE CARDS: Avaliações e Satisfação */}
-          <div className="bg-[#F4F4F4] border border-gray-200 rounded-xl p-6 shadow-sm w-full">
-            <h3 className="font-bold text-gray-700 text-xl mb-4">Avaliações</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="md:col-span-1 bg-white p-4 rounded-lg border border-gray-200 flex flex-col justify-between">
-                <div>
-                  <span className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-3">Resumo dos Votos</span>
-                  <div className="space-y-3">
-                    <div>
-                      <div className="flex justify-between text-sm font-semibold text-gray-600 mb-1">
-                        <span>Resolvido </span>
-                        <span className="text-green-600">{metrics.votosSim}</span>
-                      </div>
-                      <div className="w-full bg-gray-100 h-2 rounded-full">
-                        <div className="bg-[#6F9A7B] h-2 rounded-full" style={{ width: metrics.totalVotos > 0 ? `${(metrics.votosSim / metrics.totalVotos) * 100}%` : '0%' }} />
-                      </div>
-                    </div>
-                    <div>
-                      <div className="flex justify-between text-sm font-semibold text-gray-600 mb-1">
-                        <span>Não Resolvido </span>
-                        <span className="text-red-500">{metrics.votosNao}</span>
-                      </div>
-                      <div className="w-full bg-gray-100 h-2 rounded-full">
-                        <div className="bg-red-400 h-2 rounded-full" style={{ width: metrics.totalVotos > 0 ? `${(metrics.votosNao / metrics.totalVotos) * 100}%` : '0%' }} />
-                      </div>
-                    </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="bg-white p-6 rounded-lg border border-gray-300 shadow-sm flex flex-col justify-between">
+              <div>
+                <h3 className="font-bold text-gray-800 mb-6">Taxa de Resposta</h3>
+                <div className="space-y-4">
+                  <div className="bg-gray-50 p-4 rounded-lg flex items-center justify-between border border-gray-100">
+                     <span className="text-xs font-bold text-gray-500 uppercase">Respondidas</span>
+                     <span className="text-xl font-bold text-[#2E7D32]">{respondidas}</span>
+                  </div>
+                  <div className="bg-gray-50 p-4 rounded-lg flex items-center justify-between border border-gray-100">
+                     <span className="text-xs font-bold text-gray-500 uppercase">Pendentes</span>
+                     <span className="text-xl font-bold text-[#8B0000]">{abertas}</span>
                   </div>
                 </div>
-                <div className="text-2xl font-black text-gray-700 pt-4 border-t border-gray-100 mt-4 flex items-baseline gap-1">
-                  {metrics.totalVotos} <span className="text-xs font-bold text-gray-400 uppercase">Votos Computados</span>
-                </div>
               </div>
+              <div className="mt-8 pt-4 border-t border-gray-100">
+                 <div className="flex justify-between text-[10px] font-bold text-gray-400 uppercase mb-2">
+                    <span>Aproveitamento Geral</span>
+                    <span className="text-gray-700">{totalPerguntas > 0 ? ((respondidas / totalPerguntas) * 100).toFixed(0) : 0}%</span>
+                 </div>
+                 <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden shadow-inner">
+                    <div className="h-full bg-[#2E7D32] transition-all duration-1000" style={{ width: totalPerguntas > 0 ? `${(respondidas / totalPerguntas) * 100}%` : '0%' }} />
+                 </div>
+              </div>
+            </div>
 
-              <div className="md:col-span-2 flex flex-col gap-3">
-                <span className="text-xs font-bold text-gray-400 uppercase tracking-wider px-1">Comentários Recentes</span>
-                <div className="space-y-2.5 max-h-[180px] overflow-y-auto pr-1">
-                  {metrics.avaliacoes.map((av) => (
-                    <div key={av.id} className="bg-white p-3 rounded-lg border border-gray-200/80 shadow-sm text-sm">
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="font-bold text-gray-600 text-xs">{av.email}</span>
-<<<<<<< HEAD
-                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
-                          av.resolvido ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                        }`}>
-=======
-                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${av.resolvido ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                          }`}>
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
-                          {av.resolvido ? 'Resolvido ' : 'Não Resolvido '}
-                        </span>
+            <div className="lg:col-span-2 bg-white p-6 rounded-lg border border-gray-300 shadow-sm flex flex-col">
+              <div className="flex items-center justify-between mb-6">
+                 <div>
+                    <h3 className="font-bold text-gray-800">Últimos Atendimentos</h3>
+                    <span className="text-[10px] font-bold text-gray-400 uppercase">Histórico recente de contato</span>
+                 </div>
+                 <button onClick={onNavigateToDuvidas} className="text-[#8B0000] text-xs font-bold uppercase underline hover:text-red-900 transition-colors">Gerenciar Todos</button>
+              </div>
+              <div className="space-y-3 overflow-y-auto max-h-[260px] pr-2 custom-scrollbar">
+                {recentQuestions.length === 0 ? (
+                  <div className="py-16 text-center flex flex-col items-center">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#e2e8f0" strokeWidth="2" className="mb-2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    <p className="text-gray-400 italic text-xs font-medium">Nenhuma interação registrada recentemente.</p>
+                  </div>
+                ) : (
+                  recentQuestions.map((q) => (
+                    <div key={q.id} className="p-4 bg-gray-50 border border-gray-200 rounded-lg flex justify-between items-center gap-6 hover:bg-gray-100/80 transition-colors">
+                      <div className="truncate flex-1">
+                        <span className="text-[10px] font-bold text-gray-400 block uppercase mb-0.5">{q.email}</span>
+                        <p className="text-sm text-gray-700 truncate italic font-medium">"{q.message}"</p>
                       </div>
-                      <p className="text-gray-600 leading-relaxed italic">"{av.mensagem}"</p>
+                      <span className={`text-[9px] font-black px-2.5 py-1 rounded-full border shadow-sm ${q.status === 'RESPONDIDA' ? 'bg-green-50 border-green-200 text-green-700' : 'bg-red-50 border-red-200 text-red-700'}`}>
+                        {q.status}
+                      </span>
                     </div>
-                  ))}
-                </div>
+                  ))
+                )}
               </div>
             </div>
           </div>
         </>
       )}
-
     </div>
   );
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8

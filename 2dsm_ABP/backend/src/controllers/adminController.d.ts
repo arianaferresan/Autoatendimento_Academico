@@ -1,0 +1,21 @@
+import type { Request, Response } from "express";
+export declare const getAllNodes: (_req: Request, res: Response) => Promise<void>;
+export declare const filterNodes: (req: Request, res: Response) => Promise<void>;
+export declare const deleteNode: (req: Request, res: Response) => Promise<void>;
+export declare const updateNode: (req: Request, res: Response) => Promise<void>;
+export declare const creatNode: (req: Request, res: Response) => Promise<void>;
+export declare const getSupportContactById: (req: Request, res: Response) => Promise<void>;
+export declare const getAllSupportContacts: (req: Request, res: Response) => Promise<Response<any, Record<string, any>> | undefined>;
+export declare const getSupportContactStats: (_req: Request, res: Response) => Promise<void>;
+export declare const updateSupportContactStatus: (req: Request, res: Response) => Promise<Response<any, Record<string, any>> | undefined>;
+export declare const deleteSupportContact: (req: Request, res: Response) => Promise<void>;
+export declare const getSupportContactsByStatus: (req: Request, res: Response) => Promise<Response<any, Record<string, any>> | undefined>;
+export declare const getAllSecretariaUsers: (_req: Request, res: Response) => Promise<void>;
+export declare const createSecretariaUser: (req: Request, res: Response) => Promise<void>;
+export declare const deleteUser: (req: Request, res: Response) => Promise<void>;
+export declare const getAllLogs: (req: Request, res: Response) => Promise<Response<any, Record<string, any>> | undefined>;
+export declare const getLogsStats: (req: Request, res: Response) => Promise<void>;
+export declare const getSatisfactionStats: (req: Request, res: Response) => Promise<void>;
+export declare const getInquiryStats: (_req: Request, res: Response) => Promise<void>;
+export declare const getInquiryStatsLeaf: (_req: Request, res: Response) => Promise<void>;
+//# sourceMappingURL=adminController.d.ts.map

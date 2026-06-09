@@ -20,6 +20,7 @@ import {
   getLogStats,
   getInquiryStats,
   getInquiryStatsLeaf,
+  getSatisfactionStats,
 } from "@/repos/adminRpository.js";
 
 import type {
@@ -125,7 +126,7 @@ export const deleteSupportContactByIdService = async (id: number) => {
 };
 
 export const createFulfillmentLogService = async (
-  data: Omit<FullfillmentLog, "session_id" | "created_at">,
+  data: Omit<FullfillmentLog, "id" | "session_id" | "created_at">,
 ) => {
   await createFulfillmentLog(data);
 };
@@ -166,5 +167,10 @@ export const getAllLogsService = async (limit: number, offset: number) => {
 export const getLogsStatsService = async () => {
   // Aqui poderiam entrar regras de negócio, como calcular estatísticas a partir dos logs.
   const stats = await getLogStats();
+  return stats;
+};
+
+export const getSatisfactionStatsService = async () => {
+  const stats = await getSatisfactionStats();
   return stats;
 };

@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
-import logoFatec from "../assets/logo-fatec.png";
-import logoCps from "../assets/logo-cps.png";
 import PainelPerguntas from "./PainelPerguntas";
 import PainelRelatorios from "./PainelRelatorios";
+
+const logoFatec = "/logo-fatec.png";
+const logoCps = "/logo-cps.png";
 
 type Status = "ABERTA" | "ATENDIMENTO" | "RESPONDIDA";
 
@@ -18,7 +19,6 @@ interface SupportContact {
   answered_by: string | null;
 }
 
-<<<<<<< HEAD
 type Tab = "duvidas" | "painel" | "relatorio";
 
 export default function Admin() {
@@ -27,370 +27,25 @@ export default function Admin() {
   const [duvidas, setDuvidas] = useState<SupportContact[]>([]);
   const [loading, setLoading] = useState(false);
   const [msgRespondida, setMsgRespondida] = useState(false);
+  const [duvidaSelecionada, setDuvidaSelecionada] = useState<SupportContact | null>(null);
+
+  // Controle de Acesso
+  const userJson = localStorage.getItem('user');
+  const user = userJson ? JSON.parse(userJson) : null;
+  const isAdmin = user?.role === 'admin';
   
-  // 🌟 ESTADO PARA CONTROLAR A ABERTURA DO MODAL DE SOBREPOSIÇÃO
-  const [duvidaSelecionada, setDuvidaSelecionada] = useState<any | null>(null);
+  // Filtros para Dúvidas
+  const [busca, setFiltroBusca] = useState('');
 
   useEffect(() => {
-    if (tab === "duvidas") fetchDuvidas();
-  }, [tab]);
-=======
-interface Node {
-  id: number;
-  parent_id: number | null;
-  title: string;
-  content: string | null;
-  display_order: number;
-  chunk_path: string | null;
-  link: string | null;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
-}
-
-type ModalState = { mode: "create" | "edit"; node?: Node };
-
-type Tab = "duvidas" | "painel" | "relatorio";
-
-// ─── Estilos compartilhados do modal ─────────────────────────────────────────
-
-const labelStyle: React.CSSProperties = {
-  display: "block",
-  fontSize: "13px",
-  fontWeight: 600,
-  color: "#333",
-  marginBottom: "6px",
-};
-
-const inputStyle: React.CSSProperties = {
-  width: "100%",
-  boxSizing: "border-box",
-  border: "1px solid #ccc",
-  borderRadius: "4px",
-  padding: "8px 10px",
-  fontSize: "13px",
-  color: "#333",
-  outline: "none",
-  backgroundColor: "#fff",
-};
-
-// ─── Modal de criação de item ─────────────────────────────────────────────────
-
-function ItemModalAdmin({
-  allNodes,
-  onClose,
-  onSave,
-}: {
-  allNodes: Node[];
-  onClose: () => void;
-  onSave: (data: Partial<Node> & { id?: number }) => Promise<void>;
-}) {
-  const [title, setTitle] = useState("");
-  const [tipo, setTipo] = useState<"menu" | "resposta">("menu");
-  const [parentId, setParentId] = useState<number | null>(null);
-  const [content, setContent] = useState("");
-  const [link, setLink] = useState("");
-  const [chunkPath, setChunkPath] = useState("");
-  const [order, setOrder] = useState(0);
-  const [isActive, setIsActive] = useState(true);
-  const [saving, setSaving] = useState(false);
-
-  async function handleSave() {
-    if (!title.trim()) return;
-    setSaving(true);
-    try {
-      await onSave({
-        title: title.trim(),
-        content: tipo === "resposta" ? content : null,
-        link: tipo === "resposta" && link.trim() ? link.trim() : null,
-        chunk_path:
-          tipo === "resposta" && chunkPath.trim() ? chunkPath.trim() : null,
-        parent_id: parentId,
-        display_order: order,
-        is_active: isActive,
-      });
-    } finally {
-      setSaving(false);
-    }
-  }
-
-  return (
-    <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        backgroundColor: "rgba(0,0,0,0.4)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        zIndex: 10000,
-      }}
-      onClick={(e) => e.target === e.currentTarget && onClose()}
-    >
-      <div
-        style={{
-          backgroundColor: "#fff",
-          borderRadius: "8px",
-          padding: "28px 24px",
-          width: "500px",
-          maxWidth: "95vw",
-          maxHeight: "90vh",
-          overflowY: "auto",
-          boxShadow: "0 8px 32px rgba(0,0,0,0.18)",
-        }}
-      >
-        <h2
-          style={{
-            margin: "0 0 20px",
-            fontSize: "17px",
-            fontWeight: 700,
-            color: "#222",
-          }}
-        >
-          Criar novo item
-        </h2>
-
-        {/* Título */}
-        <label style={labelStyle}>Título</label>
-        <input
-          value={title}
-          onChange={(e) => setTitle(e.target.value.slice(0, 100))}
-          placeholder="Digite aqui o título"
-          style={inputStyle}
-          maxLength={100}
-        />
-        <div
-          style={{
-            textAlign: "right",
-            fontSize: "11px",
-            color: "#999",
-            marginBottom: "16px",
-          }}
-        >
-          {title.length}/100
-        </div>
-
-        {/* Tipo do item */}
-        <label style={labelStyle}>Tipo do item</label>
-        <div style={{ display: "flex", gap: "10px", marginBottom: "16px" }}>
-          {(["menu", "resposta"] as const).map((t) => (
-            <label
-              key={t}
-              style={{
-                flex: 1,
-                border: `2px solid ${tipo === t ? "#C0392B" : "#ddd"}`,
-                borderRadius: "6px",
-                padding: "10px 12px",
-                cursor: "pointer",
-                backgroundColor: tipo === t ? "#fdf0f0" : "#fafafa",
-                display: "flex",
-                alignItems: "flex-start",
-                gap: "8px",
-              }}
-            >
-              <input
-                type="radio"
-                checked={tipo === t}
-                onChange={() => setTipo(t)}
-                style={{ marginTop: "2px", accentColor: "#C0392B" }}
-              />
-              <div>
-                <div
-                  style={{ fontSize: "13px", fontWeight: 600, color: "#333" }}
-                >
-                  {t === "menu" ? "Opção de menu" : "Resposta final"}
-                </div>
-                <div style={{ fontSize: "11px", color: "#888" }}>
-                  {t === "menu"
-                    ? "(Possui mais respostas)"
-                    : "(O item chegou à última solução)"}
-                </div>
-              </div>
-            </label>
-          ))}
-        </div>
-
-        {/* Pertence a */}
-        <label style={labelStyle}>O item pertence a:</label>
-        <select
-          value={parentId ?? ""}
-          onChange={(e) =>
-            setParentId(e.target.value === "" ? null : Number(e.target.value))
-          }
-          style={{ ...inputStyle, marginBottom: "16px" }}
-        >
-          <option value="">Defina o local do item</option>
-          {allNodes.map((n) => (
-            <option key={n.id} value={n.id}>
-              {n.title}
-            </option>
-          ))}
-        </select>
-
-        {/* Campos de resposta final */}
-        {tipo === "resposta" && (
-          <>
-            <label style={labelStyle}>Resposta final</label>
-            <textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value.slice(0, 800))}
-              placeholder="Digite aqui a resposta"
-              style={{
-                ...inputStyle,
-                height: "110px",
-                resize: "vertical",
-                marginBottom: "4px",
-              }}
-              maxLength={800}
-            />
-            <div
-              style={{
-                textAlign: "right",
-                fontSize: "11px",
-                color: "#999",
-                marginBottom: "16px",
-              }}
-            >
-              {content.length}/800
-            </div>
-
-            <label style={labelStyle}>
-              Link de evidência{" "}
-              <span style={{ color: "#999", fontWeight: 400 }}>(opcional)</span>
-            </label>
-            <input
-              value={link}
-              onChange={(e) => setLink(e.target.value)}
-              placeholder="https://... ou /assets/arquivo.pdf"
-              style={{ ...inputStyle, marginBottom: "16px" }}
-            />
-
-            <label style={labelStyle}>
-              Caminho do documento{" "}
-              <span style={{ color: "#999", fontWeight: 400 }}>(opcional)</span>
-            </label>
-            <input
-              value={chunkPath}
-              onChange={(e) => setChunkPath(e.target.value)}
-              placeholder="Ex: /assets/knowledge-base/pdf/arquivo.pdf"
-              style={{ ...inputStyle, marginBottom: "16px" }}
-            />
-          </>
-        )}
-
-        {/* Ordem + Status */}
-        <div style={{ display: "flex", gap: "16px", marginBottom: "24px" }}>
-          <div style={{ flex: 1 }}>
-            <label style={labelStyle}>Ordem</label>
-            <input
-              type="number"
-              value={order}
-              onChange={(e) => setOrder(Number(e.target.value))}
-              style={inputStyle}
-              min={0}
-            />
-          </div>
-          <div style={{ flex: 1 }}>
-            <label style={labelStyle}>Status</label>
-            <select
-              value={isActive ? "true" : "false"}
-              onChange={(e) => setIsActive(e.target.value === "true")}
-              style={inputStyle}
-            >
-              <option value="">Defina um status</option>
-              <option value="true">Ativo</option>
-              <option value="false">Desativado</option>
-            </select>
-          </div>
-        </div>
-
-        {/* Ações */}
-        <div
-          style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}
-        >
-          <button
-            onClick={onClose}
-            disabled={saving}
-            style={{
-              backgroundColor: "#666",
-              color: "#fff",
-              border: "none",
-              borderRadius: "4px",
-              padding: "9px 16px",
-              fontSize: "13px",
-              fontWeight: 600,
-              cursor: "pointer",
-            }}
-          >
-            Cancelar
-          </button>
-          <button
-            onClick={handleSave}
-            disabled={saving || !title.trim()}
-            style={{
-              backgroundColor: "#1a56bb",
-              color: "#fff",
-              border: "none",
-              borderRadius: "4px",
-              padding: "9px 16px",
-              fontSize: "13px",
-              fontWeight: 600,
-              cursor: saving || !title.trim() ? "not-allowed" : "pointer",
-              opacity: saving || !title.trim() ? 0.6 : 1,
-            }}
-          >
-            {saving ? "Criando..." : "Criar item"}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ─── Componente principal ─────────────────────────────────────────────────────
-
-export default function Admin() {
-  const navigate = useNavigate();
-  const [tab, setTab] = useState<Tab>("duvidas");
-  const role = localStorage.getItem('role'); // adicionar essa linha
-  const [duvidas, setDuvidas] = useState<SupportContact[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [msgRespondida, setMsgRespondida] = useState(false);
-  const [duvidaSelecionada, setDuvidaSelecionada] = useState<any | null>(null);
-  const [statusFiltro, setStatusFiltro] = useState<Status>("ABERTA");
-
-  // Estados do modal de criação
-  const [modalCriar, setModalCriar] = useState<ModalState | null>(null);
-  const [allNodes, setAllNodes] = useState<Node[]>([]);
-  const [toastAdmin, setToastAdmin] = useState<{
-    msg: string;
-    type: "success" | "error";
-  } | null>(null);
-
-  useEffect(() => {
-    if (tab === "duvidas") fetchDuvidas();
-  }, [tab, statusFiltro]);
-
-  useEffect(() => {
-    api
-      .get<Node[]>("/admin/nodes/all")
-      .then(({ data }) => {
-        setAllNodes(data);
-      })
-      .catch(() => {});
+    fetchDuvidas();
   }, []);
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
 
   async function fetchDuvidas() {
     setLoading(true);
+    setDuvidaSelecionada(null);
     try {
-      const { data } = await api.get<SupportContact[]>(
-<<<<<<< HEAD
-        "/admin/perguntas/status/ABERTA?offset=0"
-=======
-          `/admin/perguntas/status/${statusFiltro}?offset=0`
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
-      );
+      const { data } = await api.get<SupportContact[]>("/admin/perguntas?limit=100");
       setDuvidas(data);
     } catch {
       setDuvidas([]);
@@ -399,852 +54,269 @@ export default function Admin() {
     }
   }
 
-<<<<<<< HEAD
   async function marcarRespondido(id: number) {
     try {
-      await api.patch(`/admin/perguntas/${id}`, {
-        status: "RESPONDIDA",
-        answered_by: null,
-      });
-      setDuvidas((prev) => prev.filter((d) => d.id !== id));
-      setMsgRespondida(true);
-      setTimeout(() => setMsgRespondida(false), 3000);
-    } catch {
-      alert("Erro ao atualizar status.");
-=======
-  async function handleSaveNode(data: Partial<Node> & { id?: number }) {
-    try {
-      const form = new FormData();
-      form.append("title", data.title ?? "");
-      if (data.content) form.append("content", data.content);
-      form.append("display_order", String(data.display_order ?? 0));
-      form.append("is_active", String(data.is_active ?? true));
-      if (data.parent_id !== null && data.parent_id !== undefined)
-        form.append("parent_id", String(data.parent_id));
-      if (data.link) form.append("link", data.link);
-      if (data.chunk_path) form.append("chunk_path", data.chunk_path);
-      await api.post("/admin/nodes/create", form);
-      setModalCriar(null);
-      const { data: nodes } = await api.get<Node[]>("/admin/nodes/all");
-      setAllNodes(nodes);
-      showToastAdmin("Item criado com sucesso!", "success");
-    } catch {
-      showToastAdmin("Erro ao criar item.", "error");
-    }
-  }
-
-  function showToastAdmin(msg: string, type: "success" | "error") {
-    setToastAdmin({ msg, type });
-    setTimeout(() => setToastAdmin(null), 3000);
-  }
-
-  async function marcarRespondido(id: number) {
-    try {
-      await api.patch(`/admin/perguntas/${id}`, { status: "RESPONDIDA" });
-      setDuvidas((prev) => prev.filter((d) => d.id !== id));
-      setMsgRespondida(true);
-      setTimeout(() => setMsgRespondida(false), 3000);
-    } catch (err: any) {
-      const status = err?.response?.status;
-      if (status === 401) {
-        alert("Sessão expirada. Faça login novamente.");
-        localStorage.removeItem("token");
-        navigate("/login");
-      } else if (status === 404) {
-        alert("Dúvida não encontrada no banco de dados.");
-      } else {
-        alert(
-          `Erro ao atualizar status. (${status ?? "sem resposta do servidor"})`
-        );
+      await api.patch(`/admin/perguntas/${id}`, { status: "RESPONDIDA", answered_by: null });
+      setDuvidas((prev) => prev.map(d => d.id === id ? { ...d, status: 'RESPONDIDA' as Status } : d));
+      if (duvidaSelecionada?.id === id) {
+        setDuvidaSelecionada(prev => prev ? { ...prev, status: 'RESPONDIDA' as Status } : null);
       }
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
-    }
-  }
-
-  async function atualizarStatus(id: number, novoStatus: Status) {
-    try {
-      await api.patch(`/admin/perguntas/${id}`, {
-        status: novoStatus,
-        answered_by: null,
-      });
-      setDuvidas((prev) =>
-        prev.map((d) => (d.id === id ? { ...d, status: novoStatus } : d))
-      );
+      setMsgRespondida(true);
+      setTimeout(() => setMsgRespondida(false), 3000);
     } catch {
       alert("Erro ao atualizar status.");
     }
   }
 
-  function handleSair() {
-    localStorage.removeItem("token");
-<<<<<<< HEAD
-=======
-    localStorage.removeItem("role"); // adicionar essa linha
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
-    navigate("/login");
-  }
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    navigate('/');
+  };
 
-  const abertas = duvidas.length;
+  const duvidasFiltradas = useMemo(() => {
+    return duvidas.filter(d => {
+      return d.email.toLowerCase().includes(busca.toLowerCase()) || d.message.toLowerCase().includes(busca.toLowerCase());
+    }).sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  }, [duvidas, busca]);
+
+  const pendentes = duvidasFiltradas.filter(d => d.status === 'ABERTA');
+  const respondidas = duvidasFiltradas.filter(d => d.status === 'RESPONDIDA');
+  const total = duvidas.length;
+  const totalPendentes = duvidas.filter(d => d.status === 'ABERTA').length;
+  const totalRespondidas = duvidas.filter(d => d.status === 'RESPONDIDA').length;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-      <header
-        style={{
-          backgroundColor: "#fff",
-          padding: "10px 24px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-          flexShrink: 0,
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          <img
-            src={logoFatec}
-            alt="FATEC Jacareí"
-            style={{ height: "50px", objectFit: "contain" }}
-          />
-<<<<<<< HEAD
-          <div style={{ width: "1px", height: "36px", backgroundColor: "#ccc" }} />
-=======
-          <div
-            style={{ width: "1px", height: "36px", backgroundColor: "#ccc" }}
-          />
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
-          <img
-            src={logoCps}
-            alt="Centro Paula Souza"
-            style={{ height: "50px", objectFit: "contain" }}
-          />
+    <div className="flex flex-col h-screen overflow-hidden bg-[#EFEFEF] font-sans text-gray-800">
+      <header className="bg-white px-6 py-2.5 flex items-center justify-between shadow-md border-b border-gray-200 z-30 shrink-0">
+        <div className="flex items-center gap-4">
+          <img src={logoFatec} alt="FATEC Jacareí" className="h-12 object-contain" />
+          <div className="w-px h-9 bg-gray-300 hidden md:block" />
+          <img src={logoCps} alt="Centro Paula Souza" className="h-12 object-contain hidden md:block" />
         </div>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            border: "1px solid #ccc",
-            borderRadius: "4px",
-            overflow: "hidden",
-          }}
-        >
-          <input
-            type="text"
-            placeholder="O que deseja localizar?"
-            readOnly
-            style={{
-              border: "none",
-              outline: "none",
-              padding: "8px 12px",
-              fontSize: "14px",
-              color: "#555",
-              width: "240px",
-              backgroundColor: "#fff",
-            }}
-          />
-          <button
-            style={{
-              backgroundColor: "#8B0000",
-              border: "none",
-<<<<<<< HEAD
-              padding: "8px 12px",
-=======
-              padding: "11px 12px",
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#fff"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <circle cx="11" cy="11" r="8" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
-          </button>
+        <div className="flex items-center gap-4">
+           {isAdmin && <span className="text-xs font-bold text-gray-400 uppercase hidden md:inline-block">Perfil: Administrador</span>}
+           {!isAdmin && <span className="text-xs font-bold text-gray-400 uppercase hidden md:inline-block">Perfil: Secretaria</span>}
+           <div className="flex items-center border border-gray-300 rounded overflow-hidden w-64 bg-white">
+             <input type="text" placeholder="Localizar global..." className="border-none outline-none px-3 py-2 text-sm text-gray-600 w-full" readOnly />
+             <button className="bg-[#8B0000] text-white px-3 py-2 flex items-center justify-center">
+               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
+             </button>
+           </div>
         </div>
       </header>
 
-      <div style={{ display: "flex", flex: 1 }}>
-        <aside
-          style={{
-            width: "180px",
-            backgroundColor: "#6B0000",
-            display: "flex",
-            flexDirection: "column",
-            flexShrink: 0,
-          }}
-        >
-<<<<<<< HEAD
-          {(["painel", "relatorio", "duvidas"] as Tab[]).map((t) => {
-=======
-{(["painel", "relatorio", "duvidas"] as Tab[]).filter(t => !(t === "relatorio" && role === "secretaria")).map((t) => {
-
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
-            const labels: Record<Tab, string> = {
-              painel: "Painel de perguntas",
-              relatorio: "Relatório",
-              duvidas: "Dúvidas recebidas",
-            };
-            const active = tab === t;
-            return (
-              <button
-                key={t}
-                onClick={() => setTab(t)}
-                style={{
-                  background: active ? "rgba(0,0,0,0.25)" : "none",
-                  border: "none",
-                  borderLeft: active ? "3px solid #fff" : "3px solid transparent",
-                  color: "#fff",
-                  fontSize: "14px",
-                  fontWeight: active ? 600 : 400,
-                  padding: "14px 16px",
-                  textAlign: "left",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  gap: "8px",
-                }}
-              >
-                {labels[t]}
-                {t === "duvidas" && abertas > 0 && (
-                  <span
-                    style={{
-                      backgroundColor: "#1565C0",
-                      color: "#fff",
-                      borderRadius: "999px",
-                      fontSize: "11px",
-                      fontWeight: 700,
-                      padding: "2px 7px",
-                      minWidth: "20px",
-                      textAlign: "center",
-                    }}
-                  >
-                    {abertas}
-                  </span>
-                )}
-              </button>
-            );
-          })}
-
-          <div style={{ flex: 1 }} />
-
-          <button
-            onClick={handleSair}
-            style={{
-              background: "#AD0E09",
-              border: "none",
-              borderRadius: "8px",
-              color: "#fff",
-              fontSize: "14px",
-              fontWeight: 600,
-              padding: "12px 16px",
-              margin: "0 auto 16px auto",
-              textAlign: "center",
-              justifyContent: "center",
-              width: "calc(100% - 32px)",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              transition: "background-color 0.2s",
-            }}
-<<<<<<< HEAD
-            onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#540000")}
-            onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#AD0E09")}
-=======
-            onMouseOver={(e) =>
-              (e.currentTarget.style.backgroundColor = "#540000")
-            }
-            onMouseOut={(e) =>
-              (e.currentTarget.style.backgroundColor = "#AD0E09")
-            }
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
-          >
-            Sair
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-              <polyline points="16 17 21 12 16 7" />
-              <line x1="21" y1="12" x2="9" y2="12" />
-            </svg>
-          </button>
+      <div className="flex flex-1 overflow-hidden relative">
+        <aside className="w-64 bg-[#8B0000] flex flex-col shadow-inner pt-4 shrink-0 h-full">
+          <nav className="flex-1 space-y-2 px-3">
+            <button onClick={() => setTab("duvidas")} className={`w-full flex items-center gap-3 px-4 py-3 rounded text-sm font-bold transition-all ${tab === "duvidas" ? "bg-white text-[#8B0000] shadow" : "text-white hover:bg-white/10"}`}>
+               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+               <span className="flex-1 text-left">Suporte e Dúvidas</span>
+               {totalPendentes > 0 && (
+                 <span className={`text-[10px] px-2 py-0.5 rounded-full font-black ${tab === "duvidas" ? "bg-red-100 text-red-700" : "bg-white/20 text-white"}`}>{totalPendentes}</span>
+               )}
+            </button>
+            <button onClick={() => setTab("painel")} className={`w-full flex items-center gap-3 px-4 py-3 rounded text-sm font-bold transition-all ${tab === "painel" ? "bg-white text-[#8B0000] shadow" : "text-white hover:bg-white/10"}`}>
+               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>
+               <span className="flex-1 text-left">Fluxogramas</span>
+            </button>
+            {isAdmin && (
+               <button onClick={() => setTab("relatorio")} className={`w-full flex items-center gap-3 px-4 py-3 rounded text-sm font-bold transition-all ${tab === "relatorio" ? "bg-white text-[#8B0000] shadow" : "text-white hover:bg-white/10"}`}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                  <span className="flex-1 text-left">Estatísticas</span>
+               </button>
+            )}
+          </nav>
+          <div className="p-4 border-t border-white/10 mt-auto">
+            <button onClick={handleLogout} className="w-full bg-white/10 hover:bg-white/20 text-white text-[10px] font-bold py-3 px-4 rounded transition-all flex items-center justify-center gap-2 uppercase tracking-widest border border-white/20">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              Sair
+            </button>
+          </div>
         </aside>
 
-        <main style={{ flex: 1, backgroundColor: "#f4f4f4", padding: "24px" }}>
+        <main className="flex-1 overflow-y-auto p-4 md:p-8">
           {tab === "duvidas" && (
-            <>
-<<<<<<< HEAD
-              {/* BARRA SUPERIOR VERMELHA DE OPÇÕES DO CURSO */}
-=======
-              {/* BARRA SUPERIOR VERMELHA */}
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
-              <div
-                style={{
-                  backgroundColor: "#8B0000",
-                  borderRadius: "6px",
-                  padding: "12px 16px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "12px",
-                  marginBottom: "20px",
-                }}
-              >
-<<<<<<< HEAD
-                <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                  <label style={{ color: "#fff", fontSize: "16px", fontWeight: 600 }}>
-                    Curso
-                  </label>
-                  <select
-=======
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "4px",
-                  }}
-                >
-                  <label
-                    style={{ color: "#fff", fontSize: "16px", fontWeight: 600 }}
-                  >
-                    Status
-                  </label>
-                  <select
-                    value={statusFiltro}
-                    onChange={(e) => setStatusFiltro(e.target.value as Status)}
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
-                    style={{
-                      padding: "6px 10px",
-                      borderRadius: "4px",
-                      border: "none",
-                      fontSize: "13px",
-                      backgroundColor: "#fff",
-                      color: "#333",
-                      cursor: "pointer",
-                    }}
-                  >
-<<<<<<< HEAD
-                    <option>Selecione o curso</option>
-                  </select>
+            <div className="max-w-7xl mx-auto h-full flex flex-col gap-6">
+              
+              {/* HEADER E RESUMO RÁPIDO */}
+              <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 shrink-0">
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-800">Suporte ao Usuário</h1>
+                  <p className="text-gray-500 text-sm">Gerencie as dúvidas e solicitações enviadas pelo chatbot</p>
                 </div>
-                <div style={{ flex: 1 }} />
-                <button
-                  style={{
-                    backgroundColor: "transparent",
-                    border: "2px solid #fff",
-                    color: "#fff",
-                    padding: "8px 16px",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                    fontSize: "13px",
-                    fontWeight: 600,
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "6px",
-                    transition: "background-color 0.2s, color 0.2s",
-                  }}
-                  onMouseOver={(e) => {
-                    e.currentTarget.style.backgroundColor = "#fff";
-                    e.currentTarget.style.color = "#333333";
-                  }}
-                  onMouseOut={(e) => {
-                    e.currentTarget.style.backgroundColor = "transparent";
-                    e.currentTarget.style.color = "#fff";
-                  }}
-                >
-                  <span style={{ fontSize: "16px" }}>+</span> Criar novo item
-                </button>
+                
+                <div className="flex items-center gap-4 bg-white px-5 py-3 rounded-lg border border-gray-200 shadow-sm">
+                   <div className="text-center pr-4 border-r border-gray-100">
+                      <span className="block text-xl font-black text-gray-700 leading-none">{total}</span>
+                      <span className="text-[9px] font-bold text-gray-400 uppercase">Total</span>
+                   </div>
+                   <div className="text-center pr-4 border-r border-gray-100">
+                      <span className="block text-xl font-black text-red-600 leading-none">{totalPendentes}</span>
+                      <span className="text-[9px] font-bold text-gray-400 uppercase">Pendentes</span>
+                   </div>
+                   <div className="text-center">
+                      <span className="block text-xl font-black text-green-600 leading-none">{totalRespondidas}</span>
+                      <span className="text-[9px] font-bold text-gray-400 uppercase">Respondidas</span>
+                   </div>
+                </div>
 
-                <button
-                  style={{
-                    backgroundColor: "transparent",
-                    border: "2px solid #fff",
-                    color: "#fff",
-                    padding: "8px 16px",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                    fontSize: "13px",
-                    fontWeight: 600,
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "6px",
-                    transition: "background-color 0.2s, color 0.2s",
-                  }}
-                  onMouseOver={(e) => {
-                    e.currentTarget.style.backgroundColor = "#fff";
-                    e.currentTarget.style.color = "#333333";
-                  }}
-                  onMouseOut={(e) => {
-                    e.currentTarget.style.backgroundColor = "transparent";
-                    e.currentTarget.style.color = "#fff";
-                  }}
-                >
-                  Importar/exportar
+                <button onClick={fetchDuvidas} className="flex items-center gap-2 bg-white border border-gray-300 px-5 py-3 rounded-lg text-[#8B0000] text-xs font-bold uppercase hover:bg-gray-50 transition-colors shadow-sm">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 1 0 2.13-5.85L7 8"/></svg>
+                  Atualizar Lista
                 </button>
-=======
-                    <option value="ABERTA">Aberta</option>
-                    <option value="ATENDIMENTO">Em atendimento</option>
-                    <option value="RESPONDIDA">Respondida</option>
-                  </select>
-                </div>
-                <div style={{ flex: 1 }} />
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
               </div>
 
               {msgRespondida && (
-                <div
-                  style={{
-                    backgroundColor: "#2E7D32",
-                    color: "#fff",
-                    borderRadius: "6px",
-                    padding: "14px 20px",
-                    textAlign: "center",
-                    fontWeight: 600,
-                    fontSize: "15px",
-                    marginBottom: "16px",
-                  }}
-                >
-                  Mensagem respondida!
-                </div>
+                 <div className="shrink-0 bg-green-50 text-green-800 border border-green-200 p-3 rounded-lg shadow-sm text-sm font-bold flex items-center gap-3 animate-fadeIn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
+                    Atendimento marcado como concluído com sucesso!
+                 </div>
               )}
 
-              {loading ? (
-<<<<<<< HEAD
-                <p style={{ color: "#888", textAlign: "center", marginTop: "40px" }}>
-                  Carregando...
-                </p>
-              ) : duvidas.length === 0 ? (
-                /* FALLBACK LOCAL SEGURO: Renderiza os seus cards estruturados */
-                <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
-                  {[
-                    {
-                      id: 1,
-                      assunto: "Transporte fretado",
-                      mensagem: "Olá gostaria de saber se vocês possuem uma lista de contatos de transporte fretados moro em outra cidade e preciso saber para me organizar, pra poder ir até aí."
-                    },
-                    {
-                      id: 2,
-                      assunto: "Entrega de Termo de Estágio",
-                      mensagem: "Qual o prazo máximo para enviar o termo de compromisso assinado pela empresa na secretaria acadêmica?"
-                    }
-                  ].map((mock) => (
-                    <div
-                      key={mock.id}
-                      style={{
-                        backgroundColor: "#eeeeee",
-                        borderRadius: "8px",
-                        padding: "20px 24px",
-                        boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "8px",
-                        border: "1px solid #e0e0e0"
-                      }}
-                    >
-                      <h3 style={{ margin: 0, fontSize: "20px", fontWeight: 500, color: "#333" }}>
-                        {mock.assunto}
-                      </h3>
-                      <p style={{ margin: "0 0 12px 0", fontSize: "16px", color: "#444", lineHeight: "1.5" }}>
-                        {mock.mensagem}
-                      </p>
-                      <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px" }}>
-                        <button
-                          onClick={() => setDuvidaSelecionada(mock)} // 🌟 ABRE O MODAL COM OS DADOS MOCKADOS
-                          style={{
-                            backgroundColor: "#1F3A60",
-                            color: "#fff",
-                            border: "none",
-                            borderRadius: "6px",
-                            padding: "10px 24px",
-                            fontSize: "15px",
-                            fontWeight: 500,
-                            cursor: "pointer",
-                            transition: "background 0.2s"
-                          }}
-                          onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#152842"}
-                          onMouseOut={(e) => e.currentTarget.style.backgroundColor = "#1F3A60"}
-                        >
-                          Abrir
-                        </button>
-                        <button
-                          onClick={() => marcarRespondido(mock.id)}
-                          style={{
-                            backgroundColor: "#006400",
-                            color: "#fff",
-                            border: "none",
-                            borderRadius: "6px",
-                            padding: "10px 24px",
-                            fontSize: "15px",
-                            fontWeight: 500,
-                            cursor: "pointer",
-                            transition: "background 0.2s"
-                          }}
-                          onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#004d00"}
-                          onMouseOut={(e) => e.currentTarget.style.backgroundColor = "#006400"}
-                        >
-                          Marcar como respondido
-                        </button>
+              {/* LAYOUT MESTRE-DETALHE */}
+              <div className="flex-1 flex flex-col md:flex-row gap-6 min-h-[500px]">
+                
+                {/* COLUNA ESQUERDA: LISTA (MESTRE) */}
+                <div className="w-full md:w-[400px] flex flex-col gap-4 shrink-0">
+                   
+                   {/* Busca */}
+                   <div className="relative bg-white rounded-lg shadow-sm border border-gray-200 shrink-0">
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
+                      </span>
+                      <input 
+                        type="text" 
+                        value={busca} 
+                        onChange={e => setFiltroBusca(e.target.value)} 
+                        placeholder="Buscar e-mail ou dúvida..." 
+                        className="w-full bg-transparent border-none pl-12 pr-4 py-3.5 text-sm outline-none font-medium placeholder-gray-400" 
+                      />
+                   </div>
+
+                   <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-6">
+                      {loading ? (
+                         <div className="p-8 text-center text-gray-400 italic font-bold">Carregando fila...</div>
+                      ) : duvidasFiltradas.length === 0 ? (
+                         <div className="p-8 text-center text-gray-400 italic font-bold">Nenhuma dúvida encontrada.</div>
+                      ) : (
+                         <>
+                            {/* GRUPO PENDENTES */}
+                            {pendentes.length > 0 && (
+                               <div className="space-y-3">
+                                  <h3 className="text-xs font-black text-red-700 uppercase tracking-wider flex items-center gap-2">
+                                     <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse" />
+                                     Pendentes ({pendentes.length})
+                                  </h3>
+                                  <div className="space-y-2">
+                                     {pendentes.map(d => (
+                                        <button 
+                                          key={d.id}
+                                          onClick={() => setDuvidaSelecionada(d)}
+                                          className={`w-full text-left p-4 rounded-lg border transition-all ${duvidaSelecionada?.id === d.id ? 'bg-red-50 border-red-200 shadow-md ring-1 ring-red-200' : 'bg-white border-gray-200 hover:border-red-300 shadow-sm hover:shadow'}`}
+                                        >
+                                           <div className="flex justify-between items-start mb-2">
+                                              <span className="font-bold text-gray-800 text-sm truncate pr-4">{d.email}</span>
+                                              <span className="text-[10px] font-bold text-gray-400 shrink-0">{new Date(d.created_at).toLocaleDateString('pt-BR')}</span>
+                                           </div>
+                                           <p className="text-gray-600 text-xs italic line-clamp-2 leading-relaxed">"{d.message}"</p>
+                                        </button>
+                                     ))}
+                                  </div>
+                               </div>
+                            )}
+
+                            {/* GRUPO RESPONDIDAS */}
+                            {respondidas.length > 0 && (
+                               <div className="space-y-3">
+                                  <h3 className="text-xs font-black text-green-700 uppercase tracking-wider flex items-center gap-2 opacity-70">
+                                     <span className="w-2 h-2 rounded-full bg-green-600" />
+                                     Respondidas ({respondidas.length})
+                                  </h3>
+                                  <div className="space-y-2 opacity-70 hover:opacity-100 transition-opacity">
+                                     {respondidas.map(d => (
+                                        <button 
+                                          key={d.id}
+                                          onClick={() => setDuvidaSelecionada(d)}
+                                          className={`w-full text-left p-4 rounded-lg border transition-all ${duvidaSelecionada?.id === d.id ? 'bg-green-50 border-green-200 shadow-md ring-1 ring-green-200' : 'bg-white border-gray-200 hover:border-green-300 shadow-sm hover:shadow'}`}
+                                        >
+                                           <div className="flex justify-between items-start mb-2">
+                                              <span className="font-bold text-gray-700 text-sm truncate pr-4">{d.email}</span>
+                                              <span className="text-[10px] font-bold text-gray-400 shrink-0">{new Date(d.created_at).toLocaleDateString('pt-BR')}</span>
+                                           </div>
+                                           <p className="text-gray-500 text-xs italic line-clamp-1 leading-relaxed">"{d.message}"</p>
+                                        </button>
+                                     ))}
+                                  </div>
+                               </div>
+                            )}
+                         </>
+                      )}
+                   </div>
+                </div>
+
+                {/* COLUNA DIREITA: DETALHES (DETAIL) */}
+                <div className="flex-1 bg-white rounded-lg border border-gray-200 shadow-sm flex flex-col overflow-hidden">
+                   {!duvidaSelecionada ? (
+                      <div className="flex-1 flex flex-col items-center justify-center text-gray-400 gap-4 p-8">
+                         <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="opacity-50"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                         <p className="text-sm font-medium">Selecione uma dúvida na lista ao lado para visualizar os detalhes e realizar o atendimento.</p>
                       </div>
-                    </div>
-                  ))}
+                   ) : (
+                      <>
+                         {/* Header do Detalhe */}
+                         <div className="p-6 border-b border-gray-100 bg-gray-50/50 flex flex-wrap justify-between items-start gap-4">
+                            <div>
+                               <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 block">Remetente</span>
+                               <h2 className="text-xl font-bold text-gray-800">{duvidaSelecionada.email}</h2>
+                               <span className="text-xs text-gray-500 font-medium mt-1 block">Enviado em {new Date(duvidaSelecionada.created_at).toLocaleDateString('pt-BR')} às {new Date(duvidaSelecionada.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span>
+                            </div>
+                            <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border shadow-sm ${duvidaSelecionada.status === 'RESPONDIDA' ? "bg-green-100 border-green-200 text-green-800" : "bg-red-100 border-red-200 text-red-800"}`}>
+                               {duvidaSelecionada.status === 'RESPONDIDA' ? 'Atendimento Concluído' : 'Aguardando Atendimento'}
+                            </span>
+                         </div>
+
+                         {/* Corpo da Mensagem */}
+                         <div className="flex-1 p-6 overflow-y-auto">
+                            <span className="text-[10px] font-black text-[#8B0000] uppercase tracking-widest mb-4 block">Mensagem Recebida</span>
+                            <div className="bg-[#F9F9F9] border border-gray-200 rounded-lg p-6 shadow-inner">
+                               <p className="text-gray-700 text-[15px] leading-relaxed whitespace-pre-wrap font-medium">
+                                  {duvidaSelecionada.message}
+                               </p>
+                            </div>
+                         </div>
+
+                         {/* Footer de Ações */}
+                         <div className="p-6 border-t border-gray-100 bg-gray-50 flex flex-wrap justify-end gap-3">
+                            <button 
+                              onClick={() => navigator.clipboard.writeText(duvidaSelecionada.email)}
+                              className="px-6 py-2.5 rounded-lg bg-white border border-gray-300 text-gray-700 text-xs font-bold uppercase hover:bg-gray-100 transition-colors shadow-sm flex items-center gap-2"
+                            >
+                               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                               Copiar E-mail
+                            </button>
+                            
+                            {duvidaSelecionada.status === 'ABERTA' && (
+                               <button 
+                                 onClick={() => marcarRespondido(duvidaSelecionada.id)}
+                                 className="px-6 py-2.5 rounded-lg bg-[#2E7D32] border border-green-800 text-white text-xs font-bold uppercase hover:bg-green-800 transition-colors shadow-md flex items-center gap-2"
+                               >
+                                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"/></svg>
+                                  Marcar como Concluída
+                               </button>
+                            )}
+                         </div>
+                      </>
+                   )}
                 </div>
-              ) : (
-                /* MONTAGEM EM TEMPO REAL VINDA DO BANCO DE DADOS */
-                <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
-=======
-                <p
-                  style={{
-                    color: "#888",
-                    textAlign: "center",
-                    marginTop: "40px",
-                  }}
-                >
-                  Carregando...
-                </p>
-              ) : duvidas.length === 0 ? (
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginTop: "60px",
-                    gap: "12px",
-                  }}
-                >
-                  <span style={{ fontSize: "36px" }}>✅</span>
-                  <p style={{ fontSize: "16px", color: "#555", fontWeight: 600, margin: 0 }}>
-                    Nenhuma dúvida {statusFiltro === "ABERTA" ? "em aberto" : statusFiltro === "ATENDIMENTO" ? "em atendimento" : "respondida"} no momento.
-                  </p>
-                  <p style={{ fontSize: "13px", color: "#999", margin: 0 }}>
-                    {statusFiltro === "ABERTA" 
-                      ? "Quando novos alunos enviarem perguntas, elas aparecerão aqui." 
-                      : "As perguntas com este status serão exibidas aqui."}
-                  </p>
-                </div>
-              ) : (
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "14px",
-                  }}
-                >
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
-                  {duvidas.map((d) => (
-                    <div
-                      key={d.id}
-                      style={{
-                        backgroundColor: "#eeeeee",
-                        borderRadius: "8px",
-                        padding: "20px 24px",
-                        boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "8px",
-<<<<<<< HEAD
-                        border: "1px solid #e0e0e0"
-                      }}
-                    >
-                      <h3 style={{ margin: 0, fontSize: "20px", fontWeight: 500, color: "#333" }}>
-                        {d.email}
-                      </h3>
-                      <p style={{ margin: "0 0 12px 0", fontSize: "16px", color: "#444", lineHeight: "1.5" }}>
-                        {d.message}
-                      </p>
-                      <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px" }}>
-                        <button
-                          onClick={() => {
-                            atualizarStatus(d.id, "ATENDIMENTO");
-                            setDuvidaSelecionada({ id: d.id, assunto: d.email, mensagem: d.message }); // 🌟 ABRE O MODAL COM OS DADOS DA API
-=======
-                        border: "1px solid #e0e0e0",
-                      }}
-                    >
-                      <h3
-                        style={{
-                          margin: 0,
-                          fontSize: "20px",
-                          fontWeight: 500,
-                          color: "#333",
-                        }}
-                      >
-                        {d.email}
-                      </h3>
-                      <p
-                        style={{
-                          margin: "0 0 12px 0",
-                          fontSize: "16px",
-                          color: "#444",
-                          lineHeight: "1.5",
-                        }}
-                      >
-                        {d.message}
-                      </p>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "flex-end",
-                          gap: "12px",
-                        }}
-                      >
-                        <button
-                          onClick={() => {
-                            atualizarStatus(d.id, "ATENDIMENTO");
-                            setDuvidaSelecionada({
-                              id: d.id,
-                              assunto: d.email,
-                              mensagem: d.message,
-                            });
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
-                          }}
-                          style={{
-                            backgroundColor: "#1F3A60",
-                            color: "#fff",
-                            border: "none",
-                            borderRadius: "6px",
-                            padding: "10px 24px",
-                            fontSize: "15px",
-                            fontWeight: 500,
-                            cursor: "pointer",
-<<<<<<< HEAD
-                            transition: "background 0.2s"
-                          }}
-                          onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#152842"}
-                          onMouseOut={(e) => e.currentTarget.style.backgroundColor = "#1F3A60"}
-=======
-                            transition: "background 0.2s",
-                          }}
-                          onMouseOver={(e) =>
-                            (e.currentTarget.style.backgroundColor = "#152842")
-                          }
-                          onMouseOut={(e) =>
-                            (e.currentTarget.style.backgroundColor = "#1F3A60")
-                          }
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
-                        >
-                          Abrir
-                        </button>
-                        <button
-                          onClick={() => marcarRespondido(d.id)}
-                          style={{
-                            backgroundColor: "#006400",
-                            color: "#fff",
-                            border: "none",
-                            borderRadius: "6px",
-                            padding: "10px 24px",
-                            fontSize: "15px",
-                            fontWeight: 500,
-                            cursor: "pointer",
-<<<<<<< HEAD
-                            transition: "background 0.2s"
-                          }}
-                          onMouseOver={(e) => e.currentTarget.style.backgroundColor = "#004d00"}
-                          onMouseOut={(e) => e.currentTarget.style.backgroundColor = "#006400"}
-=======
-                            transition: "background 0.2s",
-                          }}
-                          onMouseOver={(e) =>
-                            (e.currentTarget.style.backgroundColor = "#004d00")
-                          }
-                          onMouseOut={(e) =>
-                            (e.currentTarget.style.backgroundColor = "#006400")
-                          }
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
-                        >
-                          Marcar como respondido
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </>
+              </div>
+            </div>
           )}
-          {tab === "painel" && <PainelPerguntas />}
-<<<<<<< HEAD
 
-=======
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
-          {tab === "relatorio" && <PainelRelatorios />}
+          {tab === "painel" && <PainelPerguntas isAdmin={isAdmin} />}
+          {tab === "relatorio" && <PainelRelatorios onNavigateToDuvidas={() => setTab("duvidas")} />}
         </main>
       </div>
-
-<<<<<<< HEAD
-      {/* 🌟 PLUGIN DE SOBREPOSIÇÃO (MODAL) IDÊNTICO AO SEU DESIGN IMAGE_D67C7A.PNG */}
-=======
-      {/* Modal de detalhes da dúvida */}
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
-      {duvidaSelecionada && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            backgroundColor: "rgba(0, 0, 0, 0.4)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 9999,
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: "#f4f4f4",
-              borderRadius: "8px",
-              padding: "24px 32px",
-              width: "90%",
-              maxWidth: "800px",
-              boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
-              display: "flex",
-              flexDirection: "column",
-              gap: "16px",
-            }}
-          >
-<<<<<<< HEAD
-            <h2 style={{ margin: 0, fontSize: "22px", fontWeight: 500, color: "#333" }}>
-=======
-            <h2
-              style={{
-                margin: 0,
-                fontSize: "22px",
-                fontWeight: 500,
-                color: "#333",
-              }}
-            >
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
-              {duvidaSelecionada.assunto || "Detalhes da Dúvida"}
-            </h2>
-
-            <div
-              style={{
-                backgroundColor: "#eeeeee",
-                borderRadius: "6px",
-                padding: "20px",
-                border: "1px solid #e0e0e0",
-                fontSize: "16px",
-                color: "#333",
-                lineHeight: "1.6",
-              }}
-            >
-<<<<<<< HEAD
-              {/* Renderização condicional específica para quebrar a dúvida do fretado com as bolinhas (bullets) do print */}
-              {duvidaSelecionada.id === 1 || duvidaSelecionada.assunto === "Transporte fretado" ? (
-                <>
-                  <p style={{ margin: "0 0 12px 0" }}>
-                    Olá! Sou de fora e estou organizando a minha logística de transporte para a instituição. Gostaria de saber se vocês possuem uma lista centralizada, um guia ou um painel de contatos de transportes fretados (vans e ônibus) que fazem a rota entre a minha cidade e a unidade.
-                  </p>
-                  <p style={{ margin: "0 0 8px 0" }}>
-                    Para conseguir me organizar financeiramente e planejar meus horários, eu precisaria visualizar:
-                  </p>
-                  <ul style={{ margin: "0 0 12px 0", paddingLeft: "24px", listStyleType: "disc" }}>
-                    <li style={{ marginBottom: "4px" }}>Rotas e Cidades atendidas (Origem x Destino).</li>
-                    <li style={{ marginBottom: "4px" }}>Horários disponíveis (Período da manhã, tarde e noite).</li>
-                    <li style={{ marginBottom: "4px" }}>Dados de contato diretos dos responsáveis pelo fretado (WhatsApp, Telefone, E-mail).</li>
-                    <li style={{ marginBottom: "4px" }}>Dias de operação (Dias úteis, sábados, etc.).</li>
-                  </ul>
-                  <p style={{ margin: 0 }}>
-                    Vocês têm esse mapeamento disponível ou sabem onde os estudantes costumam centralizar essas vans?
-                  </p>
-                </>
-              ) : (
-                /* Texto fluido genérico para os dados reais do banco */
-                <p style={{ margin: 0 }}>{duvidaSelecionada.mensagem || duvidaSelecionada.message}</p>
-              )}
-=======
-              <p style={{ margin: 0 }}>
-                {duvidaSelecionada.mensagem || duvidaSelecionada.message}
-              </p>
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
-            </div>
-
-            <div style={{ display: "flex", justifyContent: "flex-end" }}>
-              <button
-                onClick={() => setDuvidaSelecionada(null)}
-                style={{
-                  backgroundColor: "#333333",
-                  color: "#ffffff",
-                  border: "none",
-                  borderRadius: "6px",
-                  padding: "10px 28px",
-                  fontSize: "15px",
-                  fontWeight: 500,
-                  cursor: "pointer",
-                  transition: "background 0.2s",
-                }}
-<<<<<<< HEAD
-                onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#222222")}
-                onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#333333")}
-=======
-                onMouseOver={(e) =>
-                  (e.currentTarget.style.backgroundColor = "#222222")
-                }
-                onMouseOut={(e) =>
-                  (e.currentTarget.style.backgroundColor = "#333333")
-                }
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8
-              >
-                Fechar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-<<<<<<< HEAD
     </div>
   );
 }
-=======
-
-      {/* Toast de confirmação do modal de criação */}
-      {toastAdmin && (
-        <div
-          style={{
-            position: "fixed",
-            bottom: "24px",
-            right: "24px",
-            backgroundColor:
-              toastAdmin.type === "success" ? "#2E7D32" : "#8B0000",
-            color: "#fff",
-            borderRadius: "6px",
-            padding: "14px 20px",
-            fontWeight: 600,
-            fontSize: "14px",
-            zIndex: 9998,
-            boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
-          }}
-        >
-          {toastAdmin.msg}
-        </div>
-      )}
-
-      {/* Modal de criação de item */}
-      {modalCriar && (
-        <ItemModalAdmin
-          allNodes={allNodes}
-          onClose={() => setModalCriar(null)}
-          onSave={handleSaveNode}
-        />
-      )}
-    </div>
-  );
-}
->>>>>>> 8e842f43d447ecd2c66d99613c5f51beb6fb6bf8

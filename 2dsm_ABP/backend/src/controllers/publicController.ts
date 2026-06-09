@@ -39,7 +39,7 @@ export const deleteALL = async (_req: Request, res: Response) => {
     res.status(200).json({ message: "Banco deletado com sucesso!" });
   } catch (error) {
     console.error("Erro ao deletar banco:", error);
-    res.status(500).json({ error: "Falha ao deletar banco." });
+    res.status(500).json({ erro: "Falha ao deletar banco." });
   }
 };
 
@@ -74,28 +74,30 @@ export const createSupportContact = async (req: Request, res: Response) => {
 export const createFulfillmentLog = async (req: Request, res: Response) => {
   const { navigation_flow, inquiry_ids, flag } = req.body;
   try {
-    if (!navigation_flow || !inquiry_ids || !flag) {
+    if (!navigation_flow || !inquiry_ids) {
       res
         .status(400)
         .json({
-          error: "Campos obrigatórios: navigation_flow, inquiry_ids, flag",
+          error: "Campos obrigatórios: navigation_flow, inquiry_ids",
         });
       return;
     }
 
-    const validFlags = ["ÓTIMO", "BOM", "MUITO BOM", "SATISFATÓRIO", "RUIM"];
-    if (!validFlags.includes(flag)) {
-      return res.status(400).json({
-        error: `Valor inválido para o campo 'flag'. Valores permitidos: ${validFlags.join(
-          ", ",
-        )}`,
-      });
+    if (flag) {
+      const validFlags = ["ÓTIMO", "BOM", "MUITO BOM", "SATISFATÓRIO", "RUIM"];
+      if (!validFlags.includes(flag)) {
+        return res.status(400).json({
+          error: `Valor inválido para o campo 'flag'. Valores permitidos: ${validFlags.join(
+            ", ",
+          )}`,
+        });
+      }
     }
 
     const logData = {
       navigation_flow,
       inquiry_ids,
-      flag,
+      flag: flag || null,
     };
 
     await createFulfillmentLogService(logData);

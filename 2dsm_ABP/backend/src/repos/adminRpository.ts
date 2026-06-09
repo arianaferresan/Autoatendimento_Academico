@@ -7,6 +7,7 @@ import type {
   LogStat,
   SupportContactStat,
   InquiryStat,
+  SatisfactionStat,
 } from "@/types/typesAdmin.js";
 
 import type { UserRow } from "@/types/types.js";
@@ -246,7 +247,7 @@ async function deleteSupportContactById(id: number): Promise<void> {
 }
 
 async function createFulfillmentLog(
-  data: Omit<FullfillmentLog, "session_id" | "created_at">,
+  data: Omit<FullfillmentLog, "id" | "session_id" | "created_at">,
 ): Promise<void> {
   await pool.query(
     `INSERT INTO fulfillment_logs ( navigation_flow, inquiry_ids, flag) VALUES ($1, $2, $3)`,
@@ -314,7 +315,8 @@ async function getLogStats(): Promise<LogStat[]> {
     FROM
         fulfillment_logs
     WHERE
-        (navigation_flow -> 0 ->> 'title') IN ('DSM', 'Não sou aluno', 'MARH', 'Geoprocessamento')
+        (navigation_flow -> 0 ->> 'title') IS NOT NULL
+        AND (navigation_flow -> 0 ->> 'title') != ''
     GROUP BY
         month,
         category
@@ -323,6 +325,24 @@ async function getLogStats(): Promise<LogStat[]> {
         category ASC;
   `;
   const { rows } = await pool.query<LogStat>(query);
+  return rows;
+}
+
+async function getSatisfactionStats(): Promise<SatisfactionStat[]> {
+  const query = `
+    SELECT
+        TO_CHAR(created_at, 'YYYY-MM') AS month,
+        flag,
+        COUNT(*)::int AS count
+    FROM
+        fulfillment_logs
+    GROUP BY
+        month,
+        flag
+    ORDER BY
+        month DESC;
+  `;
+  const { rows } = await pool.query<SatisfactionStat>(query);
   return rows;
 }
 
@@ -347,4 +367,5 @@ export {
   getLogStats,
   getInquiryStats,
   getInquiryStatsLeaf,
+  getSatisfactionStats,
 };

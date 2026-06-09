@@ -1,0 +1,22 @@
+import type { CreateNodeData, FullfillmentLog, SupportContact, UpdateNodeData } from "@/types/typesAdmin.js";
+export declare const getAllNodesService: () => Promise<import("@/types/typesAdmin.js").Node[]>;
+export declare const getNodeByIdService: (id: number) => Promise<import("@/types/typesAdmin.js").Node[]>;
+export declare const deleteNodeByIdService: (id: number) => Promise<void>;
+export declare const updateNodeService: (id: number, data: UpdateNodeData) => Promise<import("@/types/typesAdmin.js").Node | null | undefined>;
+export declare const createNodeService: (data: CreateNodeData) => Promise<import("@/types/typesAdmin.js").Node | undefined>;
+export declare const getSupportContactByIdService: (id: number) => Promise<SupportContact | undefined>;
+export declare const getAllSupportContactsService: (limit: number, offset: number) => Promise<SupportContact[]>;
+export declare const getSupportContactByStatusService: (status: SupportContact["status"], limit: number, offset: number) => Promise<SupportContact[]>;
+export declare const updateSupportContactByIdService: (id: number, status: SupportContact["status"], answered_by: number | null) => Promise<SupportContact | undefined>;
+export declare const deleteSupportContactByIdService: (id: number) => Promise<void>;
+export declare const createFulfillmentLogService: (data: Omit<FullfillmentLog, "id" | "session_id" | "created_at">) => Promise<void>;
+export declare const getSupportContactStatsService: () => Promise<import("@/types/typesAdmin.js").SupportContactStat[]>;
+export declare const getInquiryStatsService: () => Promise<import("@/types/typesAdmin.js").InquiryStat[]>;
+export declare const getInquiryStatsLeafService: () => Promise<import("@/types/typesAdmin.js").InquiryStat[]>;
+export declare const getAllSecretariaUsersService: () => Promise<import("../types/types.js").UserRow[]>;
+export declare const createSecretariaUserService: (username: string, password: string, name: string) => Promise<import("../types/types.js").UserRow>;
+export declare const deleteUserService: (id: number) => Promise<boolean>;
+export declare const getAllLogsService: (limit: number, offset: number) => Promise<FullfillmentLog[]>;
+export declare const getLogsStatsService: () => Promise<import("@/types/typesAdmin.js").LogStat[]>;
+export declare const getSatisfactionStatsService: () => Promise<import("@/types/typesAdmin.js").SatisfactionStat[]>;
+//# sourceMappingURL=adminService.d.ts.map
