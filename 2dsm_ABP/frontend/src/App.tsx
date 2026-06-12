@@ -4,6 +4,8 @@ import WelcomeScreen from './components/WelcomeScreen';
 import ChatScreen from './components/ChatScreen';
 import Login from './pages/Login';
 import Admin from './pages/Admin';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import type { UserType } from './types/chat';
 
 function PublicArea() {
@@ -25,6 +27,8 @@ export default function App() {
     <Routes>
       <Route path="/" element={<PublicArea />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/admin" element={<Admin />} />
     </Routes>
   );

@@ -2,7 +2,7 @@ import { Pool } from 'pg';
 import dotenv from 'dotenv';
 
 dotenv.config();
-console.log("DEBUG: Senha lida do .env ->", process.env.DB_PASSWORD ? "SIM (Preenchida)" : "NÃO (Vazia)");
+
 export const pool = new Pool({
   host:     process.env.DB_HOST,
   port:     Number(process.env.DB_PORT),

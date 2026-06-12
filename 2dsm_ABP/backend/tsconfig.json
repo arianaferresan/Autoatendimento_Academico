@@ -4,7 +4,9 @@
     "target": "ESNext",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "types": [],
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "types": ["node"],
     "paths": {
       "@/*": ["./src/*"]
     },
@@ -27,5 +29,6 @@
     "moduleDetection": "force",
     "skipLibCheck": true,
   },
-  "include": ["./src"]
+  "include": ["./src"],
+  "exclude": ["./dist", "node_modules"]
 }

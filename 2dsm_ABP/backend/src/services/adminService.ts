@@ -1,9 +1,11 @@
 import bcrypt from "bcrypt";
+import crypto from "crypto";
 import {
   deleteNodeById,
   searchAllNodes,
   searchNodeById,
   findNodeById,
+  isNodeDescendant,
   updateNodeById,
   createNode,
   updateSupportContactById,
@@ -15,13 +17,27 @@ import {
   createFulfillmentLog,
   getAllSecretariaUsers,
   createSecretariaUser,
+  getUserById,
+  findUserByUsernameForAdmin,
+  updateUserById,
+  updateMyAccountById,
+  getUserAuthById,
+  updateUserPasswordById,
+  resetUserPasswordById,
+  updateUserStatusById,
   deleteUserById,
   getAllLogs,
   getLogStats,
   getInquiryStats,
   getInquiryStatsLeaf,
   getSatisfactionStats,
-} from "@/repos/adminRpository.js";
+} from "@/repos/adminRepository.js";
+import {
+  cancelPasswordResetRequest,
+  getPasswordResetRequestById,
+  listPasswordResetRequests,
+  resolvePasswordResetRequest,
+} from "@/repos/authRepository.js";
 
 import type {
   CreateNodeData,
@@ -29,6 +45,11 @@ import type {
   SupportContact,
   UpdateNodeData,
 } from "@/types/typesAdmin.js";
+import type { UserRole } from "@/types/types.js";
+import type {
+  PasswordResetRequestRow,
+  PasswordResetRequestStatus,
+} from "@/types/types.js";
 
 export const getAllNodesService = async () => {
   // Aqui é onde colocaria regras de negócio se existissem.
@@ -54,7 +75,24 @@ export const updateNodeService = async (id: number, data: UpdateNodeData) => {
     return null;
   }
 
-  const chunk_path = data.new_chunk_path ?? currentNode.chunk_path;
+  if (data.parent_id === id) {
+    throw new Error("INVALID_PARENT_SELF");
+  }
+
+  if (data.parent_id !== null) {
+    const parentNode = await findNodeById(data.parent_id);
+    if (!parentNode) {
+      throw new Error("PARENT_NOT_FOUND");
+    }
+
+    const parentIsDescendant = await isNodeDescendant(id, data.parent_id);
+    if (parentIsDescendant) {
+      throw new Error("INVALID_PARENT_DESCENDANT");
+    }
+  }
+
+  const chunk_path =
+    data.chunk_path !== undefined ? data.chunk_path : currentNode.chunk_path;
 
   const updatedNode = await updateNodeById(
     id,
@@ -72,6 +110,13 @@ export const updateNodeService = async (id: number, data: UpdateNodeData) => {
 
 export const createNodeService = async (data: CreateNodeData) => {
   // Aqui poderiam entrar regras de negócio, como verificar se já existe um nó com o mesmo título.
+  if (data.parent_id !== null) {
+    const parentNode = await findNodeById(data.parent_id);
+    if (!parentNode) {
+      throw new Error("PARENT_NOT_FOUND");
+    }
+  }
+
   const newNode = await createNode(
     data.parent_id,
     data.title,
@@ -149,11 +194,143 @@ export const getAllSecretariaUsersService = async () => {
 
 export const createSecretariaUserService = async (
   username: string,
-  password: string,
   name: string,
+  role: UserRole = "secretaria",
 ) => {
-  const password_hash = await bcrypt.hash(password, 10);
-  return createSecretariaUser(username, password_hash, name);
+  const temporaryPassword = `Fatec-${crypto.randomBytes(4).toString("hex")}`;
+  const password_hash = await bcrypt.hash(temporaryPassword, 10);
+  const user = await createSecretariaUser(
+    username.trim().toLowerCase(),
+    password_hash,
+    name.trim(),
+    role,
+  );
+
+  return { user, temporaryPassword };
+};
+
+export const getUserByIdService = async (id: number) => {
+  return getUserById(id);
+};
+
+export const updateUserService = async (
+  id: number,
+  data: {
+    username: string;
+    name: string;
+    role: UserRole;
+    active: boolean;
+  },
+) => {
+  return updateUserById(
+    id,
+    data.username.trim().toLowerCase(),
+    data.name.trim(),
+    data.role,
+    data.active,
+  );
+};
+
+export const updateMyAccountService = async (id: number, name: string) => {
+  return updateMyAccountById(id, name.trim());
+};
+
+export const changeMyPasswordService = async (
+  id: number,
+  currentPassword: string,
+  newPassword: string,
+) => {
+  const user = await getUserAuthById(id);
+  if (!user) {
+    throw new Error("USER_NOT_FOUND");
+  }
+
+  const passwordMatch = await bcrypt.compare(currentPassword, user.password_hash);
+  if (!passwordMatch) {
+    throw new Error("INVALID_CURRENT_PASSWORD");
+  }
+
+  const password_hash = await bcrypt.hash(newPassword, 10);
+  return updateUserPasswordById(id, password_hash);
+};
+
+export const resetUserPasswordByAdminService = async (id: number) => {
+  const temporaryPassword = `Fatec-${crypto.randomBytes(5).toString("hex")}`;
+  const password_hash = await bcrypt.hash(temporaryPassword, 10);
+  const user = await resetUserPasswordById(id, password_hash);
+  if (!user) {
+    throw new Error("USER_NOT_FOUND");
+  }
+
+  return { user, temporaryPassword };
+};
+
+export const getPasswordResetRequestsService = async (
+  status?: PasswordResetRequestStatus,
+): Promise<PasswordResetRequestRow[]> => {
+  return listPasswordResetRequests(status);
+};
+
+export const resolvePasswordResetRequestService = async (
+  requestId: number,
+  adminId: number,
+) => {
+  const request = await getPasswordResetRequestById(requestId);
+  if (!request) {
+    throw new Error("PASSWORD_RESET_REQUEST_NOT_FOUND");
+  }
+  if (request.status !== "pendente") {
+    throw new Error("PASSWORD_RESET_REQUEST_NOT_PENDING");
+  }
+  if (!request.usuario_id) {
+    throw new Error("PASSWORD_RESET_REQUEST_WITHOUT_USER");
+  }
+
+  const temporaryPassword = `Fatec-${crypto.randomBytes(6).toString("hex")}`;
+  const password_hash = await bcrypt.hash(temporaryPassword, 10);
+  const updatedRequest = await resolvePasswordResetRequest(
+    requestId,
+    adminId,
+    password_hash,
+  );
+
+  if (!updatedRequest) {
+    throw new Error("PASSWORD_RESET_REQUEST_NOT_PENDING");
+  }
+
+  return { request: updatedRequest, temporaryPassword };
+};
+
+export const cancelPasswordResetRequestService = async (
+  requestId: number,
+  adminId: number,
+  observacao: string | null,
+) => {
+  const request = await cancelPasswordResetRequest(
+    requestId,
+    adminId,
+    observacao,
+  );
+  if (!request) {
+    throw new Error("PASSWORD_RESET_REQUEST_NOT_PENDING");
+  }
+
+  return request;
+};
+
+export const updateUserStatusService = async (
+  id: number,
+  active: boolean,
+) => {
+  return updateUserStatusById(id, active);
+};
+
+export const usernameBelongsToAnotherUserService = async (
+  username: string,
+  currentUserId?: number,
+) => {
+  const existing = await findUserByUsernameForAdmin(username);
+  return Boolean(existing && existing.id !== currentUserId);
 };
 
 export const deleteUserService = async (id: number): Promise<boolean> => {

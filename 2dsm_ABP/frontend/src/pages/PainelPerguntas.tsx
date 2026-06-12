@@ -29,6 +29,11 @@ interface ModalState {
   node?: Node;
 }
 
+type NodeFormData = Partial<Node> & {
+  id?: number;
+  pdfFile?: File | null;
+};
+
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function buildTree(nodes: Node[]): TreeNode[] {
@@ -67,6 +72,41 @@ function getNodeStatus(node: Node, allNodes: Node[]): NodeStatus {
   const hasChildren = children.length > 0;
   const hasContent = !!(node.content?.trim() || node.link?.trim() || node.chunk_path?.trim());
   return (hasChildren || hasContent) ? 'healthy' : 'incomplete';
+}
+
+function getDescendantIds(nodeId: number, allNodes: Node[]): Set<number> {
+  const descendants = new Set<number>();
+  const visit = (id: number) => {
+    allNodes.filter(n => n.parent_id === id).forEach(child => {
+      descendants.add(child.id);
+      visit(child.id);
+    });
+  };
+  visit(nodeId);
+  return descendants;
+}
+
+function getRootCourseId(nodeId: number | null, allNodes: Node[]): number | null {
+  if (!nodeId) return null;
+  let current = allNodes.find(n => n.id === nodeId);
+  while (current?.parent_id) {
+    current = allNodes.find(n => n.id === current?.parent_id);
+  }
+  return current?.id ?? null;
+}
+
+function isPdfFile(file: File): boolean {
+  return file.type === 'application/pdf' && file.name.toLowerCase().endsWith('.pdf');
+}
+
+function getNodeDepth(node: Node, allNodes: Node[]): number {
+  let depth = 0;
+  let parentId = node.parent_id;
+  while (parentId) {
+    depth += 1;
+    parentId = allNodes.find(n => n.id === parentId)?.parent_id ?? null;
+  }
+  return depth;
 }
 
 // ─── Icons ───────────────────────────────────────────────────────────────────
@@ -111,8 +151,8 @@ function TreeItem({
     <div className="select-none">
       <div
         className={`flex items-center gap-2 py-1.5 px-2 rounded cursor-pointer transition-colors ${
-          isSelected 
-          ? "bg-[#8B0000] text-white font-bold" 
+          isSelected
+          ? "bg-[#8B0000] text-white font-bold"
           : "hover:bg-gray-100 text-gray-700"
         }`}
         style={{ marginLeft: `${depth * 12}px` }}
@@ -155,22 +195,30 @@ function ItemModal({
   modal: ModalState;
   allNodes: Node[];
   onClose: () => void;
-  onSave: (data: Partial<Node> & { id?: number }) => Promise<void>;
+  onSave: (data: NodeFormData) => Promise<void>;
   breadcrumbs: Node[];
 }) {
   const editing = modal.mode === 'edit' && modal.node;
   const [title, setTitle] = useState(editing ? modal.node!.title : '');
   const [tipo, setTipo] = useState<'menu' | 'resposta'>(editing && modal.node!.content ? 'resposta' : 'menu');
-  const [parentId, setParentId] = useState<number | null>(editing ? modal.node!.parent_id : (modal.node?.parent_id ?? null));
+  const initialParentId = editing ? modal.node!.parent_id : (modal.node?.parent_id ?? null);
+  const initialCourseId = editing
+    ? (modal.node!.parent_id === null ? null : getRootCourseId(modal.node!.id, allNodes))
+    : getRootCourseId(initialParentId, allNodes);
+  const [courseId, setCourseId] = useState<number | null>(initialCourseId);
+  const [parentId, setParentId] = useState<number | null>(initialParentId);
   const [content, setContent] = useState(editing ? modal.node!.content ?? '' : '');
   const [link, setLink] = useState(editing ? modal.node!.link ?? '' : '');
   const [chunkPath, setChunkPath] = useState(editing ? modal.node!.chunk_path ?? '' : '');
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const [pdfError, setPdfError] = useState('');
   const [order, setOrder] = useState(editing ? modal.node!.display_order : 0);
   const [isActive, setIsActive] = useState(editing ? modal.node!.is_active : true);
   const [saving, setSaving] = useState(false);
 
   async function handleSave() {
     if (!title.trim()) return;
+    if (pdfError) return;
     setSaving(true);
     try {
       await onSave({
@@ -182,11 +230,52 @@ function ItemModal({
         parent_id: parentId,
         display_order: order,
         is_active: isActive,
+        pdfFile,
       });
     } finally { setSaving(false); }
   }
 
-  const parentOptions = allNodes.filter(n => n.id !== modal.node?.id);
+  function handlePdfChange(file: File | undefined) {
+    if (!file) return;
+    if (!isPdfFile(file)) {
+      setPdfFile(null);
+      setPdfError('Selecione um arquivo PDF valido.');
+      return;
+    }
+
+    setPdfFile(file);
+    setPdfError('');
+  }
+
+  function removePdf() {
+    setPdfFile(null);
+    setChunkPath('');
+    setPdfError('');
+  }
+
+  const cursos = allNodes.filter(n => n.parent_id === null && n.id !== modal.node?.id);
+  const blockedParentIds = editing ? getDescendantIds(modal.node!.id, allNodes) : new Set<number>();
+  if (editing) blockedParentIds.add(modal.node!.id);
+  const parentOptions = allNodes
+    .filter(n => !blockedParentIds.has(n.id))
+    .filter(n => !courseId || getRootCourseId(n.id, allNodes) === courseId)
+    .sort((a, b) => {
+      const rootDiff = (getRootCourseId(a.id, allNodes) ?? 0) - (getRootCourseId(b.id, allNodes) ?? 0);
+      if (rootDiff !== 0) return rootDiff;
+      return a.display_order - b.display_order || a.title.localeCompare(b.title);
+    });
+
+  function handleCourseChange(value: string) {
+    const nextCourseId = value === '' ? null : Number(value);
+    setCourseId(nextCourseId);
+    setParentId(nextCourseId);
+  }
+
+  function handleParentChange(value: string) {
+    const nextParentId = value === '' ? null : Number(value);
+    setParentId(nextParentId);
+    setCourseId(getRootCourseId(nextParentId, allNodes));
+  }
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] p-4" onClick={(e) => e.target === e.currentTarget && onClose()}>
@@ -197,30 +286,45 @@ function ItemModal({
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
            </button>
         </div>
-        
+
         <div className="bg-gray-100 px-4 py-2 border-b border-gray-200 text-[11px] font-bold text-gray-500 uppercase flex gap-1 items-center">
            <span>Caminho:</span>
            {breadcrumbs.length === 0 ? 'Raiz' : breadcrumbs.map((b, i) => <span key={b.id}>{b.title} {i < breadcrumbs.length - 1 && '/'}</span>)}
         </div>
 
-        <div className="p-6 space-y-4 overflow-y-auto max-h-[70vh]">
+        <div className="p-4 sm:p-6 space-y-4 overflow-y-auto max-h-[75vh]">
           <div>
             <label className="block text-xs font-bold text-gray-600 uppercase mb-1">Título:</label>
             <input value={title} onChange={e => setTitle(e.target.value)} className="w-full border border-gray-300 rounded px-3 py-2 text-sm outline-none focus:border-[#8B0000]" />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-gray-600 uppercase mb-1">Pasta Pai:</label>
-              <select value={parentId ?? ''} onChange={e => setParentId(e.target.value === '' ? null : Number(e.target.value))} className="w-full border border-gray-300 rounded px-2 py-2 text-sm outline-none">
-                <option value="">Raiz</option>
-                {parentOptions.map(n => <option key={n.id} value={n.id}>{n.title}</option>)}
+              <label className="block text-xs font-bold text-gray-600 uppercase mb-1">Curso:</label>
+              <select value={courseId ?? ''} onChange={e => handleCourseChange(e.target.value)} className="w-full border border-gray-300 rounded px-2 py-2 text-sm outline-none">
+                <option value="">Raiz geral</option>
+                {cursos.map(n => <option key={n.id} value={n.id}>{n.title}</option>)}
               </select>
             </div>
             <div>
               <label className="block text-xs font-bold text-gray-600 uppercase mb-1">Ordem:</label>
               <input type="number" value={order} onChange={e => setOrder(Number(e.target.value))} className="w-full border border-gray-300 rounded px-3 py-2 text-sm outline-none" min={0} />
             </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-gray-600 uppercase mb-1">Pasta Pai:</label>
+            <select value={parentId ?? ''} onChange={e => handleParentChange(e.target.value)} className="w-full border border-gray-300 rounded px-2 py-2 text-sm outline-none">
+              <option value="">Raiz geral</option>
+              {parentOptions.map(n => (
+                <option key={n.id} value={n.id}>
+                  {'- '.repeat(getNodeDepth(n, allNodes))}{n.title}
+                </option>
+              ))}
+            </select>
+            <p className="mt-1 text-[11px] text-gray-500">
+              Para mover um item para a raiz do curso, escolha o proprio curso como pasta pai.
+            </p>
           </div>
 
           <div className="flex gap-4 pt-2">
@@ -240,14 +344,47 @@ function ItemModal({
                 <label className="block text-xs font-bold text-gray-600 uppercase mb-1">Texto da Resposta:</label>
                 <textarea value={content} onChange={e => setContent(e.target.value)} className="w-full border border-gray-300 rounded px-3 py-2 text-sm outline-none focus:border-[#8B0000] h-32" />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-gray-600 uppercase mb-1">Link:</label>
                   <input value={link} onChange={e => setLink(e.target.value)} placeholder="https://..." className="w-full border border-gray-300 rounded px-3 py-2 text-sm outline-none" />
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-gray-600 uppercase mb-1">PDF:</label>
-                  <input value={chunkPath} onChange={e => setChunkPath(e.target.value)} placeholder="/assets/..." className="w-full border border-gray-300 rounded px-3 py-2 text-sm outline-none" />
+                  <div className={`border rounded px-3 py-2 text-sm bg-white ${pdfError ? 'border-red-400' : 'border-gray-300'}`}>
+                    <input
+                      id="node-pdf-upload"
+                      type="file"
+                      accept="application/pdf,.pdf"
+                      onChange={e => handlePdfChange(e.target.files?.[0])}
+                      className="hidden"
+                    />
+                    <div className="flex flex-col gap-2">
+                      {pdfFile ? (
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="truncate font-medium text-gray-700">{pdfFile.name}</span>
+                          <button type="button" onClick={() => setPdfFile(null)} className="text-xs font-bold text-red-600 hover:underline">
+                            Remover
+                          </button>
+                        </div>
+                      ) : chunkPath ? (
+                        <div className="flex items-center justify-between gap-2">
+                          <a href={chunkPath} target="_blank" rel="noreferrer" className="truncate font-medium text-emerald-700 hover:underline">
+                            PDF atual: {chunkPath.split('/').pop()}
+                          </a>
+                          <button type="button" onClick={removePdf} className="text-xs font-bold text-red-600 hover:underline">
+                            Remover
+                          </button>
+                        </div>
+                      ) : (
+                        <span className="text-gray-400 italic">Nenhum PDF selecionado</span>
+                      )}
+                      <label htmlFor="node-pdf-upload" className="inline-flex w-fit cursor-pointer rounded bg-gray-100 px-3 py-1.5 text-xs font-bold text-gray-700 hover:bg-gray-200">
+                        {chunkPath || pdfFile ? 'Substituir PDF' : 'Selecionar PDF'}
+                      </label>
+                    </div>
+                  </div>
+                  {pdfError && <p className="mt-1 text-xs font-bold text-red-600">{pdfError}</p>}
                 </div>
               </div>
             </div>
@@ -264,7 +401,7 @@ function ItemModal({
 
         <div className="p-4 bg-gray-50 border-t border-gray-200 flex justify-end gap-3">
           <button onClick={onClose} className="bg-white border border-gray-300 text-gray-600 px-6 py-2 rounded text-sm font-bold hover:bg-gray-50" disabled={saving}>Cancelar</button>
-          <button onClick={handleSave} className="bg-[#2E7D32] text-white px-8 py-2 rounded text-sm font-bold hover:bg-green-800 disabled:opacity-50" disabled={saving || !title.trim()}>Gravar</button>
+          <button onClick={handleSave} className="bg-[#2E7D32] text-white px-8 py-2 rounded text-sm font-bold hover:bg-green-800 disabled:opacity-50" disabled={saving || !title.trim() || Boolean(pdfError)}>Gravar</button>
         </div>
       </div>
     </div>
@@ -334,7 +471,7 @@ export default function PainelPerguntas({ isAdmin = true }: { isAdmin?: boolean 
 
   const breadcrumbs = useMemo(() => getBreadcrumbs(selectedNode?.id ?? null, allNodes), [selectedNode, allNodes]);
 
-  async function handleSave(data: Partial<Node> & { id?: number }) {
+  async function handleSave(data: NodeFormData) {
     try {
       const form = new FormData();
       form.append('title', data.title ?? '');
@@ -344,12 +481,15 @@ export default function PainelPerguntas({ isAdmin = true }: { isAdmin?: boolean 
       form.append('parent_id', data.parent_id !== null && data.parent_id !== undefined ? String(data.parent_id) : 'null');
       form.append('link', data.link ?? '');
       form.append('chunk_path', data.chunk_path ?? '');
+      if (data.pdfFile) form.append('file', data.pdfFile);
       if (data.id) await api.put(`/admin/nodes/${data.id}`, form);
       else await api.post('/admin/nodes/create', form);
       showToast('Salvo com sucesso!', 'success');
       setModal(null);
       await fetchNodes();
-    } catch { showToast('Erro ao salvar.', 'error'); }
+    } catch (error: any) {
+      showToast(error?.response?.data?.error ?? 'Erro ao salvar.', 'error');
+    }
   }
 
   async function handleDelete(id: number) {
@@ -363,24 +503,24 @@ export default function PainelPerguntas({ isAdmin = true }: { isAdmin?: boolean 
   }
 
   return (
-    <div className="flex flex-col space-y-6">
-      
+    <div className="flex flex-col space-y-4">
+
       {/* HEADER DE AÇÕES - PADRONIZADO */}
-      <div className="bg-white p-4 rounded-lg border border-gray-300 shadow-sm flex flex-wrap items-center gap-4">
+      <div className="bg-white p-4 rounded-lg border border-gray-300 shadow-sm flex flex-wrap items-center gap-3">
         {!isAdmin && (
           <div className="bg-blue-50 border border-blue-100 px-3 py-1.5 rounded-lg flex items-center gap-2 text-blue-700 text-[10px] font-black uppercase">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             Modo Somente Leitura
           </div>
         )}
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <label className="text-xs font-bold text-gray-500 uppercase">Filtrar:</label>
           <select value={cursoFiltro ?? ''} onChange={e => { setCursoFiltro(e.target.value === '' ? null : Number(e.target.value)); setSelectedNode(null); }} className="border border-gray-300 rounded px-2 py-1 text-sm outline-none focus:border-[#8B0000]">
             <option value="">Todos os Cursos</option>
             {cursos.map(c => <option key={c.id} value={c.id}>{c.title}</option>)}
           </select>
         </div>
-        <div className="flex items-center gap-2 border-l border-gray-200 pl-4">
+        <div className="flex flex-wrap items-center gap-2 border-l border-gray-200 pl-4">
           <label className="text-xs font-bold text-gray-500 uppercase">Auditoria:</label>
           <button onClick={() => setStatusFiltro(statusFiltro === 'todos' ? 'incompletos' : 'todos')} className={`px-3 py-1 rounded text-xs font-bold border transition-colors ${statusFiltro === 'incompletos' ? "bg-orange-500 text-white border-orange-600" : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"}`}>
             {statusFiltro === 'incompletos' ? 'Exibindo Problemas' : 'Ver Fluxos Incompletos'}
@@ -394,10 +534,10 @@ export default function PainelPerguntas({ isAdmin = true }: { isAdmin?: boolean 
         )}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        
+      <div className="grid grid-cols-1 xl:grid-cols-[34rem_minmax(0,1fr)] gap-4 items-start">
+
         {/* ÁRVORE (Mais estreita) */}
-        <div className="lg:col-span-3 bg-white rounded-lg shadow-sm border border-gray-300 flex flex-col overflow-hidden sticky top-6 max-h-[calc(100vh-120px)]">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-300 flex flex-col overflow-hidden xl:sticky xl:top-6 max-h-[420px] xl:max-h-[calc(100vh-120px)]">
           <div className="bg-[#F9F9F9] p-3 border-b border-gray-300 font-bold text-gray-700 text-sm flex justify-between items-center shrink-0">
             <span>Estrutura</span>
             <button onClick={fetchNodes} className="text-gray-400 hover:text-[#8B0000] transition-colors"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><polyline points="21 3 21 8 16 8"/></svg></button>
@@ -412,7 +552,7 @@ export default function PainelPerguntas({ isAdmin = true }: { isAdmin?: boolean 
         </div>
 
         {/* DETALHES (Mais larga) */}
-        <div className="lg:col-span-9 bg-white rounded-lg shadow-sm border border-gray-300 flex flex-col overflow-hidden min-h-[500px]">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-300 flex flex-col overflow-hidden min-h-[420px] xl:min-h-[500px] min-w-0">
           {!selectedNode ? (
             <div className="flex-1 flex flex-col items-center justify-center text-gray-400 gap-4 p-8">
                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="opacity-50"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
@@ -427,16 +567,16 @@ export default function PainelPerguntas({ isAdmin = true }: { isAdmin?: boolean 
                   <span>Este fluxo está incompleto. Ele precisa de uma Resposta, um Link ou um PDF configurado para aparecer no Chat.</span>
                 </div>
               )}
-              
+
               {/* HEADER E BREADCRUMB CLICÁVEL */}
-              <div className="bg-white px-6 py-5 border-b border-gray-200 flex flex-col gap-4">
+              <div className="bg-white px-4 sm:px-5 py-4 border-b border-gray-200 flex flex-col gap-4">
                  <div className="flex flex-wrap items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest">
                     <button onClick={() => setSelectedNode(null)} className="hover:text-[#8B0000] transition-colors">Início</button>
                     {breadcrumbs.map((b, i) => (
                        <div key={b.id} className="flex items-center gap-2">
                           <span>›</span>
-                          <button 
-                            onClick={() => setSelectedNode(b as TreeNode)} 
+                          <button
+                            onClick={() => setSelectedNode(b as TreeNode)}
                             className={`transition-colors ${i === breadcrumbs.length - 1 ? "text-[#8B0000]" : "hover:text-[#8B0000]"}`}
                           >
                              {b.title}
@@ -444,16 +584,16 @@ export default function PainelPerguntas({ isAdmin = true }: { isAdmin?: boolean 
                        </div>
                     ))}
                  </div>
-                 
-                 <div className="flex justify-between items-start gap-4">
-                    <h2 className="font-black text-gray-800 text-2xl leading-none">{selectedNode.title}</h2>
+
+                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
+                    <h2 className="font-black text-gray-800 text-lg sm:text-xl leading-tight break-words">{selectedNode.title}</h2>
                     {isAdmin && (
                       <div className="flex gap-2 shrink-0">
-                         <button onClick={() => setModal({ mode: 'edit', node: selectedNode })} className="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded text-xs font-bold hover:bg-gray-50 transition-colors shadow-sm flex items-center gap-2">
+                         <button onClick={() => setModal({ mode: 'edit', node: selectedNode })} className="bg-white border border-gray-300 text-gray-700 px-3 py-2 rounded text-[11px] font-bold hover:bg-gray-50 transition-colors shadow-sm flex items-center gap-2">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                             Editar
                          </button>
-                         <button onClick={() => setDeleteTarget(selectedNode)} className="bg-white border border-red-200 text-red-600 px-4 py-2 rounded text-xs font-bold hover:bg-red-50 transition-colors shadow-sm flex items-center gap-2">
+                         <button onClick={() => setDeleteTarget(selectedNode)} className="bg-white border border-red-200 text-red-600 px-3 py-2 rounded text-[11px] font-bold hover:bg-red-50 transition-colors shadow-sm flex items-center gap-2">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
                             Excluir
                          </button>
@@ -461,22 +601,22 @@ export default function PainelPerguntas({ isAdmin = true }: { isAdmin?: boolean 
                     )}
                  </div>
               </div>
-              
+
               {/* CONTEÚDO PRINCIPAL (HERO CARD) */}
-              <div className="p-6 bg-gray-50 border-b border-gray-200 flex-1">
+              <div className="p-4 sm:p-5 bg-gray-50 border-b border-gray-200 flex-1">
                  <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col h-full">
                     <div className="bg-gray-800 text-white px-5 py-3 flex items-center gap-3">
                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                        <span className="text-xs font-bold uppercase tracking-widest">Conteúdo da Resposta</span>
                     </div>
-                    
-                    <div className="p-6 flex-1 flex flex-col gap-6">
+
+                    <div className="p-4 sm:p-5 flex-1 flex flex-col gap-5">
                        <div>
                           <p className={`text-base leading-relaxed whitespace-pre-wrap ${!selectedNode.content ? 'text-gray-400 italic' : 'text-gray-700'}`}>
                              {selectedNode.content || "Nenhum texto principal configurado para este nó."}
                           </p>
                        </div>
-                       
+
                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-auto pt-4 border-t border-gray-100">
                           <div className="flex flex-col gap-1 p-3 bg-blue-50 rounded-lg border border-blue-100">
                              <span className="text-[10px] font-black text-blue-800 uppercase flex items-center gap-2">
@@ -487,7 +627,7 @@ export default function PainelPerguntas({ isAdmin = true }: { isAdmin?: boolean 
                                 {selectedNode.link || "Nenhum link"}
                              </span>
                           </div>
-                          
+
                           <div className="flex flex-col gap-1 p-3 bg-emerald-50 rounded-lg border border-emerald-100">
                              <span className="text-[10px] font-black text-emerald-800 uppercase flex items-center gap-2">
                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
@@ -503,11 +643,11 @@ export default function PainelPerguntas({ isAdmin = true }: { isAdmin?: boolean 
               </div>
 
               {/* LISTA DE FILHOS */}
-              <div className="p-6 bg-white min-h-[250px]">
+              <div className="p-4 sm:p-5 bg-white min-h-[220px] sm:min-h-[250px]">
                  <div className="mb-4 flex items-center justify-between">
                     <h4 className="text-xs font-black text-gray-800 uppercase tracking-widest">Sub-itens de Navegação</h4>
                  </div>
-                 
+
                  {filhosDoSelecionado.length === 0 ? (
                    <div className="flex items-center gap-3 p-4 bg-gray-50 border border-gray-200 text-gray-500 rounded-lg">
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
@@ -517,8 +657,8 @@ export default function PainelPerguntas({ isAdmin = true }: { isAdmin?: boolean 
                       </div>
                    </div>
                  ) : (
-                   <div className="border border-gray-200 rounded-lg overflow-hidden">
-                     <table className="w-full border-collapse bg-white">
+                   <div className="border border-gray-200 rounded-lg overflow-x-auto">
+                     <table className="w-full min-w-[560px] border-collapse bg-white">
                         <thead>
                           <tr className="text-left text-[10px] font-black text-gray-400 uppercase bg-gray-50 border-b border-gray-200">
                             <th className="py-3 px-4 w-16 text-center">Ordem</th>
@@ -539,8 +679,8 @@ export default function PainelPerguntas({ isAdmin = true }: { isAdmin?: boolean 
                                  </button>
                               </td>
                               <td className="py-3 px-4 text-center">
-                                 {isHealthy 
-                                    ? <span className="inline-block px-2 py-0.5 bg-green-100 text-green-700 border border-green-200 rounded text-[9px] font-black uppercase">OK</span> 
+                                 {isHealthy
+                                    ? <span className="inline-block px-2 py-0.5 bg-green-100 text-green-700 border border-green-200 rounded text-[9px] font-black uppercase">OK</span>
                                     : <span className="inline-block px-2 py-0.5 bg-orange-100 text-orange-700 border border-orange-200 rounded text-[9px] font-black uppercase">Atenção</span>}
                               </td>
                               {isAdmin && (

@@ -5,7 +5,7 @@ interface UpdateNodeData {
   display_order: number;
   link: string | null;
   is_active: boolean;
-  new_chunk_path: string | null;
+  chunk_path?: string | null;
 }
 
 interface CreateNodeData {
@@ -26,6 +26,7 @@ interface SupportContact {
   created_at: Date;
   closed_at: Date | null;
   answered_by: number | null;
+  answered_by_name?: string | null;
 }
 
 interface FullfillmentLog {

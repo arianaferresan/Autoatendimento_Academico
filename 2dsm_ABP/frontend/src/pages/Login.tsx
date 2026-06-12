@@ -1,15 +1,25 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../services/api';
-const logoFatec = '/logo-fatec.png';
-const logoCps = '/logo-cps.png';
+import AuthLayout from '../components/AuthLayout';
+
+const rememberedLoginKey = 'adminRememberedLogin';
 
 export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [rememberLogin, setRememberLogin] = useState(false);
   const [erro, setErro] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const savedLogin = localStorage.getItem(rememberedLoginKey);
+    if (savedLogin) {
+      setUsername(savedLogin);
+      setRememberLogin(true);
+    }
+  }, []);
 
   async function handleSubmit(e: React.BaseSyntheticEvent) {
     e.preventDefault();
@@ -17,6 +27,11 @@ export default function Login() {
     setLoading(true);
     try {
       const { data } = await api.post('/auth/login', { username, password });
+      if (rememberLogin) {
+        localStorage.setItem(rememberedLoginKey, username);
+      } else {
+        localStorage.removeItem(rememberedLoginKey);
+      }
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
       navigate('/admin');
@@ -28,84 +43,87 @@ export default function Login() {
   }
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      flexDirection: 'column',
-      backgroundImage: 'url(/background.png)',
-      backgroundSize: 'cover',
-      backgroundRepeat: 'no-repeat',
-      backgroundPosition: 'center top',
-    }}>
-      <header style={{
-  backgroundColor: '#ffffff',
-  padding: '10px 24px',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-  flexShrink: 0,
-}}>
-  <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-    <img src={logoFatec} alt="FATEC Jacareí" style={{ height: '50px', objectFit: 'contain' }} />
-    <div style={{ width: '1px', height: '36px', backgroundColor: '#ccc' }} />
-    <img src={logoCps} alt="Centro Paula Souza" style={{ height: '50px', objectFit: 'contain' }} />
-  </div>
-  <div style={{ display: 'flex', alignItems: 'center', border: '1px solid #ccc', borderRadius: '4px', overflow: 'hidden' }}>
-    <input type="text" placeholder="O que deseja localizar?" readOnly
-      style={{ border: 'none', outline: 'none', padding: '8px 12px', fontSize: '14px', color: '#555', width: '240px', backgroundColor: '#fff' }} />
-    <button style={{ backgroundColor: '#8B0000', border: 'none', padding: '8px 12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="11" cy="11" r="8" />
-        <line x1="21" y1="21" x2="16.65" y2="16.65" />
-      </svg>
-    </button>
-  </div>
-</header>
-
-      <main style={{
-        flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '40px 16px',
-      }}>
-        <h1 style={{ color: '#222', fontSize: '26px', fontWeight: 600, margin: '0 0 4px 0' }}>
-          Área administrativa
-        </h1>
-        <p style={{ color: '#555', fontSize: '13px', margin: '0 0 24px 0' }}>
-          Efetue o login para acessar a área administrativa
-        </p>
-
-        <div style={{
-          backgroundColor: '#8B0000',
-          borderRadius: '8px',
-          padding: '28px 32px',
-          width: '340px',
-          boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
-        }}>
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <div>
-              <label htmlFor="username" style={{ display: 'block', color: '#fff', fontSize: '13px', marginBottom: '6px' }}>Login:</label>
-              <input id="username" type="text" value={username} onChange={(e) => setUsername(e.target.value)}
-                placeholder="Digite aqui seu login" autoComplete="username" required
-                style={{ width: '100%', padding: '10px', borderRadius: '4px', border: 'none', fontSize: '14px', color: '#333', backgroundColor: '#fff', boxSizing: 'border-box', outline: 'none' }} />
-            </div>
-            <div>
-              <label htmlFor="password" style={{ display: 'block', color: '#fff', fontSize: '13px', marginBottom: '6px' }}>Senha:</label>
-              <input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)}
-                placeholder="Digite aqui sua senha" autoComplete="current-password" required
-                style={{ width: '100%', padding: '10px', borderRadius: '4px', border: 'none', fontSize: '14px', color: '#333', backgroundColor: '#fff', boxSizing: 'border-box', outline: 'none' }} />
-            </div>
-            {erro && <p style={{ margin: 0, color: '#ffcdd2', fontSize: '13px', textAlign: 'center', backgroundColor: 'rgba(0,0,0,0.2)', borderRadius: '4px', padding: '8px 12px' }}>{erro}</p>}
-            <button type="submit" disabled={loading}
-              style={{ width: '100%', padding: '12px', backgroundColor: '#2E7D32', color: '#fff', fontSize: '15px', fontWeight: 600, border: 'none', borderRadius: '4px', cursor: loading ? 'not-allowed' : 'pointer' }}>
-              {loading ? 'Aguarde...' : 'Acessar'}
-            </button>
-          </form>
+    <AuthLayout
+      title={<>Bem-vindo à<br />Área Administrativa</>}
+      subtitle="Efetue o login para acessar a área administrativa."
+      footer={(
+        <div className="text-center">
+          <Link to="/" className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-gray-500 hover:text-[#8B0000] transition-colors">
+            Voltar para a área pública
+          </Link>
         </div>
-      </main>
-    </div>
+      )}
+    >
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <div>
+          <label htmlFor="username" className="block text-[11px] font-black uppercase tracking-wider mb-1.5 text-white/90">Login</label>
+          <div className="group flex h-11 items-center gap-2 rounded-lg bg-white px-3 ring-1 ring-white/20 transition focus-within:ring-2 focus-within:ring-white/80">
+            <span className="text-[#8B0000]/70 transition group-focus-within:text-[#8B0000]">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M20 21a8 8 0 0 0-16 0" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+            </span>
+            <input
+              id="username"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Digite aqui seu login"
+              autoComplete="username"
+              required
+              className="h-full min-w-0 flex-1 border-0 bg-transparent text-[14px] font-medium text-gray-800 outline-none placeholder:text-gray-400"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label htmlFor="password" className="block text-[11px] font-black uppercase tracking-wider mb-1.5 text-white/90">Senha</label>
+          <div className="group flex h-11 items-center gap-2 rounded-lg bg-white px-3 ring-1 ring-white/20 transition focus-within:ring-2 focus-within:ring-white/80">
+            <span className="text-[#8B0000]/70 transition group-focus-within:text-[#8B0000]">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <rect x="5" y="11" width="14" height="10" rx="2" />
+                <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+              </svg>
+            </span>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Digite aqui sua senha"
+              autoComplete="current-password"
+              required
+              className="h-full min-w-0 flex-1 border-0 bg-transparent text-[14px] font-medium text-gray-800 outline-none placeholder:text-gray-400"
+            />
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-2 text-[12px] font-bold text-white/85 sm:flex-row sm:items-center sm:justify-between">
+          <label className="inline-flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={rememberLogin}
+              onChange={(e) => setRememberLogin(e.target.checked)}
+              className="h-4 w-4 rounded border-white/40 accent-[#2E7D32]"
+            />
+            Lembrar meu login
+          </label>
+          <Link to="/forgot-password" className="inline-flex items-center gap-1 text-white/90 underline decoration-white/25 underline-offset-4 transition hover:text-white hover:decoration-white">
+            Esqueci minha senha
+            <span aria-hidden="true">→</span>
+          </Link>
+        </div>
+
+        {erro && <p className="m-0 rounded-lg bg-black/20 px-3 py-2 text-center text-[13px] font-semibold text-red-100">{erro}</p>}
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full rounded-lg bg-[#2E7D32] py-3 text-[13px] font-black uppercase tracking-widest text-white shadow-sm transition hover:bg-[#256b29] disabled:opacity-60"
+        >
+          {loading ? 'Aguarde...' : 'Acessar'}
+        </button>
+      </form>
+    </AuthLayout>
   );
 }

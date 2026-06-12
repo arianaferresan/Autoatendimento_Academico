@@ -1,9 +1,8 @@
 import type { ApiNodeResponse } from '../types/chat';
-
-const API_BASE = 'http://localhost:3666';
+import { API_BASE_URL } from './apiBase';
 
 async function apiFetch<T>(path: string): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`, {
+  const res = await fetch(`${API_BASE_URL}${path}`, {
     headers: { 'Content-Type': 'application/json' },
   });
 
@@ -44,7 +43,7 @@ export interface DoubtPayload {
 }
 
 export async function submitDoubt(payload: DoubtPayload): Promise<void> {
-  const res = await fetch(`${API_BASE}/api/perguntas`, {
+  const res = await fetch(`${API_BASE_URL}/api/perguntas`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email: payload.email, message: payload.doubt }),
@@ -74,7 +73,7 @@ export interface FulfillmentLogPayload {
 }
 
 export async function submitFulfillmentLog(payload: FulfillmentLogPayload): Promise<void> {
-  const res = await fetch(`${API_BASE}/api/logs`, {
+  const res = await fetch(`${API_BASE_URL}/api/logs`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),

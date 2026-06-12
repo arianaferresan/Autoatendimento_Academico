@@ -32,10 +32,36 @@ CREATE TABLE IF NOT EXISTS users (
   role user_role NOT NULL,
   name VARCHAR(150) NOT NULL,
   active BOOLEAN NOT NULL DEFAULT TRUE,
+  troca_senha_obrigatoria BOOLEAN NOT NULL DEFAULT FALSE,
   created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 -- Índice para login rápido por username
 CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
+CREATE TABLE IF NOT EXISTS password_reset_tokens (
+  id SERIAL PRIMARY KEY,
+  user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  token_hash TEXT NOT NULL UNIQUE,
+  expires_at TIMESTAMPTZ NOT NULL,
+  used_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_password_reset_tokens_token_hash ON password_reset_tokens(token_hash);
+CREATE INDEX IF NOT EXISTS idx_password_reset_tokens_user_id ON password_reset_tokens(user_id);
+CREATE TABLE IF NOT EXISTS password_reset_requests (
+  id SERIAL PRIMARY KEY,
+  login_institucional VARCHAR(100) NOT NULL,
+  usuario_id INT REFERENCES users(id) ON DELETE SET NULL,
+  status VARCHAR(20) NOT NULL DEFAULT 'pendente',
+  data_solicitacao TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  data_atendimento TIMESTAMPTZ,
+  admin_responsavel_id INT REFERENCES users(id) ON DELETE SET NULL,
+  observacao TEXT,
+  CONSTRAINT password_reset_requests_status_check CHECK (
+    status IN ('pendente', 'atendida', 'cancelada')
+  )
+);
+CREATE INDEX IF NOT EXISTS idx_password_reset_requests_status ON password_reset_requests(status);
+CREATE INDEX IF NOT EXISTS idx_password_reset_requests_usuario_id ON password_reset_requests(usuario_id);
 -- Tabela de nós da árvore 
 CREATE TABLE IF NOT EXISTS navigation_nodes (
   id SERIAL PRIMARY KEY,

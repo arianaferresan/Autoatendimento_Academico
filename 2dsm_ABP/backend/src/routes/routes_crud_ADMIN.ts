@@ -15,13 +15,21 @@ import {
   getSupportContactsByStatus,
   getSupportContactStats,
   getAllSecretariaUsers,
-  createSecretariaUser,
+  createUser,
+  getUserById,
+  updateUser,
+  updateUserStatus,
+  updateMyAccount,
+  changeMyPassword,
+  cancelPasswordResetRequest,
   deleteUser,
+  getPasswordResetRequests,
   getLogsStats,
   getAllLogs,
   getInquiryStats,
   getInquiryStatsLeaf,
   getSatisfactionStats,
+  resolvePasswordResetRequest,
 } from "@/controllers/adminController.js";
 
 const routerADMIN = Router();
@@ -124,8 +132,29 @@ routerADMIN.get("/logs/inquiry-stats", authorize("admin"), getInquiryStats);
 routerADMIN.get("/logs/inquiry-stats-leaf", authorize("admin"), getInquiryStatsLeaf);
 
 // ─── Usuários (Secretária) ─────────────────────────────────────────────────────
+routerADMIN.put("/minha-conta", authorize("admin", "secretaria"), updateMyAccount);
+routerADMIN.put("/minha-conta/senha", authorize("admin", "secretaria"), changeMyPassword);
 routerADMIN.get("/usuarios", authorize("admin"), getAllSecretariaUsers);
-routerADMIN.post("/usuarios", authorize("admin"), createSecretariaUser);
+routerADMIN.get("/usuarios/:id", authorize("admin"), getUserById);
+routerADMIN.post("/usuarios", authorize("admin"), createUser);
+routerADMIN.put("/usuarios/:id", authorize("admin"), updateUser);
+routerADMIN.patch("/usuarios/:id/status", authorize("admin"), updateUserStatus);
 routerADMIN.delete("/usuarios/:id", authorize("admin"), deleteUser);
+
+routerADMIN.get(
+  "/password-reset-requests",
+  authorize("admin"),
+  getPasswordResetRequests,
+);
+routerADMIN.post(
+  "/password-reset-requests/:id/resolve",
+  authorize("admin"),
+  resolvePasswordResetRequest,
+);
+routerADMIN.post(
+  "/password-reset-requests/:id/cancel",
+  authorize("admin"),
+  cancelPasswordResetRequest,
+);
 
 export default routerADMIN;

@@ -1,31 +1,41 @@
+import crypto from 'crypto';
+import fs from 'fs';
 import multer from 'multer';
 import path from 'path';
-import fs from 'fs';
 
-const uploadDir = 'asset/uploads/';
+export const pdfUploadDir = path.resolve(process.cwd(), 'uploads', 'pdfs');
+const maxPdfSizeBytes = 10 * 1024 * 1024;
 
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
+if (!fs.existsSync(pdfUploadDir)) {
+  fs.mkdirSync(pdfUploadDir, { recursive: true });
 }
 
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadDir);
+  destination: (_req, _file, cb) => {
+    cb(null, pdfUploadDir);
   },
-  filename: (_req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    const ext = path.extname(file.originalname);
-    cb(null, `${uniqueSuffix}${ext}`);
-  }
+  filename: (_req, _file, cb) => {
+    const safeName = `${Date.now()}-${crypto.randomBytes(12).toString('hex')}`;
+    cb(null, `${safeName}.pdf`);
+  },
 });
 
-export const upload = multer({ 
+export const upload = multer({
   storage,
+  limits: {
+    fileSize: maxPdfSizeBytes,
+  },
   fileFilter: (_req, file, cb) => {
-    if (file.mimetype === 'application/pdf') {
+    const originalExt = path.extname(file.originalname).toLowerCase();
+    if (file.mimetype === 'application/pdf' && originalExt === '.pdf') {
       cb(null, true);
-    } else {
-      cb(new Error('Apenas arquivos PDF são permitidos!'));
+      return;
     }
-  }
+
+    cb(new Error('Apenas arquivos PDF sao permitidos.'));
+  },
 });
+
+export function getUploadedPdfUrl(file: Express.Multer.File): string {
+  return `/uploads/pdfs/${file.filename}`;
+}

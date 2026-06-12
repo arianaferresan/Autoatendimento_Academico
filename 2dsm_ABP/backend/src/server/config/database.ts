@@ -5,9 +5,6 @@ import path from "path";
 // Garante que o dotenv procure o arquivo .env na raiz da pasta backend
 dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
-console.log("DEBUG DATABASE: Host ->", process.env.DB_HOST);
-console.log("DEBUG DATABASE: Senha preenchida? ->", process.env.DB_PASSWORD ? "SIM" : "NÃO");
-
 export const pool = new Pool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,

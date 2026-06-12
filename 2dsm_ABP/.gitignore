@@ -12,6 +12,10 @@ yarn-error.log*
 # ==========================================
 dist/
 build/
+backend/src/**/*.js
+backend/src/**/*.js.map
+backend/src/**/*.d.ts
+backend/src/**/*.d.ts.map
 
 # ==========================================
 # UPLOADS E ARQUIVOS LOCAIS (MULTER)

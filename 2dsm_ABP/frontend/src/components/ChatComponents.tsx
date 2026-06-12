@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 // Avatar do bot
 function BotAvatar() {
@@ -223,15 +223,103 @@ interface DoubtFormProps {
   onSubmit: (email: string, doubt: string) => void;
   isAluno?: boolean;
 }
+
+interface DoubtFormErrors {
+  email?: string;
+  doubt?: string;
+  general?: string;
+}
+
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export function DoubtForm({ onSubmit, isAluno }: DoubtFormProps) {
   const [email, setEmail] = useState('');
   const [doubt, setDoubt] = useState('');
   const [sent, setSent] = useState(false);
+  const [errors, setErrors] = useState<DoubtFormErrors>({});
+  const emailRef = useRef<HTMLInputElement>(null);
+  const doubtRef = useRef<HTMLTextAreaElement>(null);
+
+  const validateForm = (emailValue: string, doubtValue: string): DoubtFormErrors => {
+    const nextErrors: DoubtFormErrors = {};
+
+    if (!emailValue.trim()) {
+      nextErrors.email = 'E-mail e obrigatorio.';
+    } else if (!emailPattern.test(emailValue.trim())) {
+      nextErrors.email = 'Informe um e-mail valido.';
+    }
+
+    if (!doubtValue.trim()) {
+      nextErrors.doubt = 'Descreva sua solicitacao.';
+    }
+
+    if (nextErrors.email || nextErrors.doubt) {
+      nextErrors.general = 'Existem campos obrigatorios nao preenchidos.';
+    }
+
+    return nextErrors;
+  };
+
+  const hasErrors = Boolean(errors.email || errors.doubt);
+
+  const handleEmailChange = (value: string) => {
+    setEmail(value);
+
+    if (!errors.email && !errors.general) return;
+
+    setErrors((currentErrors) => {
+      const nextErrors = { ...currentErrors };
+
+      if (!value.trim()) {
+        nextErrors.email = 'E-mail e obrigatorio.';
+      } else if (!emailPattern.test(value.trim())) {
+        nextErrors.email = 'Informe um e-mail valido.';
+      } else {
+        delete nextErrors.email;
+      }
+
+      delete nextErrors.general;
+      return nextErrors;
+    });
+  };
+
+  const handleDoubtChange = (value: string) => {
+    setDoubt(value);
+
+    if (!errors.doubt && !errors.general) return;
+
+    setErrors((currentErrors) => {
+      const nextErrors = { ...currentErrors };
+
+      if (!value.trim()) {
+        nextErrors.doubt = 'Descreva sua solicitacao.';
+      } else {
+        delete nextErrors.doubt;
+      }
+
+      delete nextErrors.general;
+      return nextErrors;
+    });
+  };
 
   const handleSubmit = () => {
-    if (!email.trim() || !doubt.trim()) return;
+    const nextErrors = validateForm(email, doubt);
+
+    if (nextErrors.email || nextErrors.doubt) {
+      setErrors(nextErrors);
+
+      if (nextErrors.email) {
+        emailRef.current?.focus();
+      } else {
+        doubtRef.current?.focus();
+      }
+
+      return;
+    }
+
+    setErrors({});
     setSent(true);
-    onSubmit(email, doubt);
+    onSubmit(email.trim(), doubt.trim());
   };
 
   return (
@@ -242,35 +330,63 @@ export function DoubtForm({ onSubmit, isAluno }: DoubtFormProps) {
           Por favor nos conte qual é a sua dúvida?
         </span>
         <div className="flex flex-col gap-1.5">
-          <span className="text-white/80 text-[11px] font-black uppercase tracking-tighter">
+          <label htmlFor="doubt-email" className="text-white/80 text-[11px] font-black uppercase tracking-tighter">
             {isAluno ? 'E-mail institucional:' : 'Seu E-mail:'}
-          </span>
+          </label>
           <input
+            id="doubt-email"
+            ref={emailRef}
             type="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => handleEmailChange(e.target.value)}
             placeholder="Digite seu E-mail aqui..."
             disabled={sent}
-            className="rounded-xl px-4 py-2.5 text-[13px] text-gray-700 bg-white border-0 outline-none placeholder-gray-400 disabled:opacity-60 font-medium"
+            aria-invalid={Boolean(errors.email)}
+            aria-describedby={errors.email ? 'doubt-email-error' : undefined}
+            className={`rounded-xl px-4 py-2.5 text-[13px] text-gray-700 bg-white border outline-none placeholder-gray-400 disabled:opacity-60 font-medium
+              ${errors.email ? 'border-red-500 ring-2 ring-red-200' : 'border-transparent'}`}
           />
+          {errors.email && (
+            <span id="doubt-email-error" role="alert" className="text-white text-[11px] font-bold">
+              {errors.email}
+            </span>
+          )}
         </div>
         <div className="flex flex-col gap-1.5">
           <span className="text-white/80 text-[11px] font-black uppercase tracking-tighter">Escreva sua dúvida:</span>
           <textarea
+            id="doubt-message"
+            ref={doubtRef}
             value={doubt}
-            onChange={(e) => setDoubt(e.target.value)}
+            onChange={(e) => handleDoubtChange(e.target.value)}
             placeholder="Digite aqui sua mensagem detalhada..."
             disabled={sent}
             rows={4}
-            className="rounded-xl px-4 py-2.5 text-[13px] text-gray-700 bg-white border-0 outline-none placeholder-gray-400 resize-none disabled:opacity-60 font-medium"
+            aria-label="Escreva sua duvida"
+            aria-invalid={Boolean(errors.doubt)}
+            aria-describedby={errors.doubt ? 'doubt-message-error' : undefined}
+            className={`rounded-xl px-4 py-2.5 text-[13px] text-gray-700 bg-white border outline-none placeholder-gray-400 resize-none disabled:opacity-60 font-medium
+              ${errors.doubt ? 'border-red-500 ring-2 ring-red-200' : 'border-transparent'}`}
           />
+          {errors.doubt && (
+            <span id="doubt-message-error" role="alert" className="text-white text-[11px] font-bold">
+              {errors.doubt}
+            </span>
+          )}
         </div>
+        {errors.general && (
+          <span role="alert" className="rounded-xl bg-white/15 px-3 py-2 text-white text-[12px] font-bold">
+            {errors.general}
+          </span>
+        )}
         {!sent && (
           <div className="flex justify-end">
             <button
               onClick={handleSubmit}
+              disabled={hasErrors}
               className="px-8 py-2.5 rounded-xl bg-[#1D9E75] text-white text-[13px] font-black
-                         hover:bg-[#168a62] transition-all active:scale-95 border-0 cursor-pointer shadow-lg"
+                         hover:bg-[#168a62] transition-all active:scale-95 border-0 cursor-pointer shadow-lg
+                         disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-[#1D9E75]"
             >
               Enviar Mensagem
             </button>

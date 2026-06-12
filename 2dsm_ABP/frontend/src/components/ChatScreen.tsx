@@ -124,7 +124,7 @@ export default function ChatScreen({ onBack, userType }: ChatScreenProps) {
   return (
     <div className="flex flex-col min-h-screen bg-gray-100 overflow-hidden">
       <header className="bg-white shadow-sm shrink-0 border-b border-gray-200">
-        <div className="px-4 py-3 flex items-center justify-between">
+        <div className="px-3 sm:px-4 py-3 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-4">
             <button
               onClick={onBack}
@@ -146,24 +146,24 @@ export default function ChatScreen({ onBack, userType }: ChatScreenProps) {
             </div>
           </div>
           
-          <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden bg-gray-50 focus-within:border-[#8B0000] transition-colors">
+          <div className="flex w-full sm:w-auto items-center border border-gray-300 rounded-lg overflow-hidden bg-gray-50 focus-within:border-[#8B0000] transition-colors">
             <input
-              className="text-sm outline-none px-3 py-2 w-32 sm:w-48 bg-transparent"
+              className="text-sm outline-none px-3 py-2 w-full min-w-0 sm:w-48 bg-transparent"
               placeholder="Pesquisar..."
             />
-            <button className="bg-[#8B0000] text-white px-3 py-2 border-0 cursor-pointer hover:bg-red-900 transition-colors">
+            <button className="shrink-0 bg-[#8B0000] text-white px-3 py-2 border-0 cursor-pointer hover:bg-red-900 transition-colors">
               🔍
             </button>
           </div>
         </div>
 
         {userType === 'aluno' && courseTabs.length > 0 && (
-          <div className="bg-[#8B0000] flex px-2 sm:px-4 py-1 gap-1">
+          <div className="bg-[#8B0000] flex px-2 sm:px-4 py-1 gap-1 overflow-x-auto">
             {courseTabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => handleTabSelect(tab)}
-                className={`flex-1 text-center text-white text-[12px] font-bold py-2 px-1 rounded-md transition-all border-0 cursor-pointer
+                className={`flex-1 min-w-[84px] sm:min-w-[90px] text-center text-white text-[12px] font-bold py-2 px-1 rounded-md transition-all border-0 cursor-pointer
                   ${activeCourse === tab.full ? 'bg-white/20 shadow-inner' : 'bg-transparent hover:bg-white/10'}`}
               >
                 {tab.label}

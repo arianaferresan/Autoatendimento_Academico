@@ -132,15 +132,15 @@ export default function PainelRelatorios({ onNavigateToDuvidas }: PainelRelatori
   };
 
   return (
-    <div className="flex flex-col space-y-6">
+    <div className="flex flex-col space-y-4">
       
       {/* HEADER DE FILTROS - PADRONIZADO */}
-      <div className="bg-white p-4 rounded-lg border border-gray-300 shadow-sm flex flex-wrap items-center justify-between gap-4">
+      <div className="bg-white p-4 rounded-lg border border-gray-300 shadow-sm flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-xl font-bold text-gray-800">Relatórios e Métricas</h2>
           <p className="text-gray-500 text-xs font-semibold uppercase">Visão geral do sistema e interações</p>
         </div>
-        <div className="flex items-center gap-3 bg-gray-50 p-2 rounded border border-gray-200">
+        <div className="flex flex-wrap items-center gap-3 bg-gray-50 p-2 rounded border border-gray-200">
            <label className="text-[10px] font-bold text-gray-400 uppercase px-1">Período:</label>
            <input type="month" value={mesFiltro} onChange={(e) => setMesFiltro(e.target.value)} className="text-sm font-bold text-gray-700 bg-transparent outline-none cursor-pointer" />
            <button onClick={fetchDashboardData} className="text-gray-400 hover:text-[#8B0000] ml-2">
@@ -153,10 +153,10 @@ export default function PainelRelatorios({ onNavigateToDuvidas }: PainelRelatori
         <div className="py-20 text-center text-gray-400 italic font-bold">Compilando dados...</div>
       ) : (
         <>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
             {/* SATISFAÇÃO DOS USUÁRIOS */}
-            <div className="lg:col-span-3 bg-white p-6 rounded-lg border border-gray-300 shadow-sm flex flex-col">
-              <div className="mb-6 flex justify-between items-end">
+            <div className="lg:col-span-3 bg-white p-4 sm:p-5 rounded-lg border border-gray-300 shadow-sm flex flex-col">
+              <div className="mb-5 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-3">
                  <div>
                     <h3 className="font-bold text-gray-800">Satisfação dos Usuários</h3>
                     <span className="text-[10px] font-bold text-gray-400 uppercase">Avaliações do Chatbot no Período</span>
@@ -179,8 +179,8 @@ export default function PainelRelatorios({ onNavigateToDuvidas }: PainelRelatori
                   <p className="text-gray-400 italic text-xs font-medium">Os atendimentos deste período não receberam avaliações.</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-                   <div className="flex flex-col items-center justify-center border-r border-gray-100 pr-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                    <div className="flex flex-col items-center justify-center md:border-r md:border-gray-100 md:pr-8">
                       <span className="text-[48px] font-black text-gray-800 leading-none">{averageRating}</span>
                       <div className="flex text-yellow-400 text-lg mt-2 mb-1">
                         {Array.from({ length: 5 }).map((_, i) => (
@@ -190,13 +190,13 @@ export default function PainelRelatorios({ onNavigateToDuvidas }: PainelRelatori
                       <span className="text-[10px] font-bold text-gray-400 uppercase">Média Ponderada</span>
                    </div>
 
-                   <div className="flex flex-col items-center justify-center border-r border-gray-100 pr-8">
+                    <div className="flex flex-col items-center justify-center md:border-r md:border-gray-100 md:pr-8">
                       <span className="text-[48px] font-black text-[#2E7D32] leading-none">{satisfactionRate}%</span>
                       <span className="text-[10px] font-bold text-[#2E7D32] uppercase mt-3">Satisfação Positiva</span>
                       <span className="text-[9px] text-gray-400 mt-1">(Bom, Muito Bom e Ótimo)</span>
                    </div>
 
-                   <div className="space-y-2 flex-1 pl-4">
+                   <div className="space-y-2 flex-1 md:pl-4 w-full">
                       {['ÓTIMO', 'MUITO BOM', 'BOM', 'SATISFATÓRIO', 'RUIM'].map(flag => {
                          const f = flag as keyof typeof distribution;
                          const count = distribution[f];
@@ -217,20 +217,20 @@ export default function PainelRelatorios({ onNavigateToDuvidas }: PainelRelatori
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-4">
             {/* TERMOS */}
             <div className="lg:col-span-5">
                <MostSearchedTerms terms={filteredTerms} />
             </div>
             
             {/* CATEGORIAS */}
-            <div className="lg:col-span-7 bg-white p-6 rounded-lg border border-gray-300 shadow-sm flex flex-col">
-              <div className="mb-6">
+            <div className="lg:col-span-7 bg-white p-4 sm:p-5 rounded-lg border border-gray-300 shadow-sm flex flex-col">
+              <div className="mb-5">
                  <h3 className="font-bold text-gray-800">Interesse por Área</h3>
                  <span className="text-[10px] font-bold text-gray-400 uppercase">Distribuição de acessos no Chat</span>
               </div>
 
-              <div className="flex flex-col md:flex-row items-center gap-8 flex-1">
+              <div className="flex flex-col md:flex-row items-center gap-6 flex-1">
                  <div className="relative w-40 h-40 shrink-0">
                     <svg className="w-full h-full transform -rotate-90">
                        <circle cx="80" cy="80" r="70" fill="transparent" stroke="#f1f5f9" strokeWidth="18" />
@@ -296,8 +296,8 @@ export default function PainelRelatorios({ onNavigateToDuvidas }: PainelRelatori
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="bg-white p-6 rounded-lg border border-gray-300 shadow-sm flex flex-col justify-between">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div className="bg-white p-4 sm:p-5 rounded-lg border border-gray-300 shadow-sm flex flex-col justify-between">
               <div>
                 <h3 className="font-bold text-gray-800 mb-6">Taxa de Resposta</h3>
                 <div className="space-y-4">
@@ -311,7 +311,7 @@ export default function PainelRelatorios({ onNavigateToDuvidas }: PainelRelatori
                   </div>
                 </div>
               </div>
-              <div className="mt-8 pt-4 border-t border-gray-100">
+              <div className="mt-6 pt-4 border-t border-gray-100">
                  <div className="flex justify-between text-[10px] font-bold text-gray-400 uppercase mb-2">
                     <span>Aproveitamento Geral</span>
                     <span className="text-gray-700">{totalPerguntas > 0 ? ((respondidas / totalPerguntas) * 100).toFixed(0) : 0}%</span>
@@ -322,8 +322,8 @@ export default function PainelRelatorios({ onNavigateToDuvidas }: PainelRelatori
               </div>
             </div>
 
-            <div className="lg:col-span-2 bg-white p-6 rounded-lg border border-gray-300 shadow-sm flex flex-col">
-              <div className="flex items-center justify-between mb-6">
+            <div className="lg:col-span-2 bg-white p-4 sm:p-5 rounded-lg border border-gray-300 shadow-sm flex flex-col">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
                  <div>
                     <h3 className="font-bold text-gray-800">Últimos Atendimentos</h3>
                     <span className="text-[10px] font-bold text-gray-400 uppercase">Histórico recente de contato</span>
@@ -338,8 +338,8 @@ export default function PainelRelatorios({ onNavigateToDuvidas }: PainelRelatori
                   </div>
                 ) : (
                   recentQuestions.map((q) => (
-                    <div key={q.id} className="p-4 bg-gray-50 border border-gray-200 rounded-lg flex justify-between items-center gap-6 hover:bg-gray-100/80 transition-colors">
-                      <div className="truncate flex-1">
+                    <div key={q.id} className="p-4 bg-gray-50 border border-gray-200 rounded-lg flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-6 hover:bg-gray-100/80 transition-colors">
+                      <div className="min-w-0 flex-1">
                         <span className="text-[10px] font-bold text-gray-400 block uppercase mb-0.5">{q.email}</span>
                         <p className="text-sm text-gray-700 truncate italic font-medium">"{q.message}"</p>
                       </div>
